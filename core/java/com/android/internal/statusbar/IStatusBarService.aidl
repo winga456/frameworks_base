@@ -99,4 +99,6 @@ interface IStatusBarService
     void appTransitionStarting(long statusBarAnimationsStartTime, long statusBarAnimationsDuration);
 
     void startAssist(in Bundle args);
+
+    void setAutoRotate(boolean enabled);
 }

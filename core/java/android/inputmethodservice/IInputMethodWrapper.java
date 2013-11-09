@@ -31,6 +31,8 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
 import android.os.ResultReceiver;
+import android.os.UserHandle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.InputChannel;
 import android.view.inputmethod.EditorInfo;
@@ -131,20 +133,24 @@ class IInputMethodWrapper extends IInputMethod.Stub
             return;
         }
 
+        boolean formalText = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.FORMAL_TEXT_INPUT, 0, UserHandle.USER_CURRENT_OR_SELF) == 1;
+
         switch (msg.what) {
             case DO_DUMP: {
                 AbstractInputMethodService target = mTarget.get();
+                if (target == null) {
+                    return;
+                }
                 SomeArgs args = (SomeArgs)msg.obj;
-                if (target != null) {
-                    try {
-                        target.dump((FileDescriptor)args.arg1,
-                                (PrintWriter)args.arg2, (String[])args.arg3);
-                    } catch (RuntimeException e) {
-                        ((PrintWriter)args.arg2).println("Exception: " + e);
-                    }
-                    synchronized (args.arg4) {
-                        ((CountDownLatch)args.arg4).countDown();
-                    }
+                try {
+                    target.dump((FileDescriptor)args.arg1,
+                            (PrintWriter)args.arg2, (String[])args.arg3);
+                } catch (RuntimeException e) {
+                    ((PrintWriter)args.arg2).println("Exception: " + e);
+                }
+                synchronized (args.arg4) {
+                    ((CountDownLatch)args.arg4).countDown();
                 }
                 args.recycle();
                 return;
@@ -168,6 +174,7 @@ class IInputMethodWrapper extends IInputMethod.Stub
                         ? new InputConnectionWrapper(inputContext) : null;
                 EditorInfo info = (EditorInfo)args.arg2;
                 info.makeCompatible(mTargetSdkVersion);
+                info.formalTextInput(formalText);
                 inputMethod.startInput(ic, info);
                 args.recycle();
                 return;
@@ -179,6 +186,7 @@ class IInputMethodWrapper extends IInputMethod.Stub
                         ? new InputConnectionWrapper(inputContext) : null;
                 EditorInfo info = (EditorInfo)args.arg2;
                 info.makeCompatible(mTargetSdkVersion);
+                info.formalTextInput(formalText);
                 inputMethod.restartInput(ic, info);
                 args.recycle();
                 return;
