@@ -520,7 +520,12 @@ public class InputManagerService extends IInputManager.Stub
      */
     public void setInputFilter(IInputFilter filter) {
         synchronized (mInputFilterLock) {
-            if (mInputFilterHost != null) {
+            final IInputFilter oldFilter = mInputFilter;
+            if (oldFilter == filter) {
+                return; // nothing to do
+            }
+
+            if (oldFilter != null) {
                 mInputFilterHost.disconnectLocked();
                 mInputFilterChain.remove(mInputFilterHost);
                 mInputFilterHost = null;
