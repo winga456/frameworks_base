@@ -966,6 +966,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         mAssistManager = new AssistManager(this, context);
         addGestureAnywhereView();
+        addAppCircleSidebar();
 
         // Setup pie container if enabled
         attachPieContainer(isPieEnabled());
