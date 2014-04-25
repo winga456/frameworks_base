@@ -544,4 +544,8 @@ public class StatusBarKeyguardViewManager {
     public ViewRootImpl getViewRootImpl() {
         return mPhoneStatusBar.getStatusBarView().getViewRootImpl();
     }
+
+    public boolean isKeyguardShowingMedia() {
+        return mPhoneStatusBar.isKeyguardShowingMedia();
+    }
 }
