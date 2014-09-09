@@ -109,6 +109,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     private LinearLayout mSystemIcons;
     private SignalClusterView mSignalCluster;
     private View mSettingsButton;
+    private View mTaskManagerButton;
     private View mQsDetailHeader;
     private TextView mQsDetailHeaderTitle;
     private Switch mQsDetailHeaderSwitch;
@@ -223,6 +224,9 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mPowerMenuButton = (ImageView) findViewById(R.id.power_menu_button);
         mPowerMenuButton.setOnClickListener(this);
         mPowerMenuButton.setOnLongClickListener(this);
+        if (getResources().getBoolean(R.bool.config_showTaskManagerSwitcher)) {
+            mTaskManagerButton = findViewById(R.id.task_manager_button);
+        }
         mQsDetailHeader = findViewById(R.id.qs_detail_header);
         mQsDetailHeader.setAlpha(0);
         mQsDetailHeaderTitle = (TextView) mQsDetailHeader.findViewById(android.R.id.title);
@@ -425,6 +429,9 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mDateExpanded.setVisibility(mExpanded && mAlarmShowing ? View.INVISIBLE : View.VISIBLE);
         mAlarmStatus.setVisibility(mExpanded && mAlarmShowing ? View.VISIBLE : View.INVISIBLE);
         mSettingsButton.setVisibility(mExpanded ? View.VISIBLE : View.INVISIBLE);
+        if (mTaskManagerButton != null) {
+            mTaskManagerButton.setVisibility(mExpanded ? View.VISIBLE : View.GONE);
+        }
         mQsDetailHeader.setVisibility(mExpanded && mShowingDetail? View.VISIBLE : View.INVISIBLE);
         if (mSignalCluster != null) {
             updateSignalClusterDetachment();
@@ -609,7 +616,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
 
             post(new Runnable() {
                  public void run() {
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mBackgroundImage.getLayoutParams(); 
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mBackgroundImage.getLayoutParams();
                     params.height = (int)heightFinal;
                     mBackgroundImage.setLayoutParams(params);
                 }
@@ -971,6 +978,12 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                     ? 0
                     : mSettingsButton.getLeft() - mPowerMenuButton.getLeft();
         }
+        target.taskManagerAlpha = getAlphaForVisibility(mTaskManagerButton);
+        if (mTaskManagerButton != null) {
+            target.taskManagerTranslation = mExpanded
+                    ? 0
+                    : mSettingsButton.getLeft() - mTaskManagerButton.getLeft();
+        }
         target.settingsRotation = !mExpanded ? 90f : 0f;
         target.signalClusterAlpha = mSignalClusterDetached ? 0f : 1f;
     }
@@ -1036,6 +1049,11 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             mPowerMenuButton.setTranslationX(values.settingsTranslation);
             mPowerMenuButton.setRotation(values.settingsRotation);
        }
+        if (mTaskManagerButton != null) {
+            mTaskManagerButton.setTranslationY(mSystemIconsSuperContainer.getTranslationY());
+            mTaskManagerButton.setTranslationX(values.settingsTranslation);
+            mTaskManagerButton.setRotation(values.settingsRotation);
+        }
         applyAlpha(mEmergencyCallsOnly, values.emergencyCallsOnlyAlpha);
         if (!mShowingDetail && !mDetailTransitioning) {
             // Otherwise it needs to stay invisible
@@ -1045,6 +1063,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         applyAlpha(mDateExpanded, values.dateExpandedAlpha);
         applyAlpha(mBatteryLevel, values.batteryLevelAlpha);
         applyAlpha(mSettingsButton, values.settingsAlpha);
+        applyAlpha(mTaskManagerButton, values.taskManagerAlpha);
         applyAlpha(mWeatherLine1, values.settingsAlpha);
         applyAlpha(mWeatherLine2, values.settingsAlpha);
         applyAlpha(mVRToxinButton, values.vrtoxinAlpha);
@@ -1076,6 +1095,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         float batteryX;
         float batteryY;
         float batteryLevelAlpha;
+        float taskManagerAlpha;
+        float taskManagerTranslation;
         float settingsAlpha;
         float settingsTranslation;
         float signalClusterAlpha;
@@ -1098,6 +1119,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             vrtoxinTranslation =
                     v1.vrtoxinTranslation * (1 - t) + v2.vrtoxinTranslation * t;
             powerMenuButton = v1.powerMenuButton * (1 - t) + v2.powerMenuButton * t;
+            taskManagerTranslation =
+                    v1.taskManagerTranslation * (1 - t) + v2.taskManagerTranslation * t;
             settingsTranslation = v1.settingsTranslation * (1 - t) + v2.settingsTranslation * t;
             weatherY = v1.weatherY * (1 - t) + v2.weatherY * t;
 
@@ -1113,6 +1136,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             batteryLevelAlpha = v1.batteryLevelAlpha * (1 - t3) + v2.batteryLevelAlpha * t3;
             vrtoxinAlpha = v1.vrtoxinAlpha * (1 - t3) + v2.vrtoxinAlpha * t3;
             powerMenuButtonAlpha = v1.powerMenuButtonAlpha * (1 - t3) + v2.powerMenuButtonAlpha * t3;
+            taskManagerAlpha = v1.taskManagerAlpha * (1 - t3) + v2.taskManagerAlpha * t3;
             settingsAlpha = v1.settingsAlpha * (1 - t3) + v2.settingsAlpha * t3;
             dateExpandedAlpha = v1.dateExpandedAlpha * (1 - t3) + v2.dateExpandedAlpha * t3;
             dateCollapsedAlpha = v1.dateCollapsedAlpha * (1 - t3) + v2.dateCollapsedAlpha * t3;

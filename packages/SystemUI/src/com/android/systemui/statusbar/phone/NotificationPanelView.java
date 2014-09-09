@@ -53,6 +53,7 @@ import android.view.animation.Interpolator;
 import android.view.GestureDetector;
 import android.view.animation.PathInterpolator;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.internal.logging.MetricsLogger;
@@ -114,6 +115,7 @@ public class NotificationPanelView extends PanelView implements
     private QSContainer mQsContainer;
     private QuickAccessBar mQSBar;
     private QSPanel mQsPanel;
+    private LinearLayout mTaskManagerPanel;
     private KeyguardStatusView mKeyguardStatusView;
     private ExpansionViewController mExpansionViewController;
     private ObservableScrollView mScrollView;
@@ -276,6 +278,7 @@ public class NotificationPanelView extends PanelView implements
         mQsContainer = (QSContainer) findViewById(R.id.quick_settings_container);
         mQSBar = (QuickAccessBar) findViewById(R.id.quick_access_bar);
         mQsPanel = (QSPanel) findViewById(R.id.quick_settings_panel);
+        mTaskManagerPanel = (LinearLayout) findViewById(R.id.task_manager_panel);
         mClockView = (TextView) findViewById(R.id.clock_view);
         mScrollView = (ObservableScrollView) findViewById(R.id.scroll_view);
         mScrollView.setListener(this);
@@ -1369,6 +1372,9 @@ public class NotificationPanelView extends PanelView implements
         mNotificationStackScroller.setScrollingEnabled(
                 mStatusBarState != StatusBarState.KEYGUARD && (!mQsExpanded
                         || mQsExpansionFromOverscroll));
+        if (!getResources().getBoolean(R.bool.config_showTaskManagerSwitcher)) {
+            mQsPanel.setVisibility(expandVisually ? View.VISIBLE : View.INVISIBLE);
+        }
         mQsContainer.updateVisibility(mKeyguardShowing, expandVisually);
         mScrollView.setTouchEnabled(mQsExpanded);
         updateEmptyShadeView();
@@ -1593,6 +1599,23 @@ public class NotificationPanelView extends PanelView implements
             return onHeader || (mScrollView.isScrolledToBottom() && yDiff < 0) && isInQsArea(x, y);
         } else {
             return onHeader;
+        }
+    }
+
+    public void setTaskManagerVisibility(boolean mTaskManagerShowing) {
+        if (getResources().getBoolean(R.bool.config_showTaskManagerSwitcher)) {
+            cancelAnimation();
+            boolean expandVisually = mQsExpanded || mStackScrollerOverscrolling;
+            mQsPanel.setVisibility(expandVisually && !mTaskManagerShowing
+                    ? View.VISIBLE : View.GONE);
+            mTaskManagerPanel.setVisibility(expandVisually && mTaskManagerShowing
+                    ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    private void cancelAnimation() {
+        if (mQsExpansionAnimator != null) {
+            mQsExpansionAnimator.cancel();
         }
     }
 
