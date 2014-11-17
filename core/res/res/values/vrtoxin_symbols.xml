@@ -54,9 +54,16 @@
   <java-symbol type="bool" name="config_samsung_stk" />
   <java-symbol type="bool" name="config_hasRemovableLid" />
 
-
   <!-- Stylus gestures -->
   <java-symbol type="bool" name="config_stylusGestures" />
   <java-symbol type="string" name="stylus_app_not_installed" />
+
+  <!-- Notification and battery light -->
+  <java-symbol type="bool" name="config_intrusiveNotificationLed" />
+  <java-symbol type="bool" name="config_multiColorNotificationLed" />
+  <java-symbol type="bool" name="config_intrusiveBatteryLed" />
+  <java-symbol type="bool" name="config_multiColorBatteryLed" />
+  <java-symbol type="array" name="notification_light_package_mapping" />
+  <java-symbol type="array" name="config_notificationNoAlertsVibePattern" />
 
 </resources>
