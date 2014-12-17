@@ -301,4 +301,7 @@
     <!-- Quick Settings -->
     <string name="quick_settings_powermenu_label">Power Menu</string>
 
+    <!-- Content description of the superuser tile -->
+    <string name="accessibility_su_active">Superuser session active</string>
+
 </resources>
