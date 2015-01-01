@@ -30,6 +30,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.os.UserHandle;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -84,6 +85,7 @@ public class QSPanel extends ViewGroup {
     private boolean mClosingDetail;
 
     private boolean mBrightnessSliderEnabled;
+    private boolean mVibrationEnabled;
 
     private Record mDetailRecord;
     private Callback mCallback;
@@ -93,6 +95,7 @@ public class QSPanel extends ViewGroup {
     private QSFooter mFooter;
     private boolean mGridContentVisible = true;
 
+    protected Vibrator mVibrator;
 
     private SettingsObserver mSettingsObserver;
 
@@ -121,6 +124,7 @@ public class QSPanel extends ViewGroup {
         addView(mBrightnessView);
         addView(mFooter.getView());
         mClipper = new QSDetailClipper(mDetail);
+        mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
         mSettingsObserver = new SettingsObserver(mHandler);
         updateResources();
 
@@ -134,6 +138,7 @@ public class QSPanel extends ViewGroup {
                 announceForAccessibility(
                         mContext.getString(R.string.accessibility_desc_quick_settings));
                 closeDetail();
+                vibrateTile(20);
             }
         });
     }
@@ -154,6 +159,13 @@ public class QSPanel extends ViewGroup {
         }
         updateResources();
         return mBrightnessSliderEnabled;
+    }
+
+    public void vibrateTile(int duration) {
+        if (!mVibrationEnabled) { return; }
+        if (mVibrator != null) {
+            if (mVibrator.hasVibrator()) { mVibrator.vibrate(duration); }
+        }
     }
 
     private void updateDetailText() {
@@ -384,6 +396,7 @@ public class QSPanel extends ViewGroup {
             public void onToggleStateChanged(boolean state) {
                 if (mDetailRecord == r) {
                     fireToggleStateChanged(state);
+                    vibrateTile(20);
                 }
             }
             @Override
@@ -404,18 +417,21 @@ public class QSPanel extends ViewGroup {
             @Override
             public void onClick(View v) {
                 r.tile.click();
+                vibrateTile(20);
             }
         };
         final View.OnClickListener clickSecondary = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 r.tile.secondaryClick();
+                vibrateTile(20);
             }
         };
         final View.OnLongClickListener longClick = new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 r.tile.longClick();
+                vibrateTile(20);
                 return true;
             }
         };
@@ -487,6 +503,7 @@ public class QSPanel extends ViewGroup {
                 @Override
                 public void onClick(View v) {
                     mHost.startActivityDismissingKeyguard(settingsIntent);
+                    vibrateTile(20);
                 }
             });
 
@@ -763,6 +780,9 @@ public class QSPanel extends ViewGroup {
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_USE_MAIN_TILES),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.QUICK_SETTINGS_TILES_VIBRATE),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -779,6 +799,9 @@ public class QSPanel extends ViewGroup {
                 1, UserHandle.USER_CURRENT) == 1;
             mUseMainTiles = Settings.System.getIntForUser(
             mContext.getContentResolver(), Settings.System.QS_USE_MAIN_TILES,
+                0, UserHandle.USER_CURRENT) == 1;
+            mVibrationEnabled = Settings.Secure.getIntForUser(
+            mContext.getContentResolver(), Settings.Secure.QUICK_SETTINGS_TILES_VIBRATE,
                 0, UserHandle.USER_CURRENT) == 1;
         }
     }
