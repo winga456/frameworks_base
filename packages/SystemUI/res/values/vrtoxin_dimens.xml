@@ -110,4 +110,11 @@
     <!-- Size of the Quick access bar buttons -->
     <dimen name="qab_button_size">64dp</dimen>
 
+    <dimen name="lockscreen_icon_side_padding">10dp</dimen>
+    <dimen name="lockscreen_icon_size">35dp</dimen>
+    <dimen name="phone_side_padding">10dp</dimen>
+    <dimen name="phone_bottom_padding">40dp</dimen>
+    <dimen name="phone_width">320dp</dimen>
+    <dimen name="phone_height">420dp</dimen>
+
 </resources>

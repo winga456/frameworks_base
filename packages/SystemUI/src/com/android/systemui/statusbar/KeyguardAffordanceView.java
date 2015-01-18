@@ -26,8 +26,11 @@ import android.content.res.ColorStateList;
 import android.graphics.Canvas;
 import android.graphics.CanvasProperty;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.provider.Settings;
 import android.util.AttributeSet;
@@ -85,6 +88,7 @@ public class KeyguardAffordanceView extends ImageView {
     private boolean mSupportHardware;
     private boolean mFinishing;
     private boolean mLaunchingAffordance;
+    private ColorFilter mDefaultFilter;
 
     private CanvasProperty<Float> mHwCircleRadius;
     private CanvasProperty<Float> mHwCenterX;
@@ -165,21 +169,58 @@ public class KeyguardAffordanceView extends ImageView {
         canvas.restore();
     }
 
+
+    @Override
+    public void setImageDrawable(Drawable drawable) {
+        super.setImageDrawable(drawable);
+    }
+
     public void setPreviewView(View v) {
         View oldPreviewView = mPreviewView;
         mPreviewView = v;
         if (mPreviewView != null) {
             mPreviewView.setVisibility(mLaunchingAffordance
                     ? oldPreviewView.getVisibility() : INVISIBLE);
+            mPreviewView.setVisibility(INVISIBLE);
+            addOverlay();
         }
     }
 
+    private void addOverlay() {
+        if (mPreviewView != null) {
+            mPreviewView.getOverlay().clear();
+            if (mDefaultFilter != null) {
+                ColorDrawable d = new ColorDrawable(mCircleColor);
+                d.setBounds(0, 0, mPreviewView.getWidth(), mPreviewView.getHeight());
+                mPreviewView.getOverlay().add(d);
+            }
+        }
+    }
+
+    public void setDefaultFilter(ColorFilter filter) {
+        mDefaultFilter = filter;
+        mCircleColor = Color.WHITE;
+        addOverlay();
+        updateIconColor();
+    }
+
     private void updateIconColor() {
+        if (getDrawable() == null) {
+            return;
+        }
         Drawable drawable = getDrawable().mutate();
         float alpha = mCircleRadius / mMinBackgroundRadius;
         alpha = Math.min(1.0f, alpha);
         int color = (int) mColorInterpolator.evaluate(alpha, mNormalColor, mInverseColor);
-        drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+        if (mDefaultFilter != null) {
+            if (alpha == 0) {
+                drawable.setColorFilter(mDefaultFilter);
+            } else {
+                drawable.setColorFilter(color, PorterDuff.Mode.DST_IN);
+            }
+        } else {
+            drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+        }
     }
 
     private void drawBackgroundCircle(Canvas canvas) {
@@ -562,5 +603,6 @@ public class KeyguardAffordanceView extends ImageView {
 
         mCirclePaint.setColor(mCircleColor);
         setImageTintList(ColorStateList.valueOf(mNormalColor));
+
     }
 }

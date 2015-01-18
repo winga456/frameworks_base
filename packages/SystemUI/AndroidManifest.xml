@@ -490,5 +490,14 @@
             android:singleUser="true"
             android:permission="android.permission.BIND_DREAM_SERVICE" />
 
+        <activity
+            android:name=".vrtoxin.LockscreenShortcutsActivity"
+            android:icon="@drawable/icon"
+            android:label="@string/lockscreen_targets_message"
+            android:theme="@android:style/Theme.Material.DayNight"
+            android:process="com.android.systemui"
+            android:exported="true">
+        </activity>
+
     </application>
 </manifest>

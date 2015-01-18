@@ -5979,6 +5979,12 @@ public final class Settings {
                 "mute_annoying_notifications_threshold";
 
         /**
+         * Lockscreen shortcuts
+         * @hide
+         */
+        public static final String LOCKSCREEN_TARGETS = "lockscreen_targets";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
