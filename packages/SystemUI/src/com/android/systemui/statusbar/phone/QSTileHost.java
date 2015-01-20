@@ -44,6 +44,7 @@ import com.android.systemui.qs.tiles.BrightnessTile;
 import com.android.systemui.qs.tiles.CastTile;
 import com.android.systemui.qs.tiles.CellularTile;
 import com.android.systemui.qs.tiles.ColorInversionTile;
+import com.android.systemui.qs.tiles.CompassTile;
 import com.android.systemui.qs.tiles.DndTile;
 import com.android.systemui.qs.tiles.ExpandedDesktopTile;
 import com.android.systemui.qs.tiles.FlashlightTile;
@@ -315,6 +316,8 @@ public class QSTileHost implements QSTile.Host {
 				return new MusicTile(this);
             case QSConstants.TILE_ADB_NETWORK:
 				return new AdbOverNetworkTile(this);
+            case QSConstants.TILE_COMPASS:
+				return new CompassTile(this);
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
         }
@@ -349,8 +352,58 @@ public class QSTileHost implements QSTile.Host {
         return tiles;
     }
 
+<<<<<<< HEAD
     private class Observer extends ContentObserver {
         private boolean mRegistered;
+=======
+    public void remove(String tile) {
+        MetricsLogger.action(getContext(), MetricsLogger.TUNER_QS_REMOVE, tile);
+        List<String> tiles = new ArrayList<>(mTileSpecs);
+        tiles.remove(tile);
+        setTiles(tiles);
+    }
+
+    public void setTiles(List<String> tiles) {
+        CMSettings.Secure.putStringForUser(getContext().getContentResolver(),
+                CMSettings.Secure.QS_TILES,
+                TextUtils.join(",", tiles), ActivityManager.getCurrentUser());
+    }
+
+    @Override
+    public void resetTiles() {
+        setEditing(false);
+        CMSettings.Secure.putStringForUser(getContext().getContentResolver(),
+                CMSettings.Secure.QS_TILES, "default", ActivityManager.getCurrentUser());
+    }
+
+    public static int getLabelResource(String spec) {
+        if (spec.equals("wifi")) return R.string.quick_settings_wifi_label;
+        else if (spec.equals("bt")) return R.string.quick_settings_bluetooth_label;
+        else if (spec.equals("inversion")) return R.string.quick_settings_inversion_label;
+        else if (spec.equals("cell")) return R.string.quick_settings_cellular_detail_title;
+        else if (spec.equals("airplane")) return R.string.airplane_mode;
+        else if (spec.equals("dnd")) return R.string.quick_settings_dnd_label;
+        else if (spec.equals("rotation")) return R.string.quick_settings_rotation_locked_label;
+        else if (spec.equals("flashlight")) return R.string.quick_settings_flashlight_label;
+        else if (spec.equals("location")) return R.string.quick_settings_location_label;
+        else if (spec.equals("cast")) return R.string.quick_settings_cast_title;
+        else if (spec.equals("hotspot")) return R.string.quick_settings_hotspot_label;
+        else if (spec.equals("edit")) return R.string.quick_settings_edit_label;
+        else if (spec.equals("adb_network")) return R.string.qs_tile_adb_over_network;
+        else if (spec.equals("compass")) return R.string.qs_tile_compass;
+        return 0;
+    }
+
+    void updateCustomTile(StatusBarPanelCustomTile sbc) {
+        if (mTiles.containsKey(sbc.getKey())) {
+            QSTile<?> tile = mTiles.get(sbc.getKey());
+            if (tile instanceof CustomQSTile) {
+                CustomQSTile qsTile = (CustomQSTile) tile;
+                qsTile.update(sbc);
+            }
+        }
+    }
+>>>>>>> 3187e88... SystemUI: port compass tile to cm-13.0
 
         public Observer() {
             super(new Handler(Looper.getMainLooper()));
