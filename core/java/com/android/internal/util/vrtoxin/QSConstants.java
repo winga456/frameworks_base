@@ -45,6 +45,7 @@ public class QSConstants {
     public static final String TILE_SCREEN_TIMEOUT = "screen_timeout";
     public static final String TILE_USB_TETHERING = "usb_tethering";
     public static final String TILE_AMBIENT_DISPLAY = "ambient_display";
+    public static final String TILE_NFC = "nfc";
 
     // Order matters
     protected static final ArrayList<String> TILES_DEFAULT = new ArrayList<String>();
@@ -80,5 +81,6 @@ public class QSConstants {
         TILES_AVAILABLE.add(TILE_SCREEN_TIMEOUT);
         TILES_AVAILABLE.add(TILE_USB_TETHERING);
         TILES_AVAILABLE.add(TILE_AMBIENT_DISPLAY);
+        TILES_AVAILABLE.add(TILE_NFC);
     }
 }

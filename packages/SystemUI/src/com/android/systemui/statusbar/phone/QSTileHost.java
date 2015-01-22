@@ -48,6 +48,7 @@ import com.android.systemui.qs.tiles.FlashlightTile;
 import com.android.systemui.qs.tiles.HotspotTile;
 import com.android.systemui.qs.tiles.IntentTile;
 import com.android.systemui.qs.tiles.LocationTile;
+import com.android.systemui.qs.tiles.NfcTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
 import com.android.systemui.qs.tiles.ScreenOffTile;
 import com.android.systemui.qs.tiles.ScreenshotTile;
@@ -292,6 +293,8 @@ public class QSTileHost implements QSTile.Host {
 				return new ScreenTimeoutTile(this);
             case QSConstants.TILE_AMBIENT_DISPLAY:
 				return new AmbientDisplayTile(this);
+            case QSConstants.TILE_NFC:
+				return new NfcTile(this);
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
         }
