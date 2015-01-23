@@ -71,7 +71,7 @@ public class ScreenTimeoutTile extends QSTile<ScreenTimeoutTile.TimeoutState> {
 
     @Override
     public int getMetricsCategory() {
-        return MetricsLogger.QS_SCREEN_TIMEOUT;
+        return MetricsLogger.VRTOXIN_QS_CONSTANTS;
     }
 
     private void populateList() {

@@ -275,7 +275,7 @@ public class ExpandedDesktopTile extends QSTile<QSTile.BooleanState> {
 
         @Override
         public int getMetricsCategory() {
-            return MetricsLogger.QS_EXPANDED_DESKTOP;
+            return MetricsLogger.VRTOXIN_QS_CONSTANTS;
         }
 
         @Override
