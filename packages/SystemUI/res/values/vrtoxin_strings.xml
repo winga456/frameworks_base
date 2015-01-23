@@ -214,4 +214,8 @@
     <string name="toggle">Toggle</string>
     <string name="shortcut_toggle_title">Action to perform</string>
 
+    <string name="quick_settings_network_adb_enabled_label">Enabled</string>
+    <string name="quick_settings_network_adb_disabled_label">Disabled</string>
+    <string name="qs_tile_adb_over_network">ADB Over Network</string>
+
 </resources>
