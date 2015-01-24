@@ -50,6 +50,7 @@ import com.android.systemui.qs.tiles.LocationTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
 import com.android.systemui.qs.tiles.ScreenOffTile;
 import com.android.systemui.qs.tiles.ScreenshotTile;
+import com.android.systemui.qs.tiles.ScreenTimeoutTile;
 import com.android.systemui.qs.tiles.VolumeTile;
 import com.android.systemui.qs.tiles.WifiTile;
 import com.android.systemui.qs.tiles.VRToxinTile;
@@ -240,6 +241,7 @@ public class QSTileHost implements QSTile.Host {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     private QSTile<?> createTile(String tileSpec) {
         if (tileSpec.startsWith(IntentTile.PREFIX)) {
             return IntentTile.create(this, tileSpec);
@@ -285,6 +287,8 @@ public class QSTileHost implements QSTile.Host {
 				return new VolumeTile(this);
             case QSConstants.TILE_EXPANDED_DESKTOP:
 				return new ExpandedDesktopTile(this);
+            case QSConstants.TILE_SCREEN_TIMEOUT:
+				return new ScreenTimeoutTile(this);
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
         }
