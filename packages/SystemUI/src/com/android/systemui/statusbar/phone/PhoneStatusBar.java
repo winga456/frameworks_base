@@ -120,6 +120,7 @@ import com.android.internal.util.vrtoxin.DeviceUtils;
 import com.android.internal.util.vrtoxin.ActionConfig;
 import com.android.internal.util.vrtoxin.ActionConstants;
 import com.android.internal.util.vrtoxin.ActionHelper;
+import com.android.internal.util.vrtoxin.WeatherControllerImpl;
 
 import com.android.keyguard.CarrierText;
 import com.android.keyguard.KeyguardHostView.OnDismissAction;
