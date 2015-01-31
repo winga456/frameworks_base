@@ -48,6 +48,7 @@ public class QSConstants {
     public static final String TILE_NFC = "nfc";
     public static final String TILE_HEADSUP = "headsup";
     public static final String TILE_REBOOT = "reboot";
+    public static final String TILE_SYNC = "sync";
 
     // Order matters
     protected static final ArrayList<String> TILES_DEFAULT = new ArrayList<String>();
@@ -86,5 +87,6 @@ public class QSConstants {
         TILES_AVAILABLE.add(TILE_NFC);
         TILES_AVAILABLE.add(TILE_HEADSUP);
         TILES_AVAILABLE.add(TILE_REBOOT);
+        TILES_AVAILABLE.add(TILE_SYNC);
     }
 }
