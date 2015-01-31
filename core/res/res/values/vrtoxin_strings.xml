@@ -97,6 +97,9 @@
     <string name="global_actions_toggle_floating_windows_mode">Floating Windows</string>
     <string name="global_action_restart">Restart SystemUI</string>
 
+    <!-- label for current user in phone options dialog -->
+    <string name="global_action_current_user">Current</string>
+
     <!-- Slimseekbar -->
     <string name="default_string">Default</string>
 
