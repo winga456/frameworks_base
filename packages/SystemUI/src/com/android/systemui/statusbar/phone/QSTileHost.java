@@ -52,6 +52,7 @@ import com.android.systemui.qs.tiles.ScreenOffTile;
 import com.android.systemui.qs.tiles.ScreenshotTile;
 import com.android.systemui.qs.tiles.ScreenTimeoutTile;
 import com.android.systemui.qs.tiles.VolumeTile;
+import com.android.systemui.qs.tiles.UsbTetherTile;
 import com.android.systemui.qs.tiles.WifiTile;
 import com.android.systemui.qs.tiles.VRToxinTile;
 import com.android.systemui.statusbar.policy.BluetoothController;
@@ -285,6 +286,8 @@ public class QSTileHost implements QSTile.Host {
             case QSConstants.TILE_EXPANDED_DESKTOP:
 				return new ExpandedDesktopTile(this);
             case QSConstants.TILE_SCREEN_TIMEOUT:
+				return new ScreenTimeoutTile(this);
+            case QSConstants.TILE_USB_TETHER:
 				return new ScreenTimeoutTile(this);
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);

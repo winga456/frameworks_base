@@ -32,9 +32,6 @@
     <string name="pie_phone_status_airplane_mode">Airplane mode on</string>
     <string name="pie_phone_status_emergency_only">Emergency calls only</string>
 
-    <!-- Quick Settings Tiles -->
-    <string name="quick_settings_vrtoxin_on">VRToxinMods</string>
-
     <!-- App sidebar -->
     <string name="default_folder_text">Folder</string>
     <string name="title_activity_sidebar_configuration">Appbar content setup</string>
@@ -44,7 +41,7 @@
     <string name="content_setup_dismiss">Continue</string>
     <string name="toast_not_installed">App is not installed</string>
 
-    <!-- Smart PullDown Warning -->
+    <!-- Smart PullDown Warning --><<<
     <string name="smart_pulldown_disabled">Smart pulldown is disabled</string>
 
     <!-- The text for the button in the notification window-shade that clears
@@ -57,6 +54,8 @@
     <string name="quick_settings_screenshot_label">Screenshot</string>
     <string name="quick_settings_volume_panel_label">Volume Panel</string>
     <string name="quick_settings_screen_timeout_label">Screen Timeout</string>
+    <string name="quick_settings_usb_tether_label">USB tethering</string>
+    <string name="quick_settings_vrtoxin_on">VRToxinMods</string>
 
     <!-- Expanded desktop tile -->
     <string name="quick_settings_expanded_desktop_label">Expanded desktop</string>
@@ -70,5 +69,15 @@
 
     <!-- Announcement made when the screen timeout tile changes (not shown on the screen). [CHAR LIMIT=NONE] -->
     <string name="accessibility_quick_settings_screen_timeout_changed">Screen timeout changed to <xliff:g id="timeout" example="30 seconds">%s</xliff:g>.</string>
+
+    <!-- Content description of the USB tethering tile in quick settings when off (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_usb_tether_off">USB tethering off.</string>
+    <!-- Content description of the USB tethering tile in quick settings when on (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_usb_tether_on">USB tethering on.</string>
+
+    <!-- Announcement made when USB tethering changes to off (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_usb_tether_changed_off">USB tethering turned off.</string>
+    <!-- Announcement made when USB tethering changes to on (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_usb_tether_changed_on">USB tethering turned on.</string>
 
 </resources>
