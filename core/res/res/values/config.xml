@@ -2378,8 +2378,6 @@
     <!-- The list of components which should be automatically disabled. -->
     <string-array name="config_disabledComponents" translatable="false">
     </string-array>
-<<<<<<< HEAD
-=======
 
     <!-- The list of components which should be forced to be enabled. -->
     <string-array name="config_forceEnabledComponents" translatable="false">
@@ -2396,5 +2394,4 @@
     <!-- Boolean to enable Stylus gestures -->
     <bool name="config_stylusGestures">false</bool>
 
->>>>>>> 034b71e... SystemUpdateService: enable service but lock its receivers [1/2]
 </resources>
