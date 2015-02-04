@@ -28,6 +28,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.DisplayListCanvas;
 import android.view.RenderNodeAnimator;
@@ -57,8 +58,8 @@ public class KeyguardAffordanceView extends ImageView {
     private final Paint mCirclePaint;
     private final Interpolator mAppearInterpolator;
     private final Interpolator mDisappearInterpolator;
-    private final int mInverseColor;
-    private final int mNormalColor;
+    private int mInverseColor;
+    private int mNormalColor;
     private final ArgbEvaluator mColorInterpolator;
     private final FlingAnimationUtils mFlingAnimationUtils;
     private float mCircleRadius;
@@ -129,11 +130,9 @@ public class KeyguardAffordanceView extends ImageView {
         super(context, attrs, defStyleAttr, defStyleRes);
         mCirclePaint = new Paint();
         mCirclePaint.setAntiAlias(true);
-        mCircleColor = 0xffffffff;
-        mCirclePaint.setColor(mCircleColor);
 
-        mNormalColor = 0xffffffff;
-        mInverseColor = 0xff000000;
+        int iconColor = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.LOCK_SCREEN_ICON_COLOR, 0xffffffff);
         mMinBackgroundRadius = mContext.getResources().getDimensionPixelSize(
                 R.dimen.keyguard_affordance_min_background_radius);
         mAppearInterpolator = AnimationUtils.loadInterpolator(mContext,
@@ -142,6 +141,8 @@ public class KeyguardAffordanceView extends ImageView {
                 android.R.interpolator.fast_out_linear_in);
         mColorInterpolator = new ArgbEvaluator();
         mFlingAnimationUtils = new FlingAnimationUtils(mContext, 0.3f);
+
+        updateColorSettings(iconColor);
     }
 
     @Override
@@ -550,5 +551,29 @@ public class KeyguardAffordanceView extends ImageView {
 
     public void setLaunchingAffordance(boolean launchingAffordance) {
         mLaunchingAffordance = launchingAffordance;
+    }
+
+    public void updateColorSettings() {
+        updateColorSettings(mNormalColor);
+    }
+
+    public void updateColorSettings(int color) {
+        mCircleColor = color;
+        mNormalColor = color;
+        mInverseColor = isColorDark(color) ? 0xffffffff : 0xff000000;
+
+        mCirclePaint.setColor(mCircleColor);
+        updateIconColor();
+    }
+
+    private boolean isColorDark(int color) {
+        double a = 1- (0.299 * Color.red(color)
+                + 0.587 * Color.green(color)
+                + 0.114 * Color.blue(color)) / 255;
+        if (a < 0.5) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }

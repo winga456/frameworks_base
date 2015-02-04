@@ -473,6 +473,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             super.observe();
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LOCK_SCREEN_TEXT_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LOCK_SCREEN_ICON_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -630,6 +636,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 || uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_CARRIER_LABEL_NUMBER_OF_NOTIFICATION_ICONS))) {
                 setCarrierLabelVisibility();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.LOCK_SCREEN_TEXT_COLOR))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.LOCK_SCREEN_ICON_COLOR))) {
+                setKeyguardTextAndIconColors();
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_CARRIER_LABEL_SHOW_ON_LOCK_SCREEN))) {
                 setLockScreenCarrierLabelVisibility();
@@ -1561,6 +1572,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         setCarrierLabelVisibility();
         setLockScreenCarrierLabelVisibility();
         setWeatherTempVisibility();
+        setKeyguardTextAndIconColors();
         updateBatteryLevelTextColor();
         setVRToxinLogoVisibility();
 
@@ -2549,6 +2561,19 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     }
 
+    public void setKeyguardTextAndIconColors() {
+        int textColor =
+                Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.LOCK_SCREEN_TEXT_COLOR, 0xffffffff);
+        int iconColor =
+                Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.LOCK_SCREEN_ICON_COLOR, 0xffffffff);
+        if (mKeyguardBottomArea != null) {
+            mKeyguardBottomArea.updateTextColor(textColor);
+            mKeyguardBottomArea.updateIconColor(iconColor);
+        }
+    }
+
     private void setVRToxinLogoVisibility() {
         final ContentResolver resolver = mContext.getContentResolver();
 
@@ -2614,6 +2639,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private void updateBatteryLevelTextColor() {
         if (mBatteryLevel != null) {
             mBatteryLevel.setTextColor(false);
+        }
+        if (mKeyguardStatusBar != null) {
+            mKeyguardStatusBar.setBatteryLevelTextColor();
         }
     }
 
