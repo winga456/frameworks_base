@@ -4008,6 +4008,12 @@ public final class Settings {
         public static final String KEY_MENU_LONG_PRESS_ACTION = "key_menu_long_press_action";
 
         /**
+         * volume answer.
+         * @hide
+         */
+        public static final String ANSWER_VOLUME_BUTTON_BEHAVIOR_ANSWER = "call_volume_answer";
+
+        /**
          * Action to perform when the menu key is double tapped. (default: ACTION_NULL)
          * (See ButtonsConstants.java for valid values)
          * @hide
@@ -11535,3 +11541,4 @@ public final class Settings {
         return packages[0];
     }
 }
+
