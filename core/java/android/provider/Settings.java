@@ -4663,6 +4663,15 @@ public final class Settings {
         public static final String STATUS_BAR_DATE_FORMAT = "status_bar_date_format";
 
         /**
+         * Sets the date string style
+         * 0 - Regular style
+         * 1 - Lowercase
+         * 2 - Uppercase
+         * @hide
+         */
+        public static final String STATUS_BAR_DATE_STYLE = "status_bar_date_style";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
