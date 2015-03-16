@@ -220,7 +220,6 @@
   <java-symbol type="id" name="profile_badge_line2" />
   <java-symbol type="id" name="profile_badge_line3" />
   <java-symbol type="id" name="transitionPosition" />
-  <java-symbol type="id" name="filtered_item_container" />
 
   <java-symbol type="attr" name="actionModeShareDrawable" />
   <java-symbol type="attr" name="alertDialogCenterButtons" />
@@ -2341,8 +2340,5 @@
   <java-symbol type="dimen" name="edge_gesture_trigger_thickness" />
 
   <java-symbol type="bool" name="config_samsung_stk" />
-
-  <!-- Package Manager -->
-  <java-symbol type="array" name="config_disabledComponents" />
 
 </resources>
