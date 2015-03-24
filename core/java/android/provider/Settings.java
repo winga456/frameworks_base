@@ -5469,6 +5469,72 @@ public final class Settings {
         public static final String VOLUME_LINK_NOTIFICATION = "volume_link_notification";
 
         /**
+         * Enable/disable overwrite default value for ambient display
+         * @hide
+         */
+        public static final String DOZE_OVERWRITE_VALUE = "doze_overwrite_value";
+
+        /**
+         * Duration in for ambient display
+         * @hide
+         */
+        public static final String DOZE_PULSE_DURATION_IN = "doze_pulse_duration_in";
+
+        /**
+         * Duration visible for ambient display
+         * @hide
+         */
+        public static final String DOZE_PULSE_DURATION_VISIBLE = "doze_pulse_duration_visible";
+
+        /**
+         * Duration out for ambient display
+         * @hide
+         */
+        public static final String DOZE_PULSE_DURATION_OUT = "doze_pulse_duration_out";
+
+        /**
+         * Pulse if there is notifications for ambient display
+         * @hide
+         */
+        public static final String DOZE_PULSE_ON_NOTIFICATIONS = "doze_pulse_on_notifications";
+
+        /**
+         * Shake threshold for ambient display
+         * @hide
+         */
+        public static final String DOZE_SHAKE_ACC_THRESHOLD = "doze_shake_acc_threshold";
+
+        /**
+         * Pocket mode for ambient display
+         * @hide
+         */
+        public static final String DOZE_POCKET_MODE = "doze_pocket_mode";
+
+        /**
+         * Shake mode for ambient display
+         * @hide
+         */
+        public static final String DOZE_SHAKE_MODE = "doze_shake_mode";
+
+        /**
+         * Time mode for ambient display
+         * @hide
+         */
+        public static final String DOZE_TIME_MODE = "doze_time_mode";
+
+        /**
+         * Brigthness level for ambient display
+         * @hide
+         */
+        public static final String DOZE_BRIGHTNESS = "doze_brightness";
+
+        /**
+         * Auto brigthness for ambient display
+         * @hide
+         */
+        public static final String DOZE_AUTO_BRIGHTNESS = "doze_auto_brightness";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -7776,6 +7842,12 @@ public final class Settings {
          * @hide
          */
         public static final String DOZE_ENABLED = "doze_enabled";
+
+        /**
+         * Whether the device should color invert notifications when doze if enabled.
+         * @hide
+         */
+        public static final String DOZE_NOTIFICATION_INVERT_ENABLED = "doze_notification_invert_enabled";
 
         /**
          * The current night mode that has been selected by the user.  Owned
