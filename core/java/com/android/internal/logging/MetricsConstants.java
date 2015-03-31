@@ -269,6 +269,8 @@ public interface MetricsConstants {
     // Come On Come On Get The Fuck Off My Shit Bitch
     public static final int VRTOXIN_SHIT = 420;
 
+    public static final int VRTOXIN_QS_CONSTANTS = 999;
+
     //aliases
     public static final int DEVICEINFO_STORAGE = DEVICEINFO_MEMORY;
 }

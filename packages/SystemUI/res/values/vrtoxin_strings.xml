@@ -32,4 +32,7 @@
     <string name="pie_phone_status_airplane_mode">Airplane mode on</string>
     <string name="pie_phone_status_emergency_only">Emergency calls only</string>
 
+    <!-- Quick Settings Tiles -->
+    <string name="quick_settings_vrtoxin_on">VRToxinMods</string>
+
 </resources>
