@@ -72,6 +72,7 @@ import com.android.systemui.qs.tiles.ScreenTimeoutTile;
 import com.android.systemui.qs.tiles.SlimFloatsTile;
 import com.android.systemui.qs.tiles.SlimPieTile;
 import com.android.systemui.qs.tiles.VolumeTile;
+import com.android.systemui.qs.tiles.SoundTile;
 import com.android.systemui.qs.tiles.UsbTetherTile;
 import com.android.systemui.qs.tiles.STweaksTile;
 import com.android.systemui.qs.tiles.SyncTile;
@@ -367,6 +368,8 @@ public class QSTileHost implements QSTile.Host {
                 return new PowerMenuTile(this);
             case QSConstants.TILE_VRTUPDATER:
                 return new VRTUpdaterTile(this);
+            case QSConstants.TILE_SOUNDS:
+                return new SoundTile(this);
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
         }

@@ -31,7 +31,6 @@ public class QSConstants {
     public static final String TILE_LOCATION = "location";
     public static final String TILE_CAST = "cast";
     public static final String TILE_HOTSPOT = "hotspot";
-    public static final String TILE_NOTIFICATIONS = "notifications";
     public static final String TILE_DATA = "data";
     public static final String TILE_ROAMING = "roaming";
     public static final String TILE_DND = "dnd";
@@ -74,6 +73,7 @@ public class QSConstants {
     public static final String TILE_THEMES = "themes";
     public static final String TILE_KERNEL_ADIUTOR = "kernel_adiutor";
     public static final String TILE_VRTUPDATER = "vrtupdater";
+    public static final String TILE_SOUNDS = "sounds";
 
     protected static final ArrayList<String> STATIC_TILES_AVAILABLE = new ArrayList<String>();
     protected static final ArrayList<String> TILES_AVAILABLE = new ArrayList<String>();
@@ -89,7 +89,6 @@ public class QSConstants {
         STATIC_TILES_AVAILABLE.add(TILE_CAST);
         STATIC_TILES_AVAILABLE.add(TILE_INVERSION);
         STATIC_TILES_AVAILABLE.add(TILE_HOTSPOT);
-        STATIC_TILES_AVAILABLE.add(TILE_NOTIFICATIONS);
         STATIC_TILES_AVAILABLE.add(TILE_DATA);
         STATIC_TILES_AVAILABLE.add(TILE_ROAMING);
         STATIC_TILES_AVAILABLE.add(TILE_DND);
@@ -126,6 +125,7 @@ public class QSConstants {
         STATIC_TILES_AVAILABLE.add(TILE_SLIMACTION);
         STATIC_TILES_AVAILABLE.add(TILE_POWERMENU);
         STATIC_TILES_AVAILABLE.add(TILE_VRTUPDATER);
+        STATIC_TILES_AVAILABLE.add(TILE_SOUNDS);
 
         TILES_AVAILABLE.addAll(STATIC_TILES_AVAILABLE);
     }
