@@ -56,6 +56,7 @@
     <string name="quick_settings_screen_timeout_label">Screen Timeout</string>
     <string name="quick_settings_usb_tether_label">USB tethering</string>
     <string name="quick_settings_vrtoxin_on">VRToxinMods</string>
+    <string name="quick_settings_ambient_display_label">Ambient Display</string>
 
     <!-- Expanded desktop tile -->
     <string name="quick_settings_expanded_desktop_label">Expanded desktop</string>
@@ -79,5 +80,15 @@
     <string name="accessibility_quick_settings_usb_tether_changed_off">USB tethering turned off.</string>
     <!-- Announcement made when USB tethering changes to on (not shown on the screen). [CHAR LIMIT=NONE] -->
     <string name="accessibility_quick_settings_usb_tether_changed_on">USB tethering turned on.</string>
+
+    <!-- Content description of the ambient display tile in quick settings when off (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_ambient_display_off">Ambient Display off.</string>
+    <!-- Content description of the ambient display tile in quick settings when on (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_ambient_display_on">Ambient Display on.</string>
+
+    <!-- Announcement made when ambient display changes to off (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_ambient_display_changed_off">Ambient Display turned off.</string>
+    <!-- Announcement made when ambient display changes to on (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_ambient_display_changed_on">Ambient Display turned on.</string>
 
 </resources>

@@ -36,6 +36,7 @@ import com.android.internal.util.vrtoxin.QSUtils;
 import com.android.systemui.R;
 import com.android.systemui.qs.QSTile;
 import com.android.systemui.qs.tiles.AirplaneModeTile;
+import com.android.systemui.qs.tiles.AmbientDisplayTile;
 import com.android.systemui.qs.tiles.BluetoothTile;
 import com.android.systemui.qs.tiles.BrightnessTile;
 import com.android.systemui.qs.tiles.CastTile;
@@ -289,6 +290,8 @@ public class QSTileHost implements QSTile.Host {
 				return new ScreenTimeoutTile(this);
             case QSConstants.TILE_USB_TETHER:
 				return new ScreenTimeoutTile(this);
+            case QSConstants.TILE_AMBIENT_DISPLAY:
+				return new AmbientDisplayTile(this);
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
         }
