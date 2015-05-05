@@ -160,4 +160,6 @@
     <string name="shake_to_clean_notifications_title">Shake To Clear Notifications</string>
     <string name="shake_to_clean_notifications_message">Would you like to clear the Expanded Notifications by shaking the phone? Enabling it might drain your battery!</string>
 
+    <string name="gestures_message">Draw your gesture here</string>
+
 </resources>
