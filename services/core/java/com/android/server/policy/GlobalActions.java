@@ -99,6 +99,8 @@ import com.vrtoxin.util.Helpers;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.android.internal.util.vrtoxin.OnTheGoActions;
+
 /**
  * Helper to show the global actions dialog.  Each item is an {@link Action} that
  * may show depending on whether the keyguard is showing, and whether the device
@@ -291,8 +293,12 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 PowerMenuHelper.getPowerMenuConfig(mContext);
 
         mItems = new ArrayList<Action>();
-
         for (final ActionConfig config : powerMenuConfig) {
+
+            // On-The-Go, if enabled
+            boolean showOnTheGo = Settings.System.getBoolean(mContext.getContentResolver(),
+                    Settings.System.POWER_MENU_ONTHEGO_ENABLED, false);
+
             if (config.getClickAction().equals(PowerMenuConstants.ACTION_POWER_OFF)) {
                 mItems.add(getPowerAction());
             } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_REBOOT)) {
@@ -330,6 +336,10 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 mItems.add(getScreenRecordAction());
             } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_SCREENSHOT)) {
                 mItems.add(getScreenshotAction());
+            } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_ONTHEGO)) {
+                if (showOnTheGo) {
+                    mItems.add(getOnTheGoAction());
+                }
             } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_SOUND) && mShowSilentToggle) {
                 if (!mHasVibrator) {
                     mSilentModeAction = new SilentModeToggleAction();
@@ -823,6 +833,27 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             public boolean showBeforeProvisioning() {
                 return true;
             }
+        };
+    }
+
+    private Action getOnTheGoAction() {
+        return new SinglePressAction(com.android.internal.R.drawable.ic_lock_onthego, R.string.global_action_onthego) {
+
+             @Override
+             public void onPress() {
+                 OnTheGoActions.processAction(mContext,
+                         OnTheGoActions.ACTION_ONTHEGO_TOGGLE);
+             }
+
+             @Override
+             public boolean showDuringKeyguard() {
+                 return true;
+             }
+
+             @Override
+             public boolean showBeforeProvisioning() {
+                 return true;
+             }
         };
     }
 

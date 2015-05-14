@@ -109,7 +109,9 @@
   <java-symbol type="string" name="global_actions_appcirclebar_mode_on_status" />
   <java-symbol type="string" name="global_actions_appcirclebar_mode_off_status" />
   <java-symbol type="drawable" name="ic_lock_appcirclebar" />
-
+<!-- On-The-Go -->
+  <java-symbol type="string" name="global_action_onthego" />
+  <java-symbol type="drawable" name="ic_lock_onthego" />
   <!-- AppSideBar controls -->
   <java-symbol type="string" name="global_actions_toggle_appsidebar_mode" />
   <java-symbol type="string" name="global_actions_appsidebar_mode_on_status" />
@@ -252,5 +254,9 @@
 
   <!-- Quick Settings tile defaults -->
   <java-symbol type="string" name="config_defaultQuickSettingsTiles" />
+
+  <!-- On-The-Go -->
+  <java-symbol type="string" name="global_action_onthego" />
+  <java-symbol type="drawable" name="ic_lock_onthego" />
 
 </resources>
