@@ -2540,6 +2540,7 @@ public class NotificationStackScrollLayout extends ViewGroup
     }
 
     public void updateEmptyShadeView(boolean visible) {
+        if (mEmptyShadeView == null) return;
         int oldVisibility = mEmptyShadeView.willBeGone() ? GONE : mEmptyShadeView.getVisibility();
         int newVisibility = visible ? VISIBLE : GONE;
         if (!mForceShadeView) {
