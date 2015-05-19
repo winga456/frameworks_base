@@ -192,7 +192,6 @@ public class Action {
                         Settings.System.NAVIGATION_BAR_SHOW,
                         navBarState ? 0 : 1, UserHandle.USER_CURRENT);
                 return;
-*/
             } else if (action.equals(ActionConstants.ACTION_VOICE_SEARCH)) {
                 // launch the search activity
                 Intent intent = new Intent(Intent.ACTION_SEARCH_LONG_PRESS);
@@ -379,7 +378,7 @@ public class Action {
         return context.getResources().getBoolean(
                 com.android.internal.R.bool.config_showNavigationBar);
     }
-*/
+
     public static boolean isActionKeyEvent(String action) {
         if (action.equals(ActionConstants.ACTION_HOME)
                 || action.equals(ActionConstants.ACTION_BACK)
