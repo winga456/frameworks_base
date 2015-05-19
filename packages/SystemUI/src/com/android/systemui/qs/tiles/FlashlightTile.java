@@ -27,11 +27,11 @@ import com.android.systemui.statusbar.policy.FlashlightController;
 public class FlashlightTile extends QSTile<QSTile.BooleanState> implements
         FlashlightController.FlashlightListener {
 
-    private final AnimationIcon mEnable
-            = new AnimationIcon(R.drawable.ic_signal_flashlight_enable_animation);
-    private final AnimationIcon mDisable
-            = new AnimationIcon(R.drawable.ic_signal_flashlight_disable_animation);
-    private final FlashlightController mFlashlightController;
+//    private final AnimationIcon mEnable
+//            = new AnimationIcon(R.drawable.ic_signal_flashlight_enable_animation);
+//    private final AnimationIcon mDisable
+//            = new AnimationIcon(R.drawable.ic_signal_flashlight_disable_animation);
+//    private final FlashlightController mFlashlightController;
 
     public FlashlightTile(Host host) {
         super(host);
@@ -82,9 +82,8 @@ public class FlashlightTile extends QSTile<QSTile.BooleanState> implements
         } else {
             state.value = mFlashlightController.isEnabled();
         }
-        final AnimationIcon icon = state.value ? mEnable : mDisable;
-        icon.setAllowAnimation(arg instanceof UserBoolean && ((UserBoolean) arg).userInitiated);
-        state.icon = icon;
+        state.icon = ResourceIcon.get(state.value ? R.drawable.ic_qs_flashlight_on
+                : R.drawable.ic_qs_flashlight_off);
         int onOrOffId = state.value
                 ? R.string.accessibility_quick_settings_flashlight_on
                 : R.string.accessibility_quick_settings_flashlight_off;

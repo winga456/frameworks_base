@@ -29,10 +29,11 @@ import com.android.systemui.statusbar.policy.HotspotController;
 
 /** Quick settings tile: Hotspot **/
 public class HotspotTile extends QSTile<QSTile.BooleanState> {
-    private final AnimationIcon mEnable =
-            new AnimationIcon(R.drawable.ic_hotspot_enable_animation);
-    private final AnimationIcon mDisable =
-            new AnimationIcon(R.drawable.ic_hotspot_disable_animation);
+//    private final AnimationIcon mEnable =
+//            new AnimationIcon(R.drawable.ic_hotspot_enable_animation);
+//    private final AnimationIcon mDisable =
+//            new AnimationIcon(R.drawable.ic_hotspot_disable_animation);
+
     private final HotspotController mController;
     private final Callback mCallback = new Callback();
     private final UsageTracker mUsageTracker;
@@ -69,8 +70,8 @@ public class HotspotTile extends QSTile<QSTile.BooleanState> {
         final boolean isEnabled = (Boolean) mState.value;
         MetricsLogger.action(mContext, getMetricsCategory(), !isEnabled);
         mController.setHotspotEnabled(!isEnabled);
-        mEnable.setAllowAnimation(true);
-        mDisable.setAllowAnimation(true);
+//        mEnable.setAllowAnimation(true);
+//        mDisable.setAllowAnimation(true);
     }
 
     @Override
@@ -96,7 +97,8 @@ public class HotspotTile extends QSTile<QSTile.BooleanState> {
         } else {
             state.value = mController.isHotspotEnabled();
         }
-        state.icon = state.visible && state.value ? mEnable : mDisable;
+        state.icon = ResourceIcon.get(state.visible && state.value ? R.drawable.ic_qs_hotspot_on
+                : R.drawable.ic_qs_hotspot_off);
     }
 
     @Override
