@@ -53,6 +53,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView.OnItemClickListener;
+
+import com.android.internal.util.vrtoxin.ColorHelper;
+
 import libcore.util.Objects;
 
 import java.lang.annotation.ElementType;
@@ -1667,7 +1670,7 @@ public class RemoteViews implements Parcelable, Filter {
             Drawable d = drawables[index];
             if (d != null) {
                 d.mutate();
-                d.setColorFilter(color, mode);
+                d.setColorFilter(ColorHelper.getColorFilter(color));
             }
         }
 
