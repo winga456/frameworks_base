@@ -4704,6 +4704,12 @@ public final class Settings {
         public static final String STATUSBAR_CLOCK_FONT_SIZE = "statusbar_clock_font_size";
 
         /**
+         * Network stats Color style
+         * @hide
+         */
+        public static final String NETWORK_TRAFFIC_HIDE_ARROW = "network_traffic_hide_arrow";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
