@@ -109,7 +109,6 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     private LinearLayout mSystemIcons;
     private SignalClusterView mSignalCluster;
     private View mSettingsButton;
-    private View mTaskManagerButton;
     private View mQsDetailHeader;
     private TextView mQsDetailHeaderTitle;
     private Switch mQsDetailHeaderSwitch;
@@ -142,6 +141,10 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     // HeadsUp button
     private View mVRToxinButton;
     private boolean mShowVRToxinButton;
+
+    // Task manager
+    private boolean mShowTaskManager;
+    private View mTaskManagerButton;
 
     /**
      * In collapsed QS, the clock is scaled down a bit post-layout to allow for a nice
@@ -224,10 +227,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mPowerMenuButton = (ImageView) findViewById(R.id.power_menu_button);
         mPowerMenuButton.setOnClickListener(this);
         mPowerMenuButton.setOnLongClickListener(this);
-        if (Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.ENABLE_TASK_MANAGER, 0) == 1) {
-            mTaskManagerButton = findViewById(R.id.task_manager_button);
-        }
+        mTaskManagerButton = findViewById(R.id.task_manager_button);
         mQsDetailHeader = findViewById(R.id.qs_detail_header);
         mQsDetailHeader.setAlpha(0);
         mQsDetailHeaderTitle = (TextView) mQsDetailHeader.findViewById(android.R.id.title);
@@ -431,7 +431,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mAlarmStatus.setVisibility(mExpanded && mAlarmShowing ? View.VISIBLE : View.INVISIBLE);
         mSettingsButton.setVisibility(mExpanded ? View.VISIBLE : View.INVISIBLE);
         if (mTaskManagerButton != null) {
-            mTaskManagerButton.setVisibility(mExpanded ? View.VISIBLE : View.GONE);
+            mTaskManagerButton.setVisibility(mExpanded && mShowTaskManager ? View.VISIBLE : View.GONE);
         }
         mQsDetailHeader.setVisibility(mExpanded && mShowingDetail ? View.VISIBLE : View.GONE);
         if (mSignalCluster != null) {
@@ -1065,6 +1065,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         applyAlpha(mBatteryLevel, values.batteryLevelAlpha);
         applyAlpha(mSettingsButton, values.settingsAlpha);
         applyAlpha(mTaskManagerButton, values.taskManagerAlpha);
+        applyAlpha(mTaskManagerButton, values.settingsAlpha);
         applyAlpha(mWeatherLine1, values.settingsAlpha);
         applyAlpha(mWeatherLine2, values.settingsAlpha);
         applyAlpha(mVRToxinButton, values.vrtoxinAlpha);
@@ -1347,6 +1348,9 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_EXPANDED_HEADER_STROKE_DASH_GAP),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.ENABLE_TASK_MANAGER),
+                    false, this, UserHandle.USER_ALL);
             updateSettings();
         }
 
@@ -1431,8 +1435,10 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 || uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_EXPANDED_HEADER_STROKE_DASH_GAP))) {
                 setSBEHStroke();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.ENABLE_TASK_MANAGER))) {
+                updateTaskManager();
             }
-
         }
 
         void updateSettings() {
@@ -1455,6 +1461,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             updateClockColor();
             updateDateColor();
             setSBEHStroke();
+            updateTaskManager();
         }
     }
 
@@ -1553,6 +1560,12 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mShowVRToxinButton = Settings.System.getInt(resolver,
                 Settings.System.VRTOXIN_BUTTON, 1) == 1;
         updateVRToxinButtonVisibility();
+    }
+
+    private void updateTaskManager() {
+        ContentResolver resolver = mContext.getContentResolver();
+        mShowTaskManager = Settings.System.getInt(resolver,
+                Settings.System.ENABLE_TASK_MANAGER, 1) == 1;
     }
 
     private void updateWeatherSettings() {

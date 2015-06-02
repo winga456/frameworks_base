@@ -115,7 +115,6 @@ public class NotificationPanelView extends PanelView implements
     private QSContainer mQsContainer;
     private QuickAccessBar mQSBar;
     private QSPanel mQsPanel;
-    private LinearLayout mTaskManagerPanel;
     private KeyguardStatusView mKeyguardStatusView;
     private ExpansionViewController mExpansionViewController;
     private ObservableScrollView mScrollView;
@@ -256,6 +255,10 @@ public class NotificationPanelView extends PanelView implements
     private int mCustomCornerRadius;
     private int mCustomDashWidth;
     private int mCustomDashGap;
+
+    // Task manager
+    private boolean mShowTaskManager;
+    private LinearLayout mTaskManagerPanel;
 
     public NotificationPanelView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -1604,8 +1607,7 @@ public class NotificationPanelView extends PanelView implements
     }
 
     public void setTaskManagerVisibility(boolean mTaskManagerShowing) {
-        if (Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.ENABLE_TASK_MANAGER, 0) == 1) {
+        if (mShowTaskManager) {
             cancelAnimation();
             boolean expandVisually = mQsExpanded || mStackScrollerOverscrolling;
             mQsPanel.setVisibility(expandVisually && !mTaskManagerShowing
@@ -2545,7 +2547,6 @@ public class NotificationPanelView extends PanelView implements
         } else if (source == StatusBarManager.CAMERA_LAUNCH_SOURCE_WIGGLE) {
             mLastCameraLaunchSource = KeyguardBottomAreaView.CAMERA_LAUNCH_SOURCE_WIGGLE;
         } else {
-
             // Default.
             mLastCameraLaunchSource = KeyguardBottomAreaView.CAMERA_LAUNCH_SOURCE_AFFORDANCE;
         }
@@ -2658,6 +2659,8 @@ public class NotificationPanelView extends PanelView implements
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_STROKE_DASH_GAP),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.ENABLE_TASK_MANAGER), false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -2724,6 +2727,8 @@ public class NotificationPanelView extends PanelView implements
                     Settings.System.QS_STROKE_DASH_WIDTH, 0);
             mCustomDashGap = Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.QS_STROKE_DASH_GAP, 10);
+            mShowTaskManager = Settings.System.getIntForUser(resolver,
+                    Settings.System.ENABLE_TASK_MANAGER, 1, UserHandle.USER_CURRENT) == 1;
 
             setQSStroke();
             setQSType();
