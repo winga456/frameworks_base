@@ -415,7 +415,7 @@ public class PieController implements BaseStatusBar.NavigationBarCallback, PieVi
         ContentResolver resolver = mContext.getContentResolver();
 
         mPieTriggerSlots = Settings.System.getIntForUser(resolver,
-                Settings.System.PIE_GRAVITY, EdgeGesturePosition.LEFT.FLAG,
+                Settings.System.PIE_GRAVITY, EdgeGesturePosition.RIGHT.FLAG,
                 UserHandle.USER_CURRENT);
 
         mSensitivity = Settings.System.getInt(resolver,
@@ -825,7 +825,7 @@ public class PieController implements BaseStatusBar.NavigationBarCallback, PieVi
         }
 
         int triggerSlots = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.PIE_GRAVITY, EdgeGesturePosition.LEFT.FLAG,
+                Settings.System.PIE_GRAVITY, EdgeGesturePosition.RIGHT.FLAG,
                 UserHandle.USER_CURRENT);
 
         triggerSlots = triggerSlots & ~mPosition.FLAG | position.FLAG;
