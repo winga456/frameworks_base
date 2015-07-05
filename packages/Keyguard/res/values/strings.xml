@@ -355,4 +355,6 @@
     <!-- Fingerprint hint message when finger was not recognized.-->
     <string name="fingerprint_not_recognized">Not recognized</string>
 
+    <string name="weather_info_not_available">Weather info is not available</string>
+
 </resources>

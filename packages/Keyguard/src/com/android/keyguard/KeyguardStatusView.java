@@ -254,7 +254,7 @@ public class KeyguardStatusView extends GridLayout implements
     @Override
     public void onWeatherChanged(WeatherController.WeatherInfo info) {
         if (info.temp == null || info.condition == null) {
-            mWeatherCity.setText("--");
+            mWeatherCity.setText(null);
             mWeatherWind.setText(null);
             mWeatherConditionDrawable = null;
             mWeatherCurrentTemp.setText(null);
@@ -287,6 +287,13 @@ public class KeyguardStatusView extends GridLayout implements
     private void updateWeatherSettings(boolean forceHide) {
         final ContentResolver resolver = getContext().getContentResolver();
         final Resources res = getContext().getResources();
+        View weatherPanel = findViewById(R.id.weather_panel);
+        TextView noWeatherInfo = (TextView) findViewById(R.id.no_weather_info_text);
+        int currentVisibleNotifications = Settings.System.getInt(resolver,
+                Settings.System.LOCK_SCREEN_VISIBLE_NOTIFICATIONS, 0);
+        int maxAllowedNotifications = Settings.System.getInt(resolver,
+                Settings.System.LOCK_SCREEN_MAX_NOTIFICATIONS, 6);
+        boolean forceHideByNumberOfNotifications = false;
 
         mShowWeather = Settings.System.getInt(resolver,
                 Settings.System.LOCK_SCREEN_SHOW_WEATHER, 0) == 1;
@@ -298,10 +305,24 @@ public class KeyguardStatusView extends GridLayout implements
                 Settings.System.LOCK_SCREEN_WEATHER_CONDITION_ICON, 0);
         boolean colorizeAllIcons = Settings.System.getInt(resolver,
                 Settings.System.LOCK_SCREEN_WEATHER_COLORIZE_ALL_ICONS, 0) == 1;
+        int hideMode = Settings.System.getInt(resolver,
+                    Settings.System.LOCK_SCREEN_WEATHER_HIDE_PANEL, 0);
+        int numberOfNotificationsToHide = Settings.System.getInt(resolver,
+                       Settings.System.LOCK_SCREEN_WEATHER_NUMBER_OF_NOTIFICATIONS, 6);
         int defaultPrimaryTextColor =
                 res.getColor(R.color.keyguard_default_primary_text_color);
         int primaryTextColor = Settings.System.getInt(resolver,
                 Settings.System.LOCK_SCREEN_TEXT_COLOR, defaultPrimaryTextColor);
+
+        if (hideMode == 0) {
+            if (currentVisibleNotifications > maxAllowedNotifications) {
+                forceHideByNumberOfNotifications = true;
+            }
+        } else if (hideMode == 1) {
+            if (currentVisibleNotifications >= numberOfNotificationsToHide) {
+                forceHideByNumberOfNotifications = true;
+            }
+        }
 
         // primaryTextColor with a transparency of 70%
         int secondaryTextColor = (179 << 24) | (primaryTextColor & 0x00ffffff);
@@ -313,17 +334,25 @@ public class KeyguardStatusView extends GridLayout implements
         int iconColor = Settings.System.getInt(resolver,
                 Settings.System.LOCK_SCREEN_ICON_COLOR, defaultIconColor);
 
+        mWeatherView.setVisibility(
+                (mShowWeather && !forceHideByNumberOfNotifications) ? View.VISIBLE : View.GONE);
         if (forceHide) {
-            mWeatherView.setVisibility(View.GONE);
+            noWeatherInfo.setVisibility(View.VISIBLE);
+            weatherPanel.setVisibility(View.GONE);
+            mWeatherConditionText.setVisibility(View.GONE);
+            mWeatherTimestamp.setVisibility(View.GONE);
         } else {
-            mWeatherView.setVisibility(mShowWeather ? View.VISIBLE : View.GONE);
+            noWeatherInfo.setVisibility(View.GONE);
+            weatherPanel.setVisibility(View.VISIBLE);
+            mWeatherConditionText.setVisibility(View.VISIBLE);
+            mWeatherCity.setVisibility(showLocation ? View.VISIBLE : View.INVISIBLE);
+            mWeatherTimestamp.setVisibility(showTimestamp ? View.VISIBLE : View.GONE);
         }
-        mWeatherCity.setVisibility(showLocation ? View.VISIBLE : View.INVISIBLE);
-        mWeatherTimestamp.setVisibility(showTimestamp ? View.VISIBLE : View.GONE);
 
         mAlarmStatusView.setTextColor(alarmTextAndIconColor);
         mDateView.setTextColor(primaryTextColor);
         mClockView.setTextColor(primaryTextColor);
+        noWeatherInfo.setTextColor(primaryTextColor);
         mWeatherCity.setTextColor(primaryTextColor);
         mWeatherConditionText.setTextColor(primaryTextColor);
         mWeatherCurrentTemp.setTextColor(primaryTextColor);

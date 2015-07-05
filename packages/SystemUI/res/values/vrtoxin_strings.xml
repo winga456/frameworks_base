@@ -92,4 +92,6 @@
     <!-- Announcement made when ambient display changes to on (not shown on the screen). [CHAR LIMIT=NONE] -->
     <string name="accessibility_quick_settings_ambient_display_changed_on">Ambient Display turned on.</string>
 
+    <string name="weather_info_not_available">Weather info is not available</string>
+
 </resources>
