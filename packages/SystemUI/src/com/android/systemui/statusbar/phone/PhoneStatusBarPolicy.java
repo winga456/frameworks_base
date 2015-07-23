@@ -67,6 +67,7 @@ public class PhoneStatusBarPolicy implements Callback {
     private static final String SLOT_VOLUME = "volume";
     private static final String SLOT_ALARM_CLOCK = "alarm_clock";
     private static final String SLOT_MANAGED_PROFILE = "managed_profile";
+    private static final String SLOT_HEADSET = "headset";
 
     private final Context mContext;
     private final StatusBarManager mService;
@@ -110,6 +111,9 @@ public class PhoneStatusBarPolicy implements Callback {
             else if (action.equals(TelecomManager.ACTION_CURRENT_TTY_MODE_CHANGED)) {
                 updateTTY(intent);
             }
+            else if (action.equals(Intent.ACTION_HEADSET_PLUG)) {
+                updateHeadset(intent);
+            }
         }
     };
 
@@ -131,6 +135,7 @@ public class PhoneStatusBarPolicy implements Callback {
         filter.addAction(AudioManager.INTERNAL_RINGER_MODE_CHANGED_ACTION);
         filter.addAction(TelephonyIntents.ACTION_SIM_STATE_CHANGED);
         filter.addAction(TelecomManager.ACTION_CURRENT_TTY_MODE_CHANGED);
+        filter.addAction(Intent.ACTION_HEADSET_PLUG);
         mContext.registerReceiver(mIntentReceiver, filter, null, mHandler);
 
         // listen for user / profile change.
@@ -179,11 +184,17 @@ public class PhoneStatusBarPolicy implements Callback {
         mService.setIcon(SLOT_MANAGED_PROFILE, R.drawable.stat_sys_managed_profile_status, 0,
                 mContext.getString(R.string.accessibility_managed_profile));
         mService.setIconVisibility(SLOT_MANAGED_PROFILE, false);
+
+        // headset
+        mService.setIcon(SLOT_HEADSET, R.drawable.stat_sys_headset, 0, null);
+        mService.setIconVisibility(SLOT_HEADSET, false);
     }
 
     private ContentObserver mAlarmIconObserver = new ContentObserver(null) {
         @Override
-        public void onChange(boolean selfChange, Uri uri) {
+        public void onChange(boolean selfChange,// headset
++        mService.setIcon(SLOT_HEADSET, R.drawable.stat_sys_headset, 0, null);
++        mService.setIconVisibility(SLOT_HEADSET, false); Uri uri) {
             mAlarmIconVisible = Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.SHOW_ALARM_ICON, 1) == 1;
             updateAlarm();
@@ -442,5 +453,10 @@ public class PhoneStatusBarPolicy implements Callback {
         if (mCurrentUserSetup == userSetup) return;
         mCurrentUserSetup = userSetup;
         updateAlarm();
+    }
+
+    private final void updateHeadset(Intent intent) {
+        int state = intent.getIntExtra("state", 0);
+        mService.setIconVisibility(SLOT_HEADSET, state == 1 ? true : false);
     }
 }
