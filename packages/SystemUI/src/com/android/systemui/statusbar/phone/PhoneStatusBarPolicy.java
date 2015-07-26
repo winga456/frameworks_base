@@ -29,6 +29,7 @@ import android.content.pm.UserInfo;
 import android.database.ContentObserver;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IRemoteCallback;
 import android.os.RemoteException;
@@ -77,6 +78,7 @@ public class PhoneStatusBarPolicy implements Callback {
     private final AlarmManager mAlarmManager;
     private final UserInfoController mUserInfoController;
     private boolean mAlarmIconVisible;
+    private int mHeadsetIconVisible;
 
     // Assume it's all good unless we hear otherwise.  We don't always seem
     // to get broadcasts that it *is* there.
@@ -155,10 +157,10 @@ public class PhoneStatusBarPolicy implements Callback {
         // Alarm clock
         mService.setIcon(SLOT_ALARM_CLOCK, R.drawable.stat_sys_alarm, 0, null);
         mService.setIconVisibility(SLOT_ALARM_CLOCK, false);
-        mAlarmIconObserver.onChange(true);
+        mSettingsObserver.onChange(true);
         mContext.getContentResolver().registerContentObserver(
-                Settings.System.getUriFor(Settings.System.SHOW_ALARM_ICON),
-                false, mAlarmIconObserver);
+                Settings.System.getUriFor(Settings.System.SHOW_HEADSET_ICON),
+                false, mSettingsObserver);
 
         // zen
         mService.setIcon(SLOT_ZEN, R.drawable.stat_sys_zen_important, 0, null);
@@ -168,6 +170,10 @@ public class PhoneStatusBarPolicy implements Callback {
         mService.setIcon(SLOT_VOLUME, R.drawable.stat_sys_ringer_vibrate, 0, null);
         mService.setIconVisibility(SLOT_VOLUME, false);
         updateVolumeZen();
+
+        // headset
+        mService.setIcon(SLOT_HEADSET, R.drawable.stat_sys_headset, 0, null);
+        mService.setIconVisibility(SLOT_HEADSET, false);
 
         // cast
         mService.setIcon(SLOT_CAST, R.drawable.stat_sys_cast, 0, null);
@@ -184,20 +190,23 @@ public class PhoneStatusBarPolicy implements Callback {
         mService.setIcon(SLOT_MANAGED_PROFILE, R.drawable.stat_sys_managed_profile_status, 0,
                 mContext.getString(R.string.accessibility_managed_profile));
         mService.setIconVisibility(SLOT_MANAGED_PROFILE, false);
-
-        // headset
-        mService.setIcon(SLOT_HEADSET, R.drawable.stat_sys_headset, 0, null);
-        mService.setIconVisibility(SLOT_HEADSET, false);
     }
 
-    private ContentObserver mAlarmIconObserver = new ContentObserver(null) {
+    private ContentObserver mSettingsObserver = new ContentObserver(null) {
         @Override
-        public void onChange(boolean selfChange,// headset
-+        mService.setIcon(SLOT_HEADSET, R.drawable.stat_sys_headset, 0, null);
-+        mService.setIconVisibility(SLOT_HEADSET, false); Uri uri) {
-            mAlarmIconVisible = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.SHOW_ALARM_ICON, 1) == 1;
-            updateAlarm();
+        public void onChange(boolean selfChange, Uri uri) {
+            mHeadsetIconVisible = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.SHOW_HEADSET_ICON, 1);
+            Intent mHeadsetIntent = new Intent();
+            mHeadsetIntent.putExtra("state", mHeadsetIconVisible);
+            String s = "state";
+            Bundle b = new Bundle();
+            b.putString(String.valueOf(mHeadsetIconVisible), s);
+            mHeadsetIntent.putExtras(b);
+            AudioManager am1 = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
+            if (am1.isWiredHeadsetOn()) {
+                updateHeadset(mHeadsetIntent);
+            }
         }
 
         @Override
@@ -205,6 +214,11 @@ public class PhoneStatusBarPolicy implements Callback {
             onChange(selfChange, null);
         }
     };
+
+    private final void updateHeadset(Intent intent) {
+        int state = intent.getIntExtra("state", 0);
+        mService.setIconVisibility(SLOT_HEADSET, ((state == 1 && (mHeadsetIconVisible == 1)))  ? true : false);
+    }
 
     public void setZenMode(int zen) {
         mZen = zen;
@@ -455,8 +469,4 @@ public class PhoneStatusBarPolicy implements Callback {
         updateAlarm();
     }
 
-    private final void updateHeadset(Intent intent) {
-        int state = intent.getIntExtra("state", 0);
-        mService.setIconVisibility(SLOT_HEADSET, state == 1 ? true : false);
-    }
 }
