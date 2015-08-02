@@ -129,6 +129,9 @@ import android.content.pm.PackageParser.ActivityIntentInfo;
 import android.content.pm.PackageParser.PackageLite;
 import android.content.pm.PackageParser.PackageParserException;
 import android.content.pm.PackageStats;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.PackageParser.Activity;
+import android.content.pm.PackageParser.Package;
 import android.content.pm.PackageUserState;
 import android.content.pm.ParceledListSlice;
 import android.content.pm.PermissionGroupInfo;
@@ -507,6 +510,7 @@ public class PackageManagerService extends IPackageManager.Stub {
     final int[] mGlobalGids;
     final SparseArray<ArraySet<String>> mSystemPermissions;
     final ArrayMap<String, FeatureInfo> mAvailableFeatures;
+    final ArrayMap<Signature, ArraySet<String>> mSignatureAllowances;
 
     // If mac_permissions.xml was found for seinfo labeling.
     boolean mFoundPolicyFile;
@@ -1878,6 +1882,7 @@ public class PackageManagerService extends IPackageManager.Stub {
         mGlobalGids = systemConfig.getGlobalGids();
         mSystemPermissions = systemConfig.getSystemPermissions();
         mAvailableFeatures = systemConfig.getAvailableFeatures();
+        mSignatureAllowances = systemConfig.getSignatureAllowances();
 
         synchronized (mInstallLock) {
         // writer
@@ -3528,6 +3533,16 @@ public class PackageManagerService extends IPackageManager.Stub {
             throw new SecurityException("Permission " + bp.name
                     + " is not a changeable permission type");
         }
+    }
+
+    private boolean isAllowedSignature(PackageParser.Package pkg, String permissionName) {
+        for (Signature pkgSig : pkg.mSignatures) {
+            ArraySet<String> perms = mSignatureAllowances.get(pkgSig);
+            if (perms != null && perms.contains(permissionName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

@@ -332,10 +332,11 @@ public class WindowAnimator {
                         mKeyguardGoingAway = false;
                     }
                     if (win.isReadyForDisplay()) {
-                        if mBlurUiEnabled {
-                            mForceHiding = KEYGUARD_NOT_SHOWN;
+                        if (nowAnimating && win.mWinAnimator.mKeyguardGoingAwayAnimation) {
+                            mForceHiding = KEYGUARD_ANIMATING_OUT;
                         } else {
-                            mForceHiding = win.isDrawnLw() ? KEYGUARD_SHOWN : KEYGUARD_NOT_SHOWN;
+                            mForceHiding = win.isDrawnLw()  && !mBlurUiEnabled ?
+                                KEYGUARD_SHOWN : KEYGUARD_NOT_SHOWN;
                         }
                     }
                     if (DEBUG_KEYGUARD || WindowManagerService.DEBUG_VISIBILITY) Slog.v(TAG,
