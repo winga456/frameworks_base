@@ -81,4 +81,18 @@
 
     <!-- If this is true, key chords can be used to take a screen record on the device. -->
     <bool name="config_enableScreenrecordChord">true</bool>
+
+    <!-- Support in Surfaceflinger for blur layers.
+         NOTE: This requires additional hardware-specific code. -->
+    <bool name="config_ui_blur_enabled">false</bool>
+
+    <!-- When config_LTE_RSRP_threshold_type is set to "custom" -->
+    <integer-array name="config_LTE_RSRP_custom_levels">
+        <item>-140</item>
+        <item>-128</item>
+        <item>-118</item>
+        <item>-108</item>
+        <item>-98</item>
+        <item>-44</item>
+    </integer-array>
 </resources>
