@@ -89,6 +89,7 @@ import android.util.ArraySet;
 import android.util.DisplayMetrics;
 import android.util.EventLog;
 import android.util.Log;
+import android.util.SettingConfirmationHelper;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -137,6 +138,7 @@ import com.android.systemui.assist.AssistManager;
 import com.android.systemui.vrtoxin.UserContentObserver;
 import com.android.systemui.doze.DozeHost;
 import com.android.systemui.doze.DozeLog;
+import com.android.systemui.doze.ShakeSensorManager;
 import com.android.systemui.keyguard.KeyguardViewMediator;
 import com.android.systemui.qs.QSPanel;
 import com.android.systemui.recents.ScreenPinningRequest;
@@ -217,7 +219,8 @@ import static com.android.systemui.statusbar.phone.BarTransitions.MODE_WARNING;
 
 public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         DragDownHelper.DragDownCallback, ActivityStarter, OnUnlockMethodChangedListener,
-        HeadsUpManager.OnHeadsUpChangedListener {
+        HeadsUpManager.OnHeadsUpChangedListener, ShakeSensorManager.ShakeListener {
+
     static final String TAG = "PhoneStatusBar";
     public static final boolean DEBUG = BaseStatusBar.DEBUG;
     public static final boolean SPEW = false;
@@ -344,6 +347,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private boolean mWakeUpComingFromTouch;
     private PointF mWakeUpTouchLocation;
     private boolean mScreenTurningOn;
+
+    private ShakeSensorManager mShakeSensorManager;
+    private boolean mShakeClean;
 
     int mPixelFormat;
     Object mQueueLock = new Object();
@@ -574,8 +580,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_NUM_TILE_COLUMNS),
-                    false, this,
-                    UserHandle.USER_ALL);
+                    false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_VRTOXIN_LOGO_SHOW),
                     false, this, UserHandle.USER_ALL);
@@ -626,6 +631,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NOTIFICATION_CLEAR_ALL_ICON_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SHAKE_TO_CLEAN_NOTIFICATIONS),
                     false, this, UserHandle.USER_ALL);
             update();
         }
@@ -1296,12 +1304,25 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mScreenPinningRequest.setCallback(mScreenPinningCallback);
     }
 
+    @Override
+    public synchronized void onShake() {
+       ContentResolver resolver = mContext.getContentResolver();
+       mShakeClean  = Settings.System.getIntForUser(
+               resolver, Settings.System.SHAKE_TO_CLEAN_NOTIFICATIONS, 0, UserHandle.USER_CURRENT) == 1;
+       if (mExpandedVisible && mShakeClean) {
+           clearAllNotifications();
+       }
+    }
+
     // ================================================================================
     // Constructing the view
     // ================================================================================
     @ChaosLab(name="GestureAnywhere", classification=Classification.CHANGE_CODE)
     protected PhoneStatusBarView makeStatusBarView() {
         final Context context = mContext;
+
+        mShakeSensorManager = new ShakeSensorManager(mContext, this);
+        mShakeSensorManager.enable(20);
 
         Resources res = context.getResources();
 
@@ -1427,9 +1448,18 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             @Override
             public void onClick(View v) {
                 MetricsLogger.action(mContext, MetricsLogger.ACTION_DISMISS_ALL_NOTES);
+                SettingConfirmationHelper helper =  new SettingConfirmationHelper();
+                    helper.showConfirmationDialogForSetting(
+                    mContext,
+                    mContext.getString(R.string.shake_to_clean_notifications_title),
+                    mContext.getString(R.string.shake_to_clean_notifications_message),
+                    mContext.getResources().getDrawable(R.drawable.shake_to_clean_notifications),
+                    Settings.System.SHAKE_TO_CLEAN_NOTIFICATIONS,
+                    null);
                 clearAllNotifications();
             }
         });
+
         mStackScroller.setDismissView(mDismissView);
         mExpandedContents = mStackScroller;
 

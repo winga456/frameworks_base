@@ -112,6 +112,7 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
                 try {
                     if (mLaunchOpts != null) {
                         startActivityAsUser(mLaunchIntent, mLaunchOpts.toBundle(), UserHandle.CURRENT);
+                        mRecentsView.enableShake(true);
                     } else {
                         startActivityAsUser(mLaunchIntent, UserHandle.CURRENT);
                     }
@@ -233,6 +234,7 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
         int launchTaskIndexInStack = 0;
         if (mConfig.launchedToTaskId != -1) {
             for (int i = 0; i < taskStackCount; i++) {
+                mRecentsView.enableShake(true);
                 TaskStack stack = stacks.get(i);
                 ArrayList<Task> tasks = stack.getTasks();
                 int taskCount = tasks.size();
@@ -252,6 +254,7 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
             if (mEmptyView == null) {
                 mEmptyView = mEmptyViewStub.inflate();
             }
+            mRecentsView.enableShake(false);
             mEmptyView.setVisibility(View.VISIBLE);
             mRecentsView.setSearchBarVisibility(View.GONE);
             findViewById(R.id.floating_action_button).setVisibility(View.GONE);
@@ -262,6 +265,7 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
             findViewById(R.id.floating_action_button).setVisibility(View.VISIBLE);
             if (mRecentsView.hasValidSearchBar()) {
                 mRecentsView.setSearchBarVisibility(mRecentsSearchbar ? View.VISIBLE : View.GONE);
+            mRecentsView.enableShake(true);
             } else {
                 refreshSearchWidgetView();
             }

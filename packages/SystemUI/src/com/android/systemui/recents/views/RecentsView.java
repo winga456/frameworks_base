@@ -26,17 +26,20 @@ import android.content.res.Configuration;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.Intent;
+import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IRemoteCallback;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
+import android.util.SettingConfirmationHelper;
 import android.view.Gravity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -60,6 +63,7 @@ import com.android.systemui.recents.model.RecentsPackageMonitor;
 import com.android.systemui.recents.model.RecentsTaskLoader;
 import com.android.systemui.recents.model.Task;
 import com.android.systemui.recents.model.TaskStack;
+import com.android.systemui.doze.ShakeSensorManager;
 
 import com.android.systemui.R;
 
@@ -76,7 +80,7 @@ import java.util.List;
  * to their SpaceNode bounds.
  */
 public class RecentsView extends FrameLayout implements TaskStackView.TaskStackViewCallbacks,
-        RecentsPackageMonitor.PackageCallbacks {
+        RecentsPackageMonitor.PackageCallbacks,ShakeSensorManager.ShakeListener {
 
     private static final String TAG = "RecentsView";
 
@@ -108,6 +112,12 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
     private ActivityManager mAm;
     private int mTotalMem;
 
+    private RecentsObserver mRecentsObserver;
+
+    private ShakeSensorManager mShakeSensorManager;
+    private boolean enableShakeCleanByUser;
+    private boolean enableShakeClean;
+
     public RecentsView(Context context) {
         super(context);
     }
@@ -120,12 +130,49 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
         this(context, attrs, defStyleAttr, 0);
     }
 
+    class RecentsObserver extends ContentObserver {
+        RecentsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SHAKE_TO_CLEAN_RECENTS), false, this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+        }
+
+        public void update() {
+        }
+    }
+
     public RecentsView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         mConfig = RecentsConfiguration.getInstance();
         mInflater = LayoutInflater.from(context);
         mLayoutAlgorithm = new RecentsViewLayoutAlgorithm(mConfig);
         mAm = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+        mShakeSensorManager = new ShakeSensorManager(mContext, this);
+    }
+
+    @Override
+    public synchronized void onShake() {
+        startHideClearRecentsButtonAnimation();
+        dismissAllTasksAnimated();
+    }
+
+    public void enableShake (boolean enableShakeClean) {
+        ContentResolver resolver = mContext.getContentResolver();
+        enableShakeCleanByUser = Settings.System.getInt(resolver,
+                Settings.System.SHAKE_TO_CLEAN_RECENTS, 0) == 1;
+        if (enableShakeClean && enableShakeCleanByUser) {
+            mShakeSensorManager.enable(20);
+        } else {
+            mShakeSensorManager.disable();
+        }
     }
 
     /** Sets the callbacks */
@@ -279,6 +326,7 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
 
             // Find the launch task in the stack
             if (!tasks.isEmpty()) {
+                enableShake(false);
                 int taskCount = tasks.size();
                 for (int j = 0; j < taskCount; j++) {
                     if (tasks.get(j).isLaunchTarget) {
@@ -313,6 +361,10 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
         // We have to increment/decrement the post animation trigger in case there are no children
         // to ensure that it runs
         ctx.postAnimationTrigger.increment();
+
+        // Hide clear recents button before return to home
+        startHideClearRecentsButtonAnimation();
+
         List<TaskStackView> stackViews = getTaskStackViews();
         int stackCount = stackViews.size();
         for (int i = 0; i < stackCount; i++) {
@@ -323,6 +375,26 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
 
         // Notify of the exit animation
         mCb.onExitToHomeAnimationTriggered();
+    }
+
+    public void startHideClearRecentsButtonAnimation() {
+        if (mFloatingButton != null) {
+            mFloatingButton.animate()
+                .alpha(0f)
+                .setStartDelay(0)
+                .setUpdateListener(null)
+                .setInterpolator(mConfig.fastOutSlowInInterpolator)
+                .setDuration(mConfig.taskViewRemoveAnimDuration)
+                .withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        enableShake(false);
+                        mFloatingButton.setVisibility(View.GONE);
+                        mFloatingButton.setAlpha(1f);
+                    }
+                })
+                .start();
+        }
     }
 
     /** Adds the search bar */
@@ -398,6 +470,9 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
 
         boolean showClearAllRecents = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.SHOW_CLEAR_ALL_RECENTS, 1) == 1;
+
+        enableShakeCleanByUser = Settings.System.getInt(mContext.getContentResolver(),
+            Settings.System.SHAKE_TO_CLEAN_RECENTS, 0) == 1;
 
         Rect taskStackBounds = new Rect();
         mConfig.getAvailableTaskStackBounds(width, height, mConfig.systemInsets.top,
@@ -574,6 +649,22 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
         if (mMemBar != null) {
             mMemBar.setProgressTintList(ColorStateList.valueOf(color));
         }
+
+        mClearRecents.setOnLongClickListener(new View.OnLongClickListener() {
+             public boolean onLongClick(View v) {
+                    SettingConfirmationHelper helper =  new SettingConfirmationHelper();
+                        helper.showConfirmationDialogForSetting(
+                        mContext,
+                        mContext.getString(R.string.shake_to_clean_recents_title),
+                        mContext.getString(R.string.shake_to_clean_recents_message),
+                        mContext.getResources().getDrawable(R.drawable.shake_to_clean_recents),
+                        Settings.System.SHAKE_TO_CLEAN_RECENTS,
+                        null);
+                        //startHideClearRecentsButtonAnimation();
+                        //dismissAllTasksAnimated();
+                        return true;
+             }
+        });
     }
 
 
@@ -888,6 +979,7 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
 
     /** Final callback after Recents is finally hidden. */
     public void onRecentsHidden() {
+        enableShake(false);
         // Notify each task stack view
         List<TaskStackView> stackViews = getTaskStackViews();
         int stackCount = stackViews.size();
@@ -939,6 +1031,7 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
         // Propagate this event down to each task stack view
         List<TaskStackView> stackViews = getTaskStackViews();
         int stackCount = stackViews.size();
+        enableShake(true);
         for (int i = 0; i < stackCount; i++) {
             TaskStackView stackView = stackViews.get(i);
             stackView.onPackagesChanged(monitor, packageName, userId);

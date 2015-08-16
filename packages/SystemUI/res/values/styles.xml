@@ -21,6 +21,7 @@
     </style>
 
     <style name="RecentsTheme" parent="@android:style/Theme.Material.Light">
+
         <!-- NoTitle -->
         <item name="android:windowNoTitle">true</item>
         <!-- Misc -->
@@ -30,7 +31,6 @@
         <item name="android:windowAnimationStyle">@style/Animation.RecentsActivity</item>
         <item name="android:ambientShadowAlpha">0.35</item>
     </style>
-
 
     <!-- Alternate Recents theme -->
     <style name="RecentsTheme.Wallpaper">
