@@ -89,6 +89,7 @@ public class ExpandedDesktopTile extends QSTile<QSTile.BooleanState> {
         }
         toggleState();
         refreshState();
+        qsCollapsePanel();
     }
 
     @Override

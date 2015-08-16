@@ -54,6 +54,7 @@ public class AmbientDisplayTile extends QSTile<QSTile.BooleanState> {
     protected void handleClick() {
         setEnabled(!mState.value);
         refreshState();
+        qsCollapsePanel();
     }
 
     @Override
