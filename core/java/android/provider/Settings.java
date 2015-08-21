@@ -6453,6 +6453,54 @@ public final class Settings {
         public static final String STATUS_BAR_MULTI_USER_SWITCH_INACTIVE_TEXT_COLOR = "status_bar_multi_user_switch_inactive_text_color";
 
         /**
+         * Whether to show a vrtoxin button in the expanded header
+         * @hide
+         */
+        public static final String VRTOXIN_BUTTON = "vrtoxin_button";
+
+        /**
+         * What application to launch when the user clicks the vrtoxin button in the expanded header
+         * @hide
+         */
+        public static final String VRTOXIN_SHORTCUT = "vrtoxin_shortcut";
+
+        /**
+         * What application to launch when the user long clicks the vrtoxin button in the expanded header
+         * @hide
+         */
+        public static final String VRTOXIN_LONG_SHORTCUT = "vrtoxin_long_shortcut";
+
+        /**
+         * What application to launch when the user clicks the clock in the notification bar
+         * @hide
+         */
+        public static final String CLOCK_SHORTCUT = "clock_shortcut";
+
+        /**
+         * What application to launch when the user clicks the calendar in the notification bar
+         * @hide
+         */
+        public static final String CALENDAR_SHORTCUT = "calendar_shortcut";
+
+        /**
+         * What application to launch when the user long clicks the calendar in the notification bar
+         * @hide
+         */
+        public static final String CLOCK_LONG_SHORTCUT = "clock_long_shortcut";
+
+        /**
+         * What application to launch when the user long clicks the calendar in the notification bar
+         * @hide
+         */
+        public static final String CALENDAR_LONG_SHORTCUT = "calendar_long_shortcut";
+
+        /**
+         * What application to launch when the user long clicks the weather in the notification bar
+         * @hide
+         */
+        public static final String WEATHER_LONG_SHORTCUT = "weather_long_shortcut";        
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *

@@ -72,6 +72,7 @@ import com.android.systemui.statusbar.policy.NextAlarmController;
 import com.android.systemui.statusbar.policy.UserInfoController;
 import com.android.systemui.statusbar.SignalClusterView;
 
+import java.net.URISyntaxException;
 import java.text.NumberFormat;
 
 /**
@@ -126,6 +127,10 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     private int mClockCollapsedSize;
     private int mClockExpandedSize;
     private int mHeaderFontStyle = FontHelper.FONT_NORMAL;
+
+    // HeadsUp button
+    private View mVRToxinButton;
+    private boolean mShowVRToxinButton;
 
     /**
      * In collapsed QS, the clock is scaled down a bit post-layout to allow for a nice
@@ -188,6 +193,9 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mSettingsButton = findViewById(R.id.settings_button);
         mSettingsButton.setOnClickListener(this);
         mSettingsButton.setOnLongClickListener(this);
+        mVRToxinButton = findViewById(R.id.vrtoxin_button);
+        mVRToxinButton.setOnClickListener(this);
+        mVRToxinButton.setOnLongClickListener(this);
         mQsDetailHeader = findViewById(R.id.qs_detail_header);
         mQsDetailHeader.setAlpha(0);
         mQsDetailHeaderTitle = (TextView) mQsDetailHeader.findViewById(android.R.id.title);
@@ -394,7 +402,12 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         }
         mEmergencyCallsOnly.setVisibility(mExpanded && mShowEmergencyCallsOnly ? VISIBLE : GONE);
         mBatteryLevel.setVisibility(mExpanded ? View.VISIBLE : View.GONE);
+        updateVRToxinButtonVisibility();
         updateWeatherVisibility();
+    }
+
+    private void updateVRToxinButtonVisibility() {
+        mVRToxinButton.setVisibility(mExpanded && mShowVRToxinButton ? View.VISIBLE : View.GONE);
     }
 
     private void updateWeatherVisibility() {
@@ -421,8 +434,10 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
 
     private void updateSystemIconsLayoutParams() {
         RelativeLayout.LayoutParams lp = (LayoutParams) mSystemIconsSuperContainer.getLayoutParams();
+        int vrtoxin = mVRToxinButton.getVisibility() != View.GONE
+                ? mVRToxinButton.getId() : mSettingsButton.getId();
         int rule = mExpanded
-                ? mSettingsButton.getId()
+                ? vrtoxin
                 : mMultiUserSwitch.getId();
         if (rule != lp.getRules()[RelativeLayout.START_OF]) {
             lp.addRule(RelativeLayout.START_OF, rule);
@@ -609,6 +624,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             startDateActivity();
         } else if (v == mWeatherContainer) {
             startForecastActivity();
+        } else if (v == mVRToxinButton) {
+            startVRToxinActivity();
         }
         mQSPanel.vibrateTile(20);
     }
@@ -627,6 +644,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             startForecastLongClickActivity();
         } else if (v == mMultiUserSwitch) {
             startUserLongClickActivity();
+        } else if (v == mVRToxinButton) {
+            startVRToxinLongClickActivity();
         }
         return false;
     }
@@ -663,27 +682,87 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     }
 
     private void startClockActivity() {
-        mActivityStarter.startActivity(new Intent(AlarmClock.ACTION_SHOW_ALARMS),
-                true /* dismissShade */);
+        Intent clockShortcutIntent = null;
+        String clockShortcutIntentUri = Settings.System.getStringForUser(
+                mContext.getContentResolver(), Settings.System.CLOCK_SHORTCUT, UserHandle.USER_CURRENT);
+        if(clockShortcutIntentUri != null) {
+            try {
+                clockShortcutIntent = Intent.parseUri(clockShortcutIntentUri, 0);
+            } catch (URISyntaxException e) {
+                clockShortcutIntent = null;
+            }
+        }
+
+        if(clockShortcutIntent != null) {
+            mActivityStarter.startActivity(clockShortcutIntent, true);
+        } else {
+            mActivityStarter.startActivity(
+                    new Intent(AlarmClock.ACTION_SHOW_ALARMS), true /* dismissShade */);
+        }
     }
 
     private void startClockLongClickActivity() {
-        mActivityStarter.startActivity(new Intent(AlarmClock.ACTION_SET_ALARM),
-                true /* dismissShade */);
+        Intent clockLongShortcutIntent = null;
+        String clockLongShortcutIntentUri = Settings.System.getStringForUser(
+                mContext.getContentResolver(), Settings.System.CLOCK_LONG_SHORTCUT, UserHandle.USER_CURRENT);
+        if(clockLongShortcutIntentUri != null) {
+            try {
+                clockLongShortcutIntent = Intent.parseUri(clockLongShortcutIntentUri, 0);
+            } catch (URISyntaxException e) {
+                clockLongShortcutIntent = null;
+            }
+        }
+
+        if(clockLongShortcutIntent != null) {
+            mActivityStarter.startActivity(clockLongShortcutIntent, true);
+        } else {
+            mActivityStarter.startActivity(new Intent(AlarmClock.ACTION_SET_ALARM),
+                    true /* dismissShade */);
+        }
     }
 
     private void startDateActivity() {
-        Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
-        builder.appendPath("time");
-        ContentUris.appendId(builder, System.currentTimeMillis());
-        Intent intent = new Intent(Intent.ACTION_VIEW).setData(builder.build());
-        mActivityStarter.startActivity(intent, true /* dismissShade */);
+        Intent calendarShortcutIntent = null;
+        String calendarShortcutIntentUri = Settings.System.getStringForUser(
+                mContext.getContentResolver(), Settings.System.CALENDAR_SHORTCUT, UserHandle.USER_CURRENT);
+        if(calendarShortcutIntentUri != null) {
+            try {
+                calendarShortcutIntent = Intent.parseUri(calendarShortcutIntentUri, 0);
+            } catch (URISyntaxException e) {
+                calendarShortcutIntent = null;
+            }
+        }
+
+        if(calendarShortcutIntent != null) {
+            mActivityStarter.startActivity(calendarShortcutIntent, true);
+        } else {
+            Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
+            builder.appendPath("time");
+            ContentUris.appendId(builder, System.currentTimeMillis());
+            Intent intent = new Intent(Intent.ACTION_VIEW).setData(builder.build());
+            mActivityStarter.startActivity(intent, true /* dismissShade */);
+        }
     }
 
     private void startDateLongClickActivity() {
-        Intent intent = new Intent(Intent.ACTION_INSERT);
-            intent.setData(Events.CONTENT_URI);
-        mActivityStarter.startActivity(intent, true /* dismissShade */);
+        Intent calendarLongShortcutIntent = null;
+        String calendarLongShortcutIntentUri = Settings.System.getStringForUser(
+                mContext.getContentResolver(), Settings.System.CALENDAR_LONG_SHORTCUT, UserHandle.USER_CURRENT);
+        if(calendarLongShortcutIntentUri != null) {
+            try {
+                calendarLongShortcutIntent = Intent.parseUri(calendarLongShortcutIntentUri, 0);
+            } catch (URISyntaxException e) {
+                calendarLongShortcutIntent = null;
+            }
+        }
+
+        if(calendarLongShortcutIntent != null) {
+            mActivityStarter.startActivity(calendarLongShortcutIntent, true);
+        } else {
+            Intent intent = new Intent(Intent.ACTION_INSERT);
+                intent.setData(Events.CONTENT_URI);
+            mActivityStarter.startActivity(intent, true /* dismissShade */);
+        }
     }
 
     private void startForecastActivity() {
@@ -694,10 +773,69 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     }
 
     private void startForecastLongClickActivity() {
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setClassName("com.cyanogenmod.lockclock",
-            "com.cyanogenmod.lockclock.preference.Preferences");
-        mActivityStarter.startActivity(intent, true /* dismissShade */);
+        Intent weatherLongShortcutIntent = null;
+        String weatherLongShortcutIntentUri = Settings.System.getStringForUser(
+                mContext.getContentResolver(), Settings.System.WEATHER_LONG_SHORTCUT, UserHandle.USER_CURRENT);
+        if(weatherLongShortcutIntentUri != null) {
+            try {
+                weatherLongShortcutIntent = Intent.parseUri(weatherLongShortcutIntentUri, 0);
+            } catch (URISyntaxException e) {
+                weatherLongShortcutIntent = null;
+            }
+        }
+
+        if(weatherLongShortcutIntent != null) {
+            mActivityStarter.startActivity(weatherLongShortcutIntent, true);
+        } else {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.setClassName("com.cyanogenmod.lockclock",
+                "com.cyanogenmod.lockclock.preference.Preferences");
+            mActivityStarter.startActivity(intent, true /* dismissShade */);
+        }
+    }
+
+    private void startVRToxinActivity() {
+        Intent vrtoxinShortcutIntent = null;
+            String vrtoxinShortcutIntentUri = Settings.System.getStringForUser(
+                    mContext.getContentResolver(), Settings.System.VRTOXIN_SHORTCUT, UserHandle.USER_CURRENT);
+            if(vrtoxinShortcutIntentUri != null) {
+                try {
+                    vrtoxinShortcutIntent = Intent.parseUri(vrtoxinShortcutIntentUri, 0);
+                } catch (URISyntaxException e) {
+                    vrtoxinShortcutIntent = null;
+                }
+            }
+
+            if(vrtoxinShortcutIntent != null) {
+                mActivityStarter.startActivity(vrtoxinShortcutIntent, true);
+            } else {
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.setClassName("com.android.settings",
+                    "com.android.settings.Settings$MainSettingsActivity");
+                mActivityStarter.startActivity(intent, true /* dismissShade */);
+            }
+    }
+
+    private void startVRToxinLongClickActivity() {
+        Intent vrtoxinLongShortcutIntent = null;
+            String vrtoxinLongShortcutIntentUri = Settings.System.getStringForUser(
+                    mContext.getContentResolver(), Settings.System.VRTOXIN_LONG_SHORTCUT, UserHandle.USER_CURRENT);
+            if(vrtoxinLongShortcutIntentUri != null) {
+                try {
+                    vrtoxinLongShortcutIntent = Intent.parseUri(vrtoxinLongShortcutIntentUri, 0);
+                } catch (URISyntaxException e) {
+                    vrtoxinLongShortcutIntent = null;
+                }
+            }
+
+            if(vrtoxinLongShortcutIntent != null) {
+                mActivityStarter.startActivity(vrtoxinLongShortcutIntent, true);
+            } else {
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.setClassName("com.android.settings",
+                    "com.android.settings.Settings$ChangelogSettingsActivity");
+                mActivityStarter.startActivity(intent, true /* dismissShade */);
+            }
     }
 
     public void setQSPanel(QSPanel qsp) {
@@ -756,8 +894,13 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         target.settingsTranslation = mExpanded
                 ? 0
                 : mMultiUserSwitch.getLeft() - mSettingsButton.getLeft();
-        target.signalClusterAlpha = mSignalClusterDetached ? 0f : 1f;
         target.settingsRotation = !mExpanded ? 90f : 0f;
+        target.vrtoxinAlpha = getAlphaForVisibility(mVRToxinButton);
+        target.vrtoxinTranslation = mExpanded
+                ? 0
+                :  mSettingsButton.getLeft() - mVRToxinButton.getLeft();
+        target.settingsRotation = !mExpanded ? 90f : 0f;
+        target.signalClusterAlpha = mSignalClusterDetached ? 0f : 1f;
     }
 
     private float getAlphaForVisibility(View v) {
@@ -811,6 +954,11 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mSettingsButton.setTranslationY(mSystemIconsSuperContainer.getTranslationY());
         mSettingsButton.setTranslationX(values.settingsTranslation);
         mSettingsButton.setRotation(values.settingsRotation);
+        if (mVRToxinButton != null) {
+            mVRToxinButton.setTranslationY(mSystemIconsSuperContainer.getTranslationY());
+            mVRToxinButton.setTranslationX(values.vrtoxinTranslation);
+            mVRToxinButton.setRotation(values.settingsRotation);
+        }
         applyAlpha(mEmergencyCallsOnly, values.emergencyCallsOnlyAlpha);
         if (!mShowingDetail && !mDetailTransitioning) {
             // Otherwise it needs to stay invisible
@@ -822,6 +970,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         applyAlpha(mSettingsButton, values.settingsAlpha);
         applyAlpha(mWeatherLine1, values.settingsAlpha);
         applyAlpha(mWeatherLine2, values.settingsAlpha);
+        applyAlpha(mVRToxinButton, values.vrtoxinAlpha);
         applyAlpha(mSignalCluster, values.signalClusterAlpha);
         if (!mExpanded) {
             mTime.setScaleX(1f);
@@ -854,6 +1003,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         float signalClusterAlpha;
         float settingsRotation;
         float weatherY;
+        float vrtoxinAlpha;
+        float vrtoxinTranslation;
 
         public void interpoloate(LayoutValues v1, LayoutValues v2, float t) {
             timeScale = v1.timeScale * (1 - t) + v2.timeScale * t;
@@ -864,6 +1015,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             avatarY = v1.avatarY * (1 - t) + v2.avatarY * t;
             batteryX = v1.batteryX * (1 - t) + v2.batteryX * t;
             batteryY = v1.batteryY * (1 - t) + v2.batteryY * t;
+            vrtoxinTranslation =
+                    v1.vrtoxinTranslation * (1 - t) + v2.vrtoxinTranslation * t;
             settingsTranslation = v1.settingsTranslation * (1 - t) + v2.settingsTranslation * t;
             weatherY = v1.weatherY * (1 - t) + v2.weatherY * t;
 
@@ -877,6 +1030,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
 
             float t3 = Math.max(0, t - 0.7f) / 0.3f;
             batteryLevelAlpha = v1.batteryLevelAlpha * (1 - t3) + v2.batteryLevelAlpha * t3;
+            vrtoxinAlpha = v1.vrtoxinAlpha * (1 - t3) + v2.vrtoxinAlpha * t3;
             settingsAlpha = v1.settingsAlpha * (1 - t3) + v2.settingsAlpha * t3;
             dateExpandedAlpha = v1.dateExpandedAlpha * (1 - t3) + v2.dateExpandedAlpha * t3;
             dateCollapsedAlpha = v1.dateCollapsedAlpha * (1 - t3) + v2.dateCollapsedAlpha * t3;
@@ -1048,6 +1202,9 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_HEADER_FONT_STYLE),
                     false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.VRTOXIN_BUTTON),
+                    false, this);
             updateSettings();
         }
 
@@ -1101,6 +1258,9 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_HEADER_FONT_STYLE))) {
                 updateHeaderFontStyle();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.VRTOXIN_BUTTON))) {
+                updateVRToxinButton();
             }
 
         }
@@ -1118,6 +1278,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             updateCutOutBatteryText();
             updateBatteryTextColor();
             updateHeaderFontStyle();
+            updateVRToxinButton();
         }
     }
 
@@ -1127,6 +1288,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mMultiUserSwitch.setBackground(getColoredBackgroundDrawable(
                 mContext.getDrawable(R.drawable.ripple_drawable), false));
         mSettingsButton.setBackground(getColoredBackgroundDrawable(
+                mContext.getDrawable(R.drawable.ripple_drawable), false));
+        mVRToxinButton.setBackground(getColoredBackgroundDrawable(
                 mContext.getDrawable(R.drawable.ripple_drawable), false));
         mSystemIconsSuperContainer.setBackground(getColoredBackgroundDrawable(
                 mContext.getDrawable(R.drawable.ripple_drawable), false));
@@ -1155,6 +1318,13 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 SBEHeaderColorHelper.getTextColor(mContext, 100));
     }
 
+    private void updateVRToxinButton() {
+        ContentResolver resolver = mContext.getContentResolver();
+        mShowVRToxinButton = Settings.System.getInt(resolver,
+                Settings.System.VRTOXIN_BUTTON, 1) == 1;
+        updateVRToxinButtonVisibility();
+    }
+
     private void updateWeatherSettings() {
         ContentResolver resolver = mContext.getContentResolver();
         mShowWeather = Settings.System.getInt(resolver,
@@ -1173,6 +1343,9 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 iconColor, noSimIconColor, airplaneModeIconColor);
         mBatteryMeterView.setBatteryColors(iconColor);
         ((ImageView) mSettingsButton).setImageTintList(ColorStateList.valueOf(iconColor));
+        if (mVRToxinButton != null) {
+            ((ImageView) mVRToxinButton).setImageTintList(ColorStateList.valueOf(iconColor));
+        }
         Drawable alarmIcon =
                 getResources().getDrawable(R.drawable.ic_access_alarms_small).mutate();
         alarmIcon.setTintList(ColorStateList.valueOf(iconColor));
@@ -1224,7 +1397,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
 
     private void updateHeaderFontStyle() {
         final int mHeaderFontStyle = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.STATUS_BAR_HEADER_FONT_STYLE, FontHelper.FONT_NORMAL);
+                Settings.System.STATUS_BAR_HEADER_FONT_STYLE, 0);
 
         getFontStyle(mHeaderFontStyle);
     }
