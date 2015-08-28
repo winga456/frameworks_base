@@ -4876,6 +4876,7 @@ public final class Settings {
         public static final String MEM_TEXT_COLOR = "mem_text_color";
 
         /**
+<<<<<<< HEAD
          * Battery status style on the status bar
          * 0 - Icon portrait
          * 1 - Icon landscape
@@ -4971,6 +4972,12 @@ public final class Settings {
          * @hide
          */
         public static final String STATUS_BAR_EXPANDED_HEADER_ICON_COLOR = "status_bar_expanded_header_icon_color";
+
+        /**
+         * Toast icon
+         * @hide
+         */
+        public static final String TOAST_ICON = "toast_icon";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
