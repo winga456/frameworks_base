@@ -245,6 +245,7 @@
     <string name="chamber_name_message">Give the shortcut a name to display with the icon.</string>
     <string name="chamber_name_toast">Using default name</string>
     <string name="shortcut_screensleep">Sleep Screen</string>
+    <string name="shortcut_volume">Volume Panel</string>
 
     <!-- Off/On/Toggle -->
     <string name="off">Off</string>

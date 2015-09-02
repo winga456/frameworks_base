@@ -107,6 +107,8 @@ public class CreateShortcut extends LauncherActivity {
     private int returnIconResId(String c) {
         if (c.equals("SleepScreen")) {
             return R.drawable.ic_qs_sleep;
+        } else if (c.equals("VolumePanel")) {
+            return R.drawable.ic_qs_volume;
         } else if (c.equals("ChamberOfSecrets")) {
             return R.drawable.ic_qs_cyanide_on;
         } else {
