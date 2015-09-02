@@ -246,6 +246,7 @@
     <string name="chamber_name_toast">Using default name</string>
     <string name="shortcut_screensleep">Sleep Screen</string>
     <string name="shortcut_volume">Volume Panel</string>
+    <string name="shortcut_restart_ui">Restart SystemUI</string>
 
     <!-- Off/On/Toggle -->
     <string name="off">Off</string>
