@@ -19,11 +19,10 @@ package com.android.systemui.shortcuts;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
-import com.vrtoxin.util.Helpers;
-
-public class RestartUI extends Activity  {
+public class PowerMenu extends Activity  {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,6 +32,7 @@ public class RestartUI extends Activity  {
     @Override
     public void onResume() {
         super.onResume();
-        Helpers.restartSystemUI();
+        Intent intent = new Intent(Intent.ACTION_POWERMENU);
+        sendBroadcast(intent);
     }
 }
