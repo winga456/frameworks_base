@@ -105,8 +105,10 @@ public class CreateShortcut extends LauncherActivity {
     }
 
     private int returnIconResId(String c) {
-        if (c.equals("ChamberOfSecrets")) {
-            return R.drawable.ic_qs_vrtoxin;
+        if (c.equals("SleepScreen")) {
+            return R.drawable.ic_qs_sleep;
+        } else if (c.equals("ChamberOfSecrets")) {
+            return R.drawable.ic_qs_cyanide_on;
         } else {
             // Oh-Noes, you found a wild derp.
             return R.drawable.ic_sysbar_null;
