@@ -92,7 +92,7 @@
                     android:paddingStart="6dp"
                     android:paddingEnd="8dp"
                     android:ellipsize="end"
-                    android:textAppearance="@style/TextAppearance.StatusBar.Clock"
+                    android:textAppearance="@style/TextAppearance.StatusBar.CarrierLabel"
                     android:textColor="#ffffff"
                     android:singleLine="true"
                     />

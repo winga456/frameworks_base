@@ -4138,6 +4138,12 @@ public final class Settings {
         public static final String STATUS_BAR_CARRIER_LABEL_COLOR = "status_bar_carrier_label_color";
 
         /**
+         * Settings for carrier label font size
+         * @hide
+         */
+        public static final String STATUS_BAR_CARRIER_FONT_SIZE = "status_bar_carrier_font_size";
+
+        /**
          * Whether to show the IME switcher in the status bar
          * @hide
          */

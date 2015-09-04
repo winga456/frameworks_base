@@ -28,8 +28,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.TypedArray;
+import android.database.ContentObserver;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
+import android.os.Handler;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.telephony.ServiceState;
 import android.telephony.SubscriptionInfo;
@@ -60,10 +63,13 @@ public class CarrierText extends TextView {
 
     private boolean mUseCustomLabel = false;
     private String mCustomLabel = "";
+    private int mCarrierLabelFontSize = 14;
 
     private int mNewColor;
     private int mOldColor;
     private Animator mColorTransitionAnimator;
+
+    Handler mHandler;
 
     private KeyguardUpdateMonitorCallback mCallback = new KeyguardUpdateMonitorCallback() {
         @Override
@@ -90,7 +96,25 @@ public class CarrierText extends TextView {
         SimPukLocked, // SIM card is PUK locked because SIM entered wrong too many times
         SimLocked, // SIM card is currently locked
         SimPermDisabled, // SIM card is permanently disabled due to PUK unlock failure
-        SimNotReady; // SIM is not ready yet. May never be on devices w/o a SIM.
+        SimNotReady;
+    }
+
+    class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.STATUS_BAR_CARRIER_FONT_SIZE),
+                    false, this, UserHandle.USER_CURRENT);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            updateSize();
+        }
     }
 
     public CarrierText(Context context) {
@@ -99,6 +123,11 @@ public class CarrierText extends TextView {
 
     public CarrierText(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mHandler = new Handler();
+
+        SettingsObserver settingsObserver = new SettingsObserver(mHandler);
+        settingsObserver.observe();
+
         mIsEmergencyCallCapable = context.getResources().getBoolean(
                 com.android.internal.R.bool.config_voice_capable);
         boolean useAllCaps;
@@ -121,6 +150,7 @@ public class CarrierText extends TextView {
 
         mColorTransitionAnimator = createColorTransitionAnimator(0, 1);
         updateCarrierLabelSettings();
+        updateSize();
     }
 
     public void updateCarrierText() {
@@ -415,6 +445,16 @@ public class CarrierText extends TextView {
             mCustomLabel = mContext.getResources().getString(
                     com.android.internal.R.string.default_custom_label);
         }
+    }
+
+    private void updateSize() {
+        ContentResolver resolver = mContext.getContentResolver();
+
+        mCarrierLabelFontSize = Settings.System.getIntForUser(resolver,
+                Settings.System.STATUS_BAR_CARRIER_FONT_SIZE, 14,
+                UserHandle.USER_CURRENT);
+
+        setTextSize(mCarrierLabelFontSize);
     }
 
     public void updateColor(boolean animation) {
