@@ -5940,6 +5940,13 @@ public final class Settings {
         public static final String LOCKSCREEN_ALARM_COLOR = "lockscreen_alarm_color";
 
         /**
+         * Change the color of the lockscreen indication text
+         *
+         * @hide
+         */
+        public static final String LOCKSCREEN_INDICATION_TEXT_COLOR = "lockscreen_indication_text_color";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *

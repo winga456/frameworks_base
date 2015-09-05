@@ -21,6 +21,7 @@ import android.app.ActivityManagerNative;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -29,6 +30,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
+import android.graphics.PorterDuff.Mode;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -37,6 +39,7 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.service.media.CameraPrewarmService;
 import android.telecom.TelecomManager;
 import android.util.AttributeSet;
@@ -211,6 +214,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         mCameraImageView.setOnClickListener(this);
         mLeftAffordanceView.setOnClickListener(this);
         initAccessibility();
+        updateIndicationTextColor();
     }
 
     private void initAccessibility() {
@@ -624,6 +628,16 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         mCameraImageView.updateColorSettings(color);
         mLeftAffordanceView.updateColorSettings(color);
         mLockIcon.updateColorSettings(color);
+    }
+
+    public void updateIndicationTextColor() {
+        ContentResolver resolver = getContext().getContentResolver();
+        int color = Settings.System.getInt(resolver,
+                Settings.System.LOCKSCREEN_INDICATION_TEXT_COLOR, 0xFFFFFFFF);
+
+        if (mIndicationText != null) {
+            mIndicationText.setTextColor(color);
+        }
     }
 
     private final BroadcastReceiver mDevicePolicyReceiver = new BroadcastReceiver() {
