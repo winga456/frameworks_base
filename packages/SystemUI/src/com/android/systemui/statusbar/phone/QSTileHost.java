@@ -76,6 +76,7 @@ import com.android.systemui.qs.tiles.SyncTile;
 import com.android.systemui.qs.tiles.ThemesTile;
 import com.android.systemui.qs.tiles.WifiTile;
 import com.android.systemui.qs.tiles.VRToxinTile;
+import com.android.systemui.qs.tiles.LedTile;
 import com.android.systemui.statusbar.policy.BluetoothController;
 import com.android.systemui.statusbar.policy.CastController;
 import com.android.systemui.statusbar.policy.FlashlightController;
@@ -355,6 +356,8 @@ public class QSTileHost implements QSTile.Host {
                 return new SlimFloatsTile(this);
             case QSConstants.TILE_KERNEL_ADIUTOR:
                 return new KernelAdiutorTile(this);
+            case QSConstants.TILE_LED:
+                return new LedTile(this);
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
         }

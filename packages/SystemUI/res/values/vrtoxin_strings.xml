@@ -293,4 +293,8 @@
     <string name="advanced_dev_option_force_stop">Force stop</string>
     <string name="advanced_dev_option_uninstall">Uninstall</string>
 
+    <string name="quick_settings_led">LED</string>
+    <string name="quick_settings_led_on">Led ON</string>
+    <string name="quick_settings_led_off">Led OFF</string>
+
 </resources>
