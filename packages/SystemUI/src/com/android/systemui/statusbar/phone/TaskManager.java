@@ -40,8 +40,10 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.graphics.PixelFormat;
+import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -59,6 +61,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.systemui.R;
+
+import com.android.internal.util.vrtoxin.RandomColorHelper;
+import com.android.internal.util.vrtoxin.TMColorHelper;
 
 import java.io.FileInputStream;
 import java.lang.reflect.Method;
@@ -86,6 +91,8 @@ public class TaskManager {
     PackageManager mPackageManager;
     private LinearLayout mTaskManagerPanel;
     private LinearLayout mTaskManagerList;
+    private Button killAllButton;
+    private TextView taskManagerTitle;
 
     private static final Object sLock = new Object();
     private ArrayList<DetailProcess> showTaskList = new ArrayList<DetailProcess>();
@@ -101,8 +108,10 @@ public class TaskManager {
         mHomeIntent = new Intent(Intent.ACTION_MAIN);
         mHomeIntent.addCategory(Intent.CATEGORY_HOME);
 
+        taskManagerTitle =
+                (TextView) mTaskManagerPanel.findViewById(R.id.task_manager_title);
         mTaskManagerList = (LinearLayout) mTaskManagerPanel.findViewById(R.id.task_manager_list);
-        final Button killAllButton = (Button) mTaskManagerPanel.findViewById(R.id.kill_all_button);
+        killAllButton = (Button) mTaskManagerPanel.findViewById(R.id.kill_all_button);
         killAllButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 mHandler.sendEmptyMessage(MSG_KILL_ALL);
@@ -150,12 +159,19 @@ public class TaskManager {
     }
 
     private void refreshMemoryUsagePanel() {
+        final ColorStateList memoryTextColor = TMColorHelper.getTaskMemoryTextColorList(mContext);
+        final ColorStateList sliderColor = TMColorHelper.getSliderColorList(mContext);
+        final ColorStateList sliderInactiveColor = TMColorHelper.getSliderInactiveColorList(mContext);
         final TextView memoryUsageText =
                 (TextView) mTaskManagerPanel.findViewById(R.id.memory_usage_text);
         final ProgressBar memoryUsageBar =
                 (ProgressBar)mTaskManagerPanel.findViewById(R.id.memory_usage_Bar);
+        memoryUsageBar.setProgressTintList(sliderColor);
+        memoryUsageBar.setProgressBackgroundTintList(sliderInactiveColor);
         refreshMemoryusageText(memoryUsageText);
+        memoryUsageText.setTextColor(memoryTextColor);
         refreshMemoryUsageBar(memoryUsageBar);
+        refreshTitleBox();
     }
 
     private void inflateTaskListView() {
@@ -175,6 +191,7 @@ public class TaskManager {
         final Drawable taskIcon = detailProcess.getIcon();
         final String taskName = detailProcess.getTitle();
         final String packageName = detailProcess.getPackageName();
+        final ColorStateList appIconColor = TMColorHelper.getTaskAppIconColorList(mContext);
 
         if (childs != null && childs.containsKey(packageName)) {
             return;
@@ -183,6 +200,8 @@ public class TaskManager {
         final View itemView = View.inflate(mContext, R.layout.task_item, null);
         ImageView taskIconImageView = (ImageView) itemView.findViewById(R.id.task_icon);
         taskIconImageView.setImageDrawable(taskIcon);
+        taskIconImageView.setImageTintList(appIconColor);
+        taskIconImageView.setImageTintMode(Mode.MULTIPLY);
         taskIconImageView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -194,8 +213,10 @@ public class TaskManager {
                 mHandler.sendMessage(msg);
             }
         });
+        final ColorStateList taskTextColor = TMColorHelper.getTaskTextColorList(mContext);
         TextView taskNameTextView = (TextView) itemView.findViewById(R.id.task_name);
         taskNameTextView.setText(taskName);
+        taskNameTextView.setTextColor(taskTextColor);
         taskNameTextView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -207,7 +228,10 @@ public class TaskManager {
                 mHandler.sendMessage(msg);
             }
         });
+        final ColorStateList killTaskColor = TMColorHelper.getTaskKillIconColorList(mContext);
         ImageView killButton = (ImageView) itemView.findViewById(R.id.kill_task);
+        killButton.setImageTintList(killTaskColor);
+        killButton.setImageTintMode(Mode.MULTIPLY);
         killButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -222,6 +246,13 @@ public class TaskManager {
 
         childs.put(packageName, itemView);
         mTaskManagerList.addView(itemView);
+    }
+
+    private void refreshTitleBox() {
+        final ColorStateList titleTextColor = TMColorHelper.getTaskTitleTextColorList(mContext);
+        final ColorStateList killAllTextColor = TMColorHelper.getKillAllTextColorList(mContext);
+        taskManagerTitle.setTextColor(titleTextColor);
+        killAllButton.setTextColor(killAllTextColor);
     }
 
     private void refreshMemoryusageText(TextView textView) {
@@ -540,7 +571,9 @@ public class TaskManager {
         final TextView textView = (TextView) floatView
                .findViewById(com.android.internal.R.id.message);
 
+        final ColorStateList toastTextColor = RandomColorHelper.getToastTextColorList(mContext);
         textView.setText(mContext.getString(resid));
+        textView.setTextColor(toastTextColor);
         final WindowManager windowManager =
                 (WindowManager) mContext.getSystemService(mContext.WINDOW_SERVICE);
         WindowManager.LayoutParams params = new WindowManager.LayoutParams();

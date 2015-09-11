@@ -7631,6 +7631,60 @@ public final class Settings {
         public static final String ENABLE_TASK_MANAGER = "enable_task_manager";
 
         /**
+         * Change the color of the task manager kill button
+         *
+         * @hide
+         */
+        public static final String TASK_MANAGER_MEMORY_TEXT_COLOR = "task_manager_memory_text_color";
+
+        /**
+         * Change the color of the task manager text
+         *
+         * @hide
+         */
+        public static final String TASK_MANAGER_TASK_TEXT_COLOR = "task_manager_task_text_color";
+
+        /**
+         * Change the color of the task manager title text
+         *
+         * @hide
+         */
+        public static final String TASK_MANAGER_TITLE_TEXT_COLOR = "task_manager_title_text_color";
+
+        /**
+         * Change the color of the task manager app icon
+         *
+         * @hide
+         */
+        public static final String TASK_MANAGER_APP_COLOR = "task_manager_app_color";
+
+        /**
+         * Change the color of the task manager kill button
+         *
+         * @hide
+         */
+        public static final String TASK_MANAGER_TASK_KILL_BUTTON_COLOR = "task_manager_task_kill_button_color";
+
+        /**
+         * Change the color of the task manager kill all button text
+         *
+         * @hide
+         */
+        public static final String TASK_MANAGER_TASK_KILL_ALL_COLOR = "task_manager_task_kill_all_color";
+
+        /**
+         * Slider color of the volume dialog
+         * @hide
+         */
+        public static final String TASK_MANAGER_SLIDER_COLOR = "task_manager_slider_color";
+
+        /**
+         * Inactive color of the volume dialog slider
+         * @hide
+         */
+        public static final String TASK_MANAGER_SLIDER_INACTIVE_COLOR = "task_manager_slider_inactive_color";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
