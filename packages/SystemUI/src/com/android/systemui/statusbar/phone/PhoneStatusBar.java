@@ -343,6 +343,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private boolean mWakeUpComingFromTouch;
     private PointF mWakeUpTouchLocation;
     private boolean mScreenTurningOn;
+    private StatusBarHeaderMachine mStatusBarHeaderMachine;
 
     private ShakeSensorManager mShakeSensorManager;
     private boolean mShakeClean;
@@ -682,6 +683,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_NOTIF_COUNT_TEXT_COLOR),
                     false, this, UserHandle.USER_ALL);*/
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CUSTOM_HEADER_DEFAULT), 
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -879,6 +883,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_NOTIF_COUNT_TEXT_COLOR))) {
                 updateNotifCountTextColor();*/
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CUSTOM_HEADER_DEFAULT))) {
+                    updateHeaderView();
             }
             update();
         }
@@ -3128,8 +3135,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     }
 
     private void showHeadsUpState() {
-        mHeadsUpEnabled = Settings.Global.getInt(mContext.getContentResolver(),
-                Settings.Global.HEADS_UP_NOTIFICATIONS_ENABLED, 0) == 1;
         if (mIconController != null) {
             mIconController.showHeadsUpState(mHeadsUpEnabled);
         }
@@ -3173,6 +3178,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mIconController.updateNotifCountTextColor();
         }
     }*/
+
+    private void updateHeaderView() {
+        if (mStatusBarHeaderMachine != null) {
+            mStatusBarHeaderMachine.updateEnablement();
+        }
+    }
 
     private int adjustDisableFlags(int state) {
         if (!mLaunchTransitionFadingAway && !mKeyguardFadingAway
