@@ -37,6 +37,9 @@ public class QSConstants {
     public static final String TILE_DDS = "dds";
     public static final String TILE_APN = "apn";
     public static final String TILE_VRTOXIN = "vrtoxin_settings";
+    public static final String TILE_SCREENSHOT = "screenshot";
+    public static final String TILE_BRIGHTNESS = "brightness";
+    public static final String TILE_SCREENOFF = "screen_off";
 
     // Order matters
     protected static final ArrayList<String> TILES_DEFAULT = new ArrayList<String>();
@@ -64,5 +67,8 @@ public class QSConstants {
         TILES_AVAILABLE.add(TILE_DDS);
         TILES_AVAILABLE.add(TILE_APN);
         TILES_AVAILABLE.add(TILE_VRTOXIN);
+        TILES_AVAILABLE.add(TILE_SCREENOFF);
+        TILES_AVAILABLE.add(TILE_SCREENSHOT);
+        TILES_AVAILABLE.add(TILE_BRIGHTNESS);
     }
 }
