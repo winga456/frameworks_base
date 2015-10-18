@@ -86,7 +86,7 @@ public class ScreenOffTile extends QSTile<QSTile.BooleanState> {
         state.visible = true;
         state.label = mContext.getString(R.string.quick_settings_screen_off_label);
         state.contentDescription = mContext.getString(
-                R.string.accessibility_quick_settings_screen_off);
+                R.string.quick_settings_screen_off_label);
         state.icon = ResourceIcon.get(R.drawable.ic_qs_power);
     }
 
