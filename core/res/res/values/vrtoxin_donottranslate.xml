@@ -14,13 +14,9 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-  <!-- Hardware key rebinding -->
-  <java-symbol type="integer" name="config_deviceHardwareKeys" />
-  <java-symbol type="integer" name="config_deviceHardwareWakeKeys" />
-
-  <!-- Default name of the custom carrier label -->
-  <java-symbol type="string" name="default_custom_label" />
+    <!-- Default name of the custom carrier label -->
+    <string name="default_custom_label" translatable="false">VRToxin</string>
 
 </resources>
