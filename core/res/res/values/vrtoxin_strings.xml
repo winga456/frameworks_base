@@ -72,4 +72,7 @@
     <string name="global_actions_toggle_pie_mode">Pie control</string>
     <string name="global_actions_toggle_nav_bar">Navigation bar</string>
 
+    <!-- Slimseekbar -->
+    <string name="default_string">Default</string>
+
 </resources>
