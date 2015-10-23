@@ -56,4 +56,7 @@
 
     <!-- Slim Recents End -->
 
+    <!-- Network speed indicator -->
+    <color name="status_bar_traffic_color">#FFFFFFFF</color>
+
 </resources>
