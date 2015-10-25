@@ -88,4 +88,8 @@
         <item name="android:divider">@null</item>
     </style>
 
+    <style name="TextAppearance.StatusBar.WeatherTemp" parent="@*android:style/TextAppearance.StatusBar">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
 </resources>
