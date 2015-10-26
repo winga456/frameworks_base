@@ -3479,6 +3479,12 @@ public final class Settings {
          */
         public static final String STATUS_BAR_CARRIER_LABEL_COLOR = "status_bar_carrier_label_color";
 
+        /**
+         * Whether to show the IME switcher in the status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_IME_SWITCHER = "status_bar_ime_switcher";
+
         // VRToxin end
 
         /**
