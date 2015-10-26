@@ -627,13 +627,12 @@ public final class PowerManagerService extends SystemService
             // Initialize proximity sensor
             mSensorManager = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
             mProximitySensor = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-        }
 
-        // Register for broadcasts from other components of the system.
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_BATTERY_CHANGED);
-        filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
-        mContext.registerReceiver(new BatteryReceiver(), filter, null, mHandler);
+            // Register for broadcasts from other components of the system.
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(Intent.ACTION_BATTERY_CHANGED);
+            filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
+            mContext.registerReceiver(new BatteryReceiver(), filter, null, mHandler);
 
         filter = new IntentFilter();
         filter.addAction(Intent.ACTION_DREAMING_STARTED);
