@@ -7010,6 +7010,12 @@ public final class Settings {
         public static final String PA_PIE_CHEVRON = "pa_pie_chevron";
 
         /**
+         *  Used to block apps from showing in recents
+         * @hide
+         */
+        public static final String BLOCKED_BY_RECENTS = "blocked_by_recents";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
