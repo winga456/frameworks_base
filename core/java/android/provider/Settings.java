@@ -5397,6 +5397,18 @@ public final class Settings {
          */
         public static final String NOTIFICATION_GUTS_BG_COLOR = "notification_bg_guts_color";
 
+	/**
+	 * Enable blocking wakelock
+	 * @hide
+	 */
+	public static final String WAKELOCK_BLOCKING_ENABLED = "wakelock_blocking_enabled";
+
+	/**
+	 * List of wakelock blocks selected
+	 * @hide
+	 */
+	public static final String WAKELOCK_BLOCKING_LIST = "wakelock_blocking_list";
+
         /**
          * Color of the notifications icon background
          * @hide
