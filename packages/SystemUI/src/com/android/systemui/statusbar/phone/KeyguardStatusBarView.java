@@ -35,6 +35,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.internal.util.vrtoxin.StatusBarColorHelper;
+
 import com.android.keyguard.CarrierText;
 
 import com.android.systemui.BatteryMeterView;
@@ -61,6 +63,7 @@ public class KeyguardStatusBarView extends RelativeLayout
     private MultiUserSwitch mMultiUserSwitch;
     private ImageView mMultiUserAvatar;
     private TextView mBatteryLevel;
+    private BatteryMeterView mBatteryMeterView;
 
     private BatteryController mBatteryController;
     private KeyguardUserSwitcher mKeyguardUserSwitcher;
@@ -101,6 +104,7 @@ public class KeyguardStatusBarView extends RelativeLayout
         mMultiUserSwitch = (MultiUserSwitch) findViewById(R.id.multi_user_switch);
         mMultiUserAvatar = (ImageView) findViewById(R.id.multi_user_avatar);
         mBatteryLevel = (TextView) findViewById(R.id.battery_level);
+        mBatteryMeterView = (BatteryMeterView) findViewById(R.id.battery);
         mCarrierLabel = (CarrierText) findViewById(R.id.keyguard_carrier_text);
         loadDimens();
         if (mVRToxinLogoStyle == 0) {
@@ -150,7 +154,7 @@ public class KeyguardStatusBarView extends RelativeLayout
                 VRToxinLogo.setVisibility(View.GONE);
             }
         }
-        mBatteryLevel.setVisibility(mBatteryCharging ? View.VISIBLE : View.GONE);
+        mBatteryLevel.setVisibility(showBattery() && mBatteryCharging && !showBatteryText() ? View.VISIBLE : View.GONE);
     }
 
     private void updateSystemIconsLayoutParams() {
@@ -184,7 +188,7 @@ public class KeyguardStatusBarView extends RelativeLayout
 
     public void setBatteryController(BatteryController batteryController) {
         mBatteryController = batteryController;
-        ((BatteryMeterView) findViewById(R.id.battery)).setBatteryController(batteryController);
+        mBatteryMeterView.setBatteryController(batteryController);
     }
 
     public void setUserSwitcherController(UserSwitcherController controller) {
@@ -320,5 +324,55 @@ public class KeyguardStatusBarView extends RelativeLayout
 
     public void updateCarrierLabelColor() {
         mCarrierLabel.updateColor(false);
+    }
+
+    public void updateBatterySettings() {
+        updateBatteryVisibility();
+        updateBatteryTextVisibility();
+        updateCutOutBatteryText();
+        updateBatteryColor();
+        updateBatteryTextColor();
+    }
+
+    public void updateBatteryVisibility() {
+        mBatteryMeterView.setVisibility(showBattery() ? View.VISIBLE : View.GONE);
+        mBatteryLevel.setVisibility(showBattery() && mBatteryCharging && !showBatteryText() ? View.VISIBLE : View.GONE);
+    }
+
+    public void updateBatteryTextVisibility() {
+        mBatteryMeterView.setTextVisibility(showBatteryText() ? true : false);
+        mBatteryLevel.setVisibility(showBattery() && mBatteryCharging && !showBatteryText() ? View.VISIBLE : View.GONE);
+    }
+
+    public void updateCutOutBatteryText() {
+        mBatteryMeterView.setCutOutBatteryText(cutOutBatteryText() ? true : false);
+    }
+
+    public void updateBatteryColor() {
+        mBatteryMeterView.setBatteryFrameColor(StatusBarColorHelper.getBatteryFrameColor(getContext()));
+        mBatteryMeterView.setBatteryColor(StatusBarColorHelper.getBatteryColor(getContext()));
+    }
+
+    public void updateBatteryTextColor() {
+        mBatteryMeterView.setBatteryTextColor(StatusBarColorHelper.getBatteryTextColor(getContext()));
+        mBatteryLevel.setTextColor(StatusBarColorHelper.getBatteryTextColor(getContext()));
+    }
+
+    private boolean showBattery() {
+        return Settings.System.getIntForUser(getContext().getContentResolver(),
+                Settings.System.STATUS_BAR_BATTERY_STATUS_SHOW_BATTERY, 1,
+                UserHandle.USER_CURRENT) == 1;
+    }
+
+    private boolean showBatteryText() {
+        return Settings.System.getIntForUser(getContext().getContentResolver(),
+                Settings.System.STATUS_BAR_BATTERY_STATUS_SHOW_TEXT, 0,
+                UserHandle.USER_CURRENT) == 1;
+    }
+
+    private boolean cutOutBatteryText() {
+        return Settings.System.getIntForUser(getContext().getContentResolver(),
+                Settings.System.STATUS_BAR_BATTERY_STATUS_CUT_OUT_TEXT, 1,
+                UserHandle.USER_CURRENT) == 1;
     }
 }
