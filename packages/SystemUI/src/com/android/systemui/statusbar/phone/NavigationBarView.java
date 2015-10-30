@@ -422,8 +422,9 @@ public class NavigationBarView extends LinearLayout {
             if (ret) return true;
         }
         if (Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.DOUBLE_TAP_SLEEP_NAVBAR, 1) == 1)
-        mDoubleTapGesture.onTouchEvent(event);
+                    Settings.System.DOUBLE_TAP_SLEEP_NAVBAR, 1) == 1) {
+            mDoubleTapGesture.onTouchEvent(event);
+        }
         return super.onTouchEvent(event);
     }
 
