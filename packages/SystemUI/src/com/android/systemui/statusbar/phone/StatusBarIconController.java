@@ -84,18 +84,20 @@ public class StatusBarIconController {
     private int mIconHPadding;
 
     private int mIconTint = Color.WHITE;
-<<<<<<< HEAD
-=======
-    private int mCarrierLabelColor;
-    private int mClockColor;
     private int mBatteryFrameColorOld;
     private int mBatteryColorOld;
 //    private int mBatteryTint;
     private int mBatteryTextColorOld;
 //    private int mBatteryTextTint;
-    private int mNetworkTrafficTextColor;
-    private int mNetworkTrafficIconColor;
->>>>>>> 104f910... Status bar: Battery customizations, (1/2):
+    private int mNetworkSignalColor;
+    private int mNetworkSignalColorOld;
+    private int mNetworkSignalColorTint;
+    private int mNoSimColor;
+    private int mNoSimColorOld;
+    private int mNoSimColorTint;
+    private int mAirplaneModeColor;
+    private int mAirplaneModeColorOld;
+    private int mAirplaneModeColorTint;
     private float mDarkIntensity;
 
     private boolean mTransitionPending;
@@ -106,18 +108,13 @@ public class StatusBarIconController {
     private int mDarkModeIconColorSingleTone;
     private int mLightModeIconColorSingleTone;
 
-<<<<<<< HEAD
-=======
-    private static final int CLOCK_STYLE_DEFAULT  = 0;
-    private static final int CLOCK_STYLE_CENTERED = 1;
-    private static final int CLOCK_STYLE_HIDDEN   = 2;
-    private int mClockStyle;
-
-    private static final int BATTERY_COLOR      = 0;
-    private static final int BATTERY_TEXT_COLOR = 1;
+    private static final int BATTERY_COLOR        = 0;
+    private static final int BATTERY_TEXT_COLOR   = 1;
+    private static final int NETWORK_SIGNAL_COLOR = 2;
+    private static final int NO_SIM_COLOR         = 3;
+    private static final int AIRPLANE_MODE_COLOR  = 4;
     private int mColorToChange;
 
->>>>>>> 104f910... Status bar: Battery customizations, (1/2):
     private final Handler mHandler;
     private boolean mTransitionDeferring;
     private long mTransitionDeferringStartTime;
@@ -157,16 +154,25 @@ public class StatusBarIconController {
         mLightModeIconColorSingleTone = context.getColor(R.color.light_mode_icon_color_single_tone);
         mHandler = new Handler();
         updateResources();
-<<<<<<< HEAD
-=======
-        TunerService.get(mContext).addTunable(this, ICON_BLACKLIST);
 
+        setUpCustomColors();
+    }
+
+    private void setUpCustomColors() {
         mBatteryFrameColorOld = StatusBarColorHelper.getBatteryFrameColor(mContext);
         mBatteryColorOld = StatusBarColorHelper.getBatteryColor(mContext);
         mBatteryTextColorOld = StatusBarColorHelper.getBatteryTextColor(mContext);
+        mNetworkSignalColor = StatusBarColorHelper.getNetworkSignalColor(mContext);
+        mNetworkSignalColorOld = mNetworkSignalColor;
+        mNetworkSignalColorTint = mNetworkSignalColor;
+        mNoSimColor = StatusBarColorHelper.getNoSimColor(mContext);
+        mNoSimColorOld = mNoSimColor;
+        mNoSimColorTint = mNoSimColor;
+        mAirplaneModeColor = StatusBarColorHelper.getAirplaneModeColor(mContext);
+        mAirplaneModeColorOld = mAirplaneModeColor;
+        mAirplaneModeColorTint = mAirplaneModeColor;
 
         mColorTransitionAnimator = createColorTransitionAnimator(0, 1);
->>>>>>> 104f910... Status bar: Battery customizations, (1/2):
     }
 
     public void updateResources() {
@@ -390,24 +396,16 @@ public class StatusBarIconController {
         mDarkIntensity = darkIntensity;
         mIconTint = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
                 mLightModeIconColorSingleTone, mDarkModeIconColorSingleTone);
-<<<<<<< HEAD
-=======
-        if (DeviceUtils.deviceSupportsMobileData(mContext)) {
-            mCarrierLabelColor = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
-                    mStatusBarCarrierLabel.getColor(), mStatusBarCarrierLabel.getColorDarkMode());
-        }
-        mClockColor = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
-                mClockDefault.getColor(), mClockDefault.getColorDarkMode());
 //        mBatteryTint = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
 //                StatusBarColorHelper.getBatteryColor(mContext), StatusBarColorHelper.getBatteryColorDarkMode(mContext));
 //        mBatteryTextTint = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
 //                StatusBarColorHelper.getBatteryTextColor(mContext), StatusBarColorHelper.getBatteryTextColorDarkMode(mContext));
-        mNetworkTrafficTextColor = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
-                mNetworkTraffic.getTextColor(), mNetworkTraffic.getTextColorDarkMode());
-        mNetworkTrafficIconColor = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
-                mNetworkTraffic.getIconColor(), mNetworkTraffic.getIconColorDarkMode());
-
->>>>>>> 104f910... Status bar: Battery customizations, (1/2):
+        mNetworkSignalColorTint = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
+                mNetworkSignalColor, StatusBarColorHelper.getNetworkSignalColorDark(mContext));
+        mNoSimColorTint = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
+                mNoSimColor, StatusBarColorHelper.getNoSimColorDark(mContext));
+        mAirplaneModeColorTint = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
+                mAirplaneModeColor, StatusBarColorHelper.getAirplaneModeColorDark(mContext));
         applyIconTint();
     }
 
@@ -424,12 +422,10 @@ public class StatusBarIconController {
             StatusBarIconView v = (StatusBarIconView) mStatusIcons.getChildAt(i);
             v.setImageTintList(ColorStateList.valueOf(mIconTint));
         }
-        mSignalCluster.setIconTint(mIconTint, mDarkIntensity);
+        mSignalCluster.setIconTint(
+                mNetworkSignalColorTint, mNoSimColorTint, mAirplaneModeColorTint, mDarkIntensity);
         mMoreIcon.setImageTintList(ColorStateList.valueOf(mIconTint));
-<<<<<<< HEAD
         mBatteryMeterView.setDarkIntensity(mDarkIntensity);
-        mClock.setTextColor(mIconTint);
-=======
 //        if (showBattery()) {
 //            mBatteryMeterView.setBatteryColor(mBatteryTint);
 //            mBatteryColorOld = mBatteryTint;
@@ -438,11 +434,6 @@ public class StatusBarIconController {
 //                mBatteryTextColorOld = mBatteryTextTint;
 //            }
 //        }
-        mClockDefault.setTextColor(mClockColor);
-        mClockCentered.setTextColor(mClockColor);
-        mNetworkTraffic.setTextColor(mNetworkTrafficTextColor);
-        mNetworkTraffic.setIconColor(mNetworkTrafficIconColor);
->>>>>>> 104f910... Status bar: Battery customizations, (1/2):
         applyNotificationIconsTint();
     }
 
@@ -532,6 +523,18 @@ public class StatusBarIconController {
                     blended = ColorHelper.getBlendColor(
                             mBatteryTextColorOld, StatusBarColorHelper.getBatteryTextColor(mContext), position);
                     mBatteryMeterView.setBatteryTextColor(blended);
+                } else if (mColorToChange == NETWORK_SIGNAL_COLOR) {
+                    blended = ColorHelper.getBlendColor(
+                            mNetworkSignalColorOld, mNetworkSignalColor, position);
+                    mSignalCluster.applyNetworkSignalTint(blended);
+                } else if (mColorToChange == NO_SIM_COLOR) {
+                    blended = ColorHelper.getBlendColor(
+                            mNoSimColorOld, mNoSimColor, position);
+                    mSignalCluster.applyNoSimTint(blended);
+                } else if (mColorToChange == AIRPLANE_MODE_COLOR) {
+                    blended = ColorHelper.getBlendColor(
+                            mAirplaneModeColorOld, mAirplaneModeColor, position);
+                    mSignalCluster.applyAirplaneModeTint(blended);
                 }
             }
         });
@@ -543,6 +546,12 @@ public class StatusBarIconController {
                     mBatteryColorOld = StatusBarColorHelper.getBatteryColor(mContext);
                 } else if (mColorToChange == BATTERY_TEXT_COLOR) {
                     mBatteryTextColorOld = StatusBarColorHelper.getBatteryTextColor(mContext);
+                } else if (mColorToChange == NETWORK_SIGNAL_COLOR) {
+                    mNetworkSignalColorOld = mNetworkSignalColor;
+                } else if (mColorToChange == NO_SIM_COLOR) {
+                    mNoSimColorOld = mNoSimColor;
+                } else if (mColorToChange == AIRPLANE_MODE_COLOR) {
+                    mAirplaneModeColorOld = mAirplaneModeColor;
                 }
             }
         });
@@ -551,41 +560,6 @@ public class StatusBarIconController {
 
     public int getCurrentVisibleNotificationIcons() {
         return mNotificationIcons.getChildCount();
-    }
-<<<<<<< HEAD
-=======
-
-    public void setClockStyle(int clockStyle) {
-        mClockStyle = clockStyle;
-
-        switch (mClockStyle) {
-            case CLOCK_STYLE_DEFAULT:
-                mClockCentered.setVisibility(View.GONE);
-                mCenterClockLayout.setVisibility(View.GONE);
-                mClockDefault.setVisibility(View.VISIBLE);
-                break;
-            case CLOCK_STYLE_CENTERED:
-                mClockDefault.setVisibility(View.GONE);
-                mCenterClockLayout.setVisibility(View.VISIBLE);
-                mClockCentered.setVisibility(View.VISIBLE);
-                break;
-            case CLOCK_STYLE_HIDDEN:
-                mClockDefault.setVisibility(View.GONE);
-                mCenterClockLayout.setVisibility(View.GONE);
-                mClockCentered.setVisibility(View.GONE);
-                break;
-        }
-        mNotificationIcons.setCenteredClock(mClockStyle == CLOCK_STYLE_CENTERED);
-    }
-
-    public void updateClockSettings() {
-        mClockDefault.updateSettings();
-        mClockCentered.updateSettings();
-    }
-
-    public void updateClockColor(boolean animate) {
-        mClockDefault.updateClockColor(animate);
-        mClockCentered.updateClockColor(animate);
     }
 
     public void updateBatterySettings() {
@@ -647,5 +621,34 @@ public class StatusBarIconController {
                 Settings.System.STATUS_BAR_BATTERY_STATUS_CUT_OUT_TEXT, 1,
                 UserHandle.USER_CURRENT) == 1;
     }
->>>>>>> 104f910... Status bar: Battery customizations, (1/2):
+
+    public void updateNetworkIconColors() {
+        mNetworkSignalColor = StatusBarColorHelper.getNetworkSignalColor(mContext);
+        mNoSimColor = StatusBarColorHelper.getNoSimColor(mContext);
+        mAirplaneModeColor = StatusBarColorHelper.getAirplaneModeColor(mContext);
+        mNetworkSignalColorOld = mNetworkSignalColor;
+        mNoSimColorOld = mNoSimColor;
+        mAirplaneModeColorOld = mAirplaneModeColor;
+
+        mSignalCluster.setIgnoreSystemUITuner(true);
+        mSignalCluster.setIconTint(mNetworkSignalColor, mNoSimColor, mAirplaneModeColor, mDarkIntensity);
+    }
+
+    public void updateNetworkSignalColor() {
+        mNetworkSignalColor = StatusBarColorHelper.getNetworkSignalColor(mContext);
+        mColorToChange = NETWORK_SIGNAL_COLOR;
+        mColorTransitionAnimator.start();
+    }
+
+    public void updateNoSimColor() {
+        mNoSimColor = StatusBarColorHelper.getNoSimColor(mContext);
+        mColorToChange = NO_SIM_COLOR;
+        mColorTransitionAnimator.start();
+    }
+
+    public void updateAirplaneModeColor() {
+        mAirplaneModeColor = StatusBarColorHelper.getAirplaneModeColor(mContext);
+        mColorToChange = AIRPLANE_MODE_COLOR;
+        mColorTransitionAnimator.start();
+    }
 }

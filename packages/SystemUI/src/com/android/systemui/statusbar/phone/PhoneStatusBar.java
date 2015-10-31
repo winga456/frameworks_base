@@ -733,6 +733,15 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.STATUS_BAR_BATTERY_STATUS_BATTERY_COLOR))) {
                 updateBatteryColor();
             } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_NETWORK_ICONS_SIGNAL_COLOR))) {
+                updateNetworkSignalColor();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_NETWORK_ICONS_NO_SIM_COLOR))) {
+                updateNoSimColor();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_NETWORK_ICONS_AIRPLANE_MODE_COLOR))) {
+                updateAirplaneModeColor();
+            } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_BATTERY_STATUS_TEXT_COLOR))) {
                 updateBatteryTextColor();
             } else if (uri.equals(Settings.System.getUriFor(
@@ -1592,6 +1601,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         setKeyguardTextAndIconColors();
         setVRToxinLogoVisibility();
         updateBattery();
+        updateNetworkIconColors();
         return mStatusBarView;
     }
 
@@ -2703,6 +2713,42 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
         if (mKeyguardStatusBar != null) {
             mKeyguardStatusBar.updateBatteryTextColor();
+        }
+    }
+
+    private void updateNetworkIconColors() {
+        if (mIconController != null) {
+            mIconController.updateNetworkIconColors();
+        }
+        if (mKeyguardStatusBar != null) {
+            mKeyguardStatusBar.updateNetworkIconColors();
+        }
+    }
+
+    private void updateNetworkSignalColor() {
+        if (mIconController != null) {
+            mIconController.updateNetworkSignalColor();
+        }
+        if (mKeyguardStatusBar != null) {
+            mKeyguardStatusBar.updateNetworkIconColors();
+        }
+    }
+
+    private void updateNoSimColor() {
+        if (mIconController != null) {
+            mIconController.updateNoSimColor();
+        }
+        if (mKeyguardStatusBar != null) {
+            mKeyguardStatusBar.updateNoSimColor();
+        }
+    }
+
+    private void updateAirplaneModeColor() {
+        if (mIconController != null) {
+            mIconController.updateAirplaneModeColor();
+        }
+        if (mKeyguardStatusBar != null) {
+            mKeyguardStatusBar.updateAirplaneModeColor();
         }
     }
 
