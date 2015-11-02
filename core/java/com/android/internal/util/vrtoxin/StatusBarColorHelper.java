@@ -25,18 +25,8 @@ public class StatusBarColorHelper {
     private static final int WHITE             = 0xffffffff;
     private static final int TRANSLUCENT_BLACK = 0x7a000000;
 
-
     public static int getBatteryFrameColor(Context context) {
-        final int batteryColor = getBatteryColor(context);
-        int frameColor;
-
-        if (Color.alpha(batteryColor) == 122) {
-            frameColor = (61 << 24) | (batteryColor & 0x00ffffff);
-        } else {
-            frameColor = (77 << 24) | (batteryColor & 0x00ffffff);
-        }
-
-        return frameColor;
+        return (77 << 24) | (getBatteryColor(context) & 0x00ffffff);
     }
 
     public static int getBatteryColor(Context context) {
@@ -49,13 +39,17 @@ public class StatusBarColorHelper {
                 Settings.System.STATUS_BAR_BATTERY_STATUS_TEXT_COLOR, WHITE);
     }
 
-    public static int getBatteryColorDarkMode(Context context) {
-        return Settings.System.getInt(context.getContentResolver(),
-                Settings.System.STATUS_BAR_BATTERY_STATUS_BATTERY_COLOR_DARK_MODE,
-                TRANSLUCENT_BLACK);
+    public static int getBatteryFrameColorDark(Context context) {
+        return getBatteryColorDark(context);
     }
 
-    public static int getBatteryTextColorDarkMode(Context context) {
+    public static int getBatteryColorDark(Context context) {
+        return  (61 << 24) | (Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_BATTERY_STATUS_BATTERY_COLOR_DARK_MODE,
+                TRANSLUCENT_BLACK) & 0x00ffffff);
+    }
+
+    public static int getBatteryTextColorDark(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
                 Settings.System.STATUS_BAR_BATTERY_STATUS_TEXT_COLOR_DARK_MODE,
                 TRANSLUCENT_BLACK);
