@@ -86,6 +86,10 @@ public class StatusBarIconController {
     private int mIconHPadding;
 
     private int mIconTint = Color.WHITE;
+
+    private int mStatusIconsColor;
+    private int mStatusIconsColorOld;
+    private int mStatusIconsColorTint;
     private int mBatteryFrameColor;
     private int mBatteryFrameColorOld;
     private int mBatteryFrameColorTint;
@@ -114,11 +118,13 @@ public class StatusBarIconController {
     private int mDarkModeIconColorSingleTone;
     private int mLightModeIconColorSingleTone;
 
-    private static final int BATTERY_COLOR        = 0;
-    private static final int BATTERY_TEXT_COLOR   = 1;
-    private static final int NETWORK_SIGNAL_COLOR = 2;
-    private static final int NO_SIM_COLOR         = 3;
-    private static final int AIRPLANE_MODE_COLOR  = 4;
+    private static final int STATUS_ICONS_COLOR         = 0;
+    private static final int CARRIER_LABEL_COLOR        = 1;
+    private static final int BATTERY_COLOR              = 2;
+    private static final int BATTERY_TEXT_COLOR         = 3;
+    private static final int NETWORK_SIGNAL_COLOR       = 4;
+    private static final int NO_SIM_COLOR               = 5;
+    private static final int AIRPLANE_MODE_COLOR        = 6;
     private int mColorToChange;
 
     private final Handler mHandler;
@@ -165,6 +171,9 @@ public class StatusBarIconController {
     }
 
     private void setUpCustomColors() {
+        mStatusIconsColor = StatusBarColorHelper.getStatusIconsColor(mContext);
+        mStatusIconsColorOld = mStatusIconsColor;
+        mStatusIconsColorTint = mStatusIconsColor;
         mBatteryFrameColor = StatusBarColorHelper.getBatteryFrameColor(mContext);
         mBatteryFrameColorOld = mBatteryFrameColor;
         mBatteryFrameColorTint = mBatteryFrameColor;
@@ -206,6 +215,7 @@ public class StatusBarIconController {
         mStatusIconsKeyguard.addView(view, viewIndex, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, mIconSize));
         applyIconTint();
+        updateStatusIconsKeyguardColor();
     }
 
     public void updateSystemIcon(String slot, int index, int viewIndex,
@@ -215,6 +225,7 @@ public class StatusBarIconController {
         view = (StatusBarIconView) mStatusIconsKeyguard.getChildAt(viewIndex);
         view.set(icon);
         applyIconTint();
+        updateStatusIconsKeyguardColor();
     }
 
     public void removeSystemIcon(String slot, int index, int viewIndex) {
@@ -408,6 +419,8 @@ public class StatusBarIconController {
         mDarkIntensity = darkIntensity;
         mIconTint = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
                 mLightModeIconColorSingleTone, mDarkModeIconColorSingleTone);
+        mStatusIconsColorTint = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
+                mStatusIconsColor, StatusBarColorHelper.getStatusIconsColorDark(mContext));
         mBatteryFrameColorTint = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
                 mBatteryFrameColor,  StatusBarColorHelper.getBatteryFrameColorDark(mContext));
         mBatteryColorTint = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
@@ -434,7 +447,7 @@ public class StatusBarIconController {
     private void applyIconTint() {
         for (int i = 0; i < mStatusIcons.getChildCount(); i++) {
             StatusBarIconView v = (StatusBarIconView) mStatusIcons.getChildAt(i);
-            v.setImageTintList(ColorStateList.valueOf(mIconTint));
+            v.setImageTintList(ColorStateList.valueOf(mStatusIconsColorTint));
         }
         mSignalCluster.setIconTint(
                 mNetworkSignalColorTint, mNoSimColorTint, mAirplaneModeColorTint, mDarkIntensity);
@@ -519,7 +532,14 @@ public class StatusBarIconController {
                 float position = animation.getAnimatedFraction();
                 int blendedFrame;
                 int blended;
-                if (mColorToChange == BATTERY_COLOR) {
+                if (mColorToChange == STATUS_ICONS_COLOR) {
+                    blended = ColorHelper.getBlendColor(
+                            mStatusIconsColorOld, mStatusIconsColor, position);
+                    for (int i = 0; i < mStatusIcons.getChildCount(); i++) {
+                        StatusBarIconView v = (StatusBarIconView) mStatusIcons.getChildAt(i);
+                        v.setImageTintList(ColorStateList.valueOf(blended));
+                    }
+                } else if (mColorToChange == BATTERY_COLOR) {
                     blendedFrame = ColorHelper.getBlendColor(
                             mBatteryFrameColorOld, mBatteryFrameColor, position);
                     blended = ColorHelper.getBlendColor(
@@ -547,7 +567,10 @@ public class StatusBarIconController {
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (mColorToChange == BATTERY_COLOR) {
+                if (mColorToChange == STATUS_ICONS_COLOR) {
+                    mStatusIconsColorOld = mStatusIconsColor;
+                    mStatusIconsColorTint = mStatusIconsColor;
+                } else if (mColorToChange == BATTERY_COLOR) {
                     mBatteryFrameColorOld = mBatteryFrameColor;
                     mBatteryColorOld = mBatteryColor;
                     mBatteryFrameColorTint = mBatteryFrameColor;
@@ -569,6 +592,27 @@ public class StatusBarIconController {
 
     public int getCurrentVisibleNotificationIcons() {
         return mNotificationIcons.getChildCount();
+    }
+
+    public void updateStatusIconsColor() {
+        mStatusIconsColor = StatusBarColorHelper.getStatusIconsColor(mContext);
+        if (mStatusIcons.getChildCount() > 0) {
+            mColorToChange = STATUS_ICONS_COLOR;
+            mColorTransitionAnimator.start();
+        } else {
+            mStatusIconsColorOld = mStatusIconsColor;
+            mStatusIconsColorTint = mStatusIconsColor;
+        }
+        updateStatusIconsKeyguardColor();
+    }
+
+    public void updateStatusIconsKeyguardColor() {
+        if (mStatusIconsKeyguard.getChildCount() > 0) {
+            for (int index = 0; index < mStatusIconsKeyguard.getChildCount(); index++) {
+                StatusBarIconView v = (StatusBarIconView) mStatusIconsKeyguard.getChildAt(index);
+                v.setImageTintList(ColorStateList.valueOf(mStatusIconsColor));
+            }
+        }
     }
 
     public void updateBatterySettings() {

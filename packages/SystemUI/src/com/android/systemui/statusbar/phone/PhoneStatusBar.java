@@ -609,6 +609,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_BATTERY_STATUS_TEXT_COLOR),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_STATUS_ICONS_COLOR),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -744,6 +747,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_BATTERY_STATUS_TEXT_COLOR))) {
                 updateBatteryTextColor();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_STATUS_ICONS_COLOR))) {
+                updateStatusIconsColor();
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.BATTERY_SAVER_MODE_COLOR))) {
                     mBatterySaverWarningColor = Settings.System.getIntForUser(
@@ -2749,6 +2755,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
         if (mKeyguardStatusBar != null) {
             mKeyguardStatusBar.updateAirplaneModeColor();
+        }
+    }
+
+    private void updateStatusIconsColor() {
+        if (mIconController != null) {
+            mIconController.updateStatusIconsColor();
         }
     }
 
