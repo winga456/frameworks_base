@@ -41,6 +41,7 @@ public class QSConstants {
     public static final String TILE_BRIGHTNESS = "brightness";
     public static final String TILE_SCREENOFF = "screen_off";
     public static final String TILE_VOLUME = "volume";
+    public static final String TILE_EXPANDED_DESKTOP = "expanded_desktop";
 
     // Order matters
     protected static final ArrayList<String> TILES_DEFAULT = new ArrayList<String>();
@@ -72,5 +73,6 @@ public class QSConstants {
         TILES_AVAILABLE.add(TILE_SCREENSHOT);
         TILES_AVAILABLE.add(TILE_BRIGHTNESS);
         TILES_AVAILABLE.add(TILE_VOLUME);
+        TILES_AVAILABLE.add(TILE_EXPANDED_DESKTOP);
     }
 }

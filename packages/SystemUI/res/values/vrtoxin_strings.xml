@@ -57,4 +57,14 @@
     <string name="quick_settings_screenshot_label">Screenshot</string>
     <string name="quick_settings_volume_panel_label">Volume Panel</string>
 
+    <!-- Expanded desktop tile -->
+    <string name="quick_settings_expanded_desktop_label">Expanded desktop</string>
+    <string name="quick_settings_expanded_desktop">Expanded</string>
+    <string name="quick_settings_expanded_desktop_off">Normal</string>
+    <string name="quick_settings_expanded_desktop_detail_title">Expanded desktop mode</string>
+    <string name="quick_settings_expanded_hide_status">Hide status bar</string>
+    <string name="quick_settings_expanded_hide_navigation">Hide navigation bar</string>
+    <string name="quick_settings_expanded_hide_both">Hide both</string>
+    <string name="accessibility_quick_settings_expanded_desktop_off">Expanded desktop disabled</string>
+
 </resources>
