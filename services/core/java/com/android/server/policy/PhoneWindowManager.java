@@ -443,6 +443,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     boolean mDeskDockEnablesAccelerometer;
     int mLidKeyboardAccessibility;
     int mLidNavigationAccessibility;
+    boolean mLidControlsScreenLock;
     boolean mLidControlsSleep;
     int mShortPressOnPowerBehavior;
     int mLongPressOnPowerBehavior;
@@ -1817,6 +1818,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 com.android.internal.R.integer.config_lidKeyboardAccessibility);
         mLidNavigationAccessibility = mContext.getResources().getInteger(
                 com.android.internal.R.integer.config_lidNavigationAccessibility);
+        mLidControlsScreenLock = mContext.getResources().getBoolean(
+                com.android.internal.R.bool.config_lidControlsScreenLock);
         mLidControlsSleep = mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_lidControlsSleep);
         mTranslucentDecorEnabled = mContext.getResources().getBoolean(
@@ -7774,7 +7777,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                             PowerManager.GO_TO_SLEEP_REASON_LID_SWITCH,
                             PowerManager.GO_TO_SLEEP_FLAG_NO_DOZE);
                 }
-
+            } else if (mLidState == LID_CLOSED && mLidControlsScreenLock) {
+                mWindowManagerFuncs.lockDeviceNow();
             }
 
             synchronized (mLock) {
@@ -8393,6 +8397,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         pw.print(prefix); pw.print("mLidKeyboardAccessibility=");
                 pw.print(mLidKeyboardAccessibility);
                 pw.print(" mLidNavigationAccessibility="); pw.print(mLidNavigationAccessibility);
+                pw.print(" mLidControlsScreenLock="); pw.println(mLidControlsScreenLock);
                 pw.print(" mLidControlsSleep="); pw.println(mLidControlsSleep);
         pw.print(prefix);
                 pw.print("mShortPressOnPowerBehavior="); pw.print(mShortPressOnPowerBehavior);
