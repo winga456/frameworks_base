@@ -127,6 +127,7 @@ import com.android.internal.util.vrtoxin.ActionConfig;
 import com.android.internal.util.vrtoxin.ActionConstants;
 import com.android.internal.util.vrtoxin.ActionHelper;
 import com.android.internal.util.vrtoxin.Blur;
+import com.android.internal.util.vrtoxin.DUPackageMonitor;
 import com.android.internal.util.vrtoxin.FontHelper;
 import com.android.internal.util.vrtoxin.WeatherControllerImpl;
 import com.android.internal.util.vrtoxin.GreetingTextHelper;
@@ -189,6 +190,8 @@ import com.android.systemui.statusbar.policy.KeyguardMonitor;
 import com.android.systemui.statusbar.policy.KeyguardUserSwitcher;
 import com.android.systemui.statusbar.policy.LocationControllerImpl;
 import com.android.systemui.statusbar.policy.MinitBattery;
+import com.android.systemui.statusbar.policy.MinitBatteryController;
+import com.android.systemui.statusbar.policy.NetworkController;
 import com.android.systemui.statusbar.policy.NetworkControllerImpl;
 import com.android.systemui.statusbar.policy.NextAlarmController;
 import com.android.systemui.statusbar.policy.PreviewInflater;
@@ -328,6 +331,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     FingerprintUnlockController mFingerprintUnlockController;
     WeatherControllerImpl mWeatherController;
     SuControllerImpl mSuController;
+    MinitBatteryController mMinitBatteryController;
 
     int mNaturalBarHeight = -1;
 
@@ -469,6 +473,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mLinger = BRIGHTNESS_CONTROL_LINGER_THRESHOLD + 1;
         }
     };
+
+    private DUPackageMonitor mPackageMonitor;
 
     private int mBlurRadius;
     private Bitmap mBlurredImage = null;
@@ -1542,6 +1548,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         PanelHolder holder = (PanelHolder) mStatusBarWindow.findViewById(R.id.panel_holder);
 
+        mPackageMonitor = new DUPackageMonitor();
+        mPackageMonitor.register(mContext, mHandler);
+
         mStatusBarView.setPanelHolder(holder);
 
         mNotificationPanel = (NotificationPanelView) mStatusBarWindow.findViewById(
@@ -1702,6 +1711,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         // set the inital view visibility
         setAreThereNotifications();
 
+        mMinitBatteryController = new MinitBatteryController(mContext, mStatusBarView, mHeader, mKeyguardStatusBar);
+        mPackageMonitor.addListener(mMinitBatteryController);
+
         mIconController = new StatusBarIconController(
                 mContext, mStatusBarView, mKeyguardStatusBar, this);
 
@@ -1858,12 +1870,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mVisualizerView.setKeyguardMonitor(mKeyguardMonitor);
         mHeader.setWeatherController(mWeatherController);
         mHeader.setNextAlarmController(mNextAlarmController);
-
-        MinitBattery mb = (MinitBattery) mStatusBarView.findViewById(R.id.minitBattery);
-        if (!mb.isSetup()) {
-            BatteryMeterView bmv = (BatteryMeterView) mStatusBarView.findViewById(R.id.battery);
-            bmv.setVisibility(View.VISIBLE);
-        }
 
         PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
         mBroadcastReceiver.onReceive(mContext,
@@ -4986,6 +4992,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
         mContext.unregisterReceiver(mBroadcastReceiver);
         mContext.unregisterReceiver(mDemoReceiver);
+        mPackageMonitor.removeListener(mMinitBatteryController);
+        mPackageMonitor.unregister();
         mAssistManager.destroy();
 
         final SignalClusterView signalCluster =
