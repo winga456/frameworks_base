@@ -88,11 +88,8 @@ import android.view.MotionEvent;
 import android.view.ThreadedRenderer;
 import android.view.VelocityTracker;
 import android.view.View;
-<<<<<<< HEAD
-=======
 import android.view.WindowManagerGlobal;
 import android.view.ViewConfiguration;
->>>>>>> b16a02f... SystemUI : Port forward statusbar brightness control
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewStub;
 import android.view.WindowManager;
@@ -739,9 +736,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         addNavigationBar();
 
         // Status bar settings observer
-        SettingsObserver observer = new SettingsObserver(mHandler);
-        observer.observe();
-
         SettingsObserver observer = new SettingsObserver(mHandler);
         observer.observe();
 
