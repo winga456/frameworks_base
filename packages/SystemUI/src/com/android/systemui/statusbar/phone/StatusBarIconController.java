@@ -42,8 +42,6 @@ import com.android.systemui.R;
 import com.android.systemui.statusbar.NotificationData;
 import com.android.systemui.statusbar.SignalClusterView;
 import com.android.systemui.statusbar.StatusBarIconView;
-import com.android.systemui.tuner.TunerService;
-import com.android.systemui.tuner.TunerService.Tunable;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -53,7 +51,7 @@ import java.util.ArrayList;
  * limited to: notification icons, signal cluster, additional status icons, and clock in the status
  * bar.
  */
-public class StatusBarIconController implements Tunable {
+public class StatusBarIconController {
 
     public static final long DEFAULT_TINT_ANIMATION_DURATION = 120;
 
@@ -127,31 +125,7 @@ public class StatusBarIconController implements Tunable {
         mLightModeIconColorSingleTone = context.getColor(R.color.light_mode_icon_color_single_tone);
         mHandler = new Handler();
         updateResources();
-
-        TunerService.get(mContext).addTunable(this, ICON_BLACKLIST);
     }
-
-    @Override
-    public void onTuningChanged(String key, String newValue) {
-        if (!ICON_BLACKLIST.equals(key)) {
-            return;
-        }
-        mIconBlacklist.clear();
-        mIconBlacklist.addAll(getIconBlacklist(newValue));
-        ArrayList<StatusBarIconView> views = new ArrayList<StatusBarIconView>();
-        // Get all the current views.
-        for (int i = 0; i < mStatusIcons.getChildCount(); i++) {
-            views.add((StatusBarIconView) mStatusIcons.getChildAt(i));
-        }
-        // Remove all the icons.
-        for (int i = views.size() - 1; i >= 0; i--) {
-            removeSystemIcon(views.get(i).getSlot(), i, i);
-        }
-        // Add them all back
-        for (int i = 0; i < views.size(); i++) {
-            addSystemIcon(views.get(i).getSlot(), i, i, views.get(i).getStatusBarIcon());
-        }
-    };
 
     public void updateResources() {
         mIconSize = mContext.getResources().getDimensionPixelSize(

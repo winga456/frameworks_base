@@ -49,8 +49,6 @@ import com.android.systemui.statusbar.policy.RotationLockController;
 import com.android.systemui.statusbar.policy.SecurityController;
 import com.android.systemui.statusbar.policy.UserSwitcherController;
 import com.android.systemui.statusbar.policy.ZenModeController;
-import com.android.systemui.tuner.TunerService;
-import com.android.systemui.tuner.TunerService.Tunable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,7 +58,7 @@ import java.util.List;
 import java.util.Map;
 
 /** Platform implementation of the quick settings tile host **/
-public class QSTileHost implements QSTile.Host, Tunable {
+public class QSTileHost implements QSTile.Host {
     private static final String TAG = "QSTileHost";
     private static final boolean DEBUG = Log.isLoggable(TAG, Log.DEBUG);
 
@@ -111,11 +109,9 @@ public class QSTileHost implements QSTile.Host, Tunable {
         ht.start();
         mLooper = ht.getLooper();
 
-        TunerService.get(mContext).addTunable(this, TILES_SETTING);
     }
 
     public void destroy() {
-        TunerService.get(mContext).removeTunable(this);
     }
 
     @Override
@@ -204,42 +200,6 @@ public class QSTileHost implements QSTile.Host, Tunable {
 
     public SecurityController getSecurityController() {
         return mSecurity;
-    }
-    
-    @Override
-    public void onTuningChanged(String key, String newValue) {
-        if (!TILES_SETTING.equals(key)) {
-            return;
-        }
-        if (DEBUG) Log.d(TAG, "Recreating tiles");
-        final List<String> tileSpecs = loadTileSpecs(newValue);
-        if (tileSpecs.equals(mTileSpecs)) return;
-        for (Map.Entry<String, QSTile<?>> tile : mTiles.entrySet()) {
-            if (!tileSpecs.contains(tile.getKey())) {
-                if (DEBUG) Log.d(TAG, "Destroying tile: " + tile.getKey());
-                tile.getValue().destroy();
-            }
-        }
-        final LinkedHashMap<String, QSTile<?>> newTiles = new LinkedHashMap<>();
-        for (String tileSpec : tileSpecs) {
-            if (mTiles.containsKey(tileSpec)) {
-                newTiles.put(tileSpec, mTiles.get(tileSpec));
-            } else {
-                if (DEBUG) Log.d(TAG, "Creating tile: " + tileSpec);
-                try {
-                    newTiles.put(tileSpec, createTile(tileSpec));
-                } catch (Throwable t) {
-                    Log.w(TAG, "Error creating tile for spec: " + tileSpec, t);
-                }
-            }
-        }
-        mTileSpecs.clear();
-        mTileSpecs.addAll(tileSpecs);
-        mTiles.clear();
-        mTiles.putAll(newTiles);
-        if (mCallback != null) {
-            mCallback.onTilesChanged();
-        }
     }
 
     protected QSTile<?> createTile(String tileSpec) {
