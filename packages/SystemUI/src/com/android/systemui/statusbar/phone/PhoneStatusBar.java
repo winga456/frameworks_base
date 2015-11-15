@@ -537,14 +537,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.SLIM_RECENTS_USE_TEXT_COLOR),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-<<<<<<< HEAD
                     Settings.System.SLIM_RECENTS_USE_EXPAND_ICON_COLOR),
-=======
-                    Settings.System.STATUS_BAR_BATTERY_STATUS_SHOW_CHARGE_ANIMATION),
-                    false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_BATTERY_STATUS_CUT_OUT_TEXT),
->>>>>>> 80c6487... Status bar: Battery charging animation option, (1/2)
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.SLIM_RECENTS_CARD_BG_COLOR),
@@ -602,10 +595,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.BATTERY_SAVER_MODE_COLOR),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_BATTERY_STATUS_SHOW_BATTERY),
+                    Settings.System.STATUS_BAR_BATTERY_STATUS_ICON_INDICATOR),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_BATTERY_STATUS_SHOW_TEXT),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BATTERY_STATUS_SHOW_CHARGE_ANIMATION),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_BATTERY_STATUS_CUT_OUT_TEXT),
@@ -621,6 +617,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_NOTIFICATION_ICONS_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BATTERY_STATUS_CIRCLE_DOT_INTERVAL),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BATTERY_STATUS_CIRCLE_DOT_LENGTH),
                     false, this, UserHandle.USER_ALL);
             update();
         }
@@ -734,11 +736,16 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.STATUS_BAR_VRTOXIN_LOGO_NUMBER_OF_NOTIFICATION_ICONS))) {
                     setVRToxinLogoVisibility();
             } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_BATTERY_STATUS_SHOW_BATTERY))) {
-                updateBatteryVisibility();
+                    Settings.System.STATUS_BAR_BATTERY_STATUS_ICON_INDICATOR))) {
+                updateBatteryIndicator();
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_BATTERY_STATUS_SHOW_TEXT))) {
                 updateBatteryTextVisibility();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BATTERY_STATUS_CIRCLE_DOT_INTERVAL))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_BATTERY_STATUS_CIRCLE_DOT_LENGTH))) {
+                updateBatteryCircleDots();
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_BATTERY_STATUS_SHOW_CHARGE_ANIMATION))) {
                 updateShowChargeAnimation();
@@ -2509,9 +2516,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     }
 
     private void updateSettings() {
-        updateBatteryVisibility();
+        updateBatteryIndicator();
         updateBatteryTextVisibility();
         updateShowChargeAnimation();
+        updateBatteryCircleDots();
         updateCutOutBatteryText();
         updateBatteryColors(false);
         updateStatusNetworkIconColors(false);
@@ -2688,11 +2696,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     }
 
-    private void updateBatteryVisibility() {
-        final boolean show = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.STATUS_BAR_BATTERY_STATUS_SHOW_BATTERY, 1) == 1;
+    private void updateBatteryIndicator() {
+        final int indicator = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_BATTERY_STATUS_ICON_INDICATOR, 0);
         if (mIconController != null) {
-            mIconController.updateBatteryVisibility(show);
+            mIconController.updateBatteryIndicator(indicator);
         }
     }
 
@@ -2701,6 +2709,16 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 Settings.System.STATUS_BAR_BATTERY_STATUS_SHOW_TEXT, 0) == 1;
         if (mIconController != null) {
             mIconController.updateBatteryTextVisibility(show);
+        }
+    }
+
+    private void updateBatteryCircleDots() {
+        final int interval = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_BATTERY_STATUS_CIRCLE_DOT_INTERVAL, 0);
+        final int length = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_BATTERY_STATUS_CIRCLE_DOT_LENGTH, 0);
+        if (mIconController != null) {
+            mIconController.updateBatteryCircleDots(interval, length);
         }
     }
 
