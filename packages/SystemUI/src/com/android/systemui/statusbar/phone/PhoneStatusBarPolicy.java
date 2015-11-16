@@ -271,12 +271,18 @@ public class PhoneStatusBarPolicy implements Callback {
                 Settings.System.SHOW_VOLUME_ICON, 1) == 1;
             volumeIconId = R.drawable.stat_sys_ringer_silent;
             volumeDescription = mContext.getString(R.string.accessibility_ringer_silent);
-        } else if (mZen != Global.ZEN_MODE_NO_INTERRUPTIONS && mZen != Global.ZEN_MODE_ALARMS &&
-                audioManager.getRingerModeInternal() == AudioManager.RINGER_MODE_VIBRATE) {
-            volumeVisible = Settings.System.getInt(mContext.getContentResolver(),
+        } else if (mZen != Global.ZEN_MODE_NO_INTERRUPTIONS && mZen != Global.ZEN_MODE_ALARMS) {
+            if (audioManager.getRingerModeInternal() == AudioManager.RINGER_MODE_VIBRATE) {
+                volumeVisible = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.SHOW_VOLUME_ICON, 1) == 1;
-            volumeIconId = R.drawable.stat_sys_ringer_vibrate;
-            volumeDescription = mContext.getString(R.string.accessibility_ringer_vibrate);
+                volumeIconId = R.drawable.stat_sys_ringer_vibrate;
+                volumeDescription = mContext.getString(R.string.accessibility_ringer_vibrate);
+            } else if(audioManager.getRingerModeInternal() == AudioManager.RINGER_MODE_SILENT) {
+                volumeVisible = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.SHOW_VOLUME_ICON, 1) == 1;
+                volumeIconId = R.drawable.stat_sys_ringer_silent;
+                volumeDescription = mContext.getString(R.string.accessibility_ringer_silent);
+            }
         }
 
         if (zenVisible) {
