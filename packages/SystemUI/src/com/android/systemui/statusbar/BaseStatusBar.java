@@ -2364,7 +2364,6 @@ public abstract class BaseStatusBar extends SystemUI implements
         }
     }
 
-<<<<<<< HEAD
     Runnable mKillTask = new Runnable() {
         public void run() {
             final Intent intent = new Intent(Intent.ACTION_MAIN);
