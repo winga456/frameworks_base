@@ -5689,6 +5689,36 @@ public final class Settings {
         public static final String KEY_VOICEMAIL_BREATH = "voicemail_breath";
 
         /**
+         *  Weather to show a greeting on the status bar after unlocking the device
+         * @hide
+         */
+        public static final String STATUS_BAR_GREETING_SHOW_GREETING = "status_bar_greeting_show_greeting";
+
+        /**
+         *  Text used for the greeting on the status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_GREETING_CUSTOM_TEXT = "status_bar_greeting_custom_text";
+
+        /**
+         *  Timeout for the greeting on the status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_GREETING_TIMEOUT = "status_bar_greeting_timeout";
+
+        /**
+         *  Color of the greeting text on the status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_GREETING_COLOR = "status_bar_greeting_color";
+
+        /**
+         *  Color of the greeting text on the status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_GREETING_COLOR_DARK_MODE = "status_bar_greeting_color_dark_mode";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *

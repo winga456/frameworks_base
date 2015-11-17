@@ -51,6 +51,7 @@ import com.android.systemui.R;
 import com.android.systemui.statusbar.NotificationData;
 import com.android.systemui.statusbar.SignalClusterView;
 import com.android.systemui.statusbar.StatusBarIconView;
+import com.android.systemui.statusbar.policy.Clock;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -65,6 +66,9 @@ public class StatusBarIconController {
     public static final long DEFAULT_TINT_ANIMATION_DURATION = 120;
 
     public static final String ICON_BLACKLIST = "icon_blacklist";
+
+    private static final int GREETING_ALWAYS = 0;
+    private static final int GREETING_HIDDEN = 2;
 
     private static final int BATTERY_COLORS              = 0;
     private static final int STATUS_NETWORK_ICON_COLORS  = 1;
@@ -82,6 +86,8 @@ public class StatusBarIconController {
     private LinearLayout mStatusIconsKeyguard;
     private SignalClusterView mSignalCluster;
     private SignalClusterView mSignalClusterKeyguard;
+    private LinearLayout mGreetingLayout;
+    private TextView mGreetingView;
     private IconMerger mNotificationIcons;
     private View mNotificationIconArea;
     private ImageView mMoreIcon;
@@ -89,6 +95,10 @@ public class StatusBarIconController {
     private BatteryMeterView mBatteryMeterViewKeyguard;
     private TextView mBatteryLevelKeyguard;
     private TextView mClock;
+    private TextView mClockView;
+    private int mClockLocation;
+    private int mGreetingColor;
+    private int mGreetingColorTint;
     private int mBatteryColor;
     private int mBatteryColorOld;
     private int mBatteryColorTint;
@@ -121,6 +131,10 @@ public class StatusBarIconController {
     private Animator mColorTransitionAnimator;
     private ValueAnimator mTintAnimator;
 
+    private int mShowGreeting;
+    private boolean mHideGreeting = false;
+    private int mGreetingTimeout;
+    private boolean mIsGreetingVisible = false;
     private int mColorToChange;
 
     private final Handler mHandler;
@@ -148,6 +162,8 @@ public class StatusBarIconController {
         mSignalCluster = (SignalClusterView) statusBar.findViewById(R.id.signal_cluster);
         mSignalClusterKeyguard = (SignalClusterView) keyguardStatusBar.findViewById(R.id.signal_cluster);
         mNotificationIconArea = statusBar.findViewById(R.id.notification_icon_area_inner);
+        mGreetingLayout = (LinearLayout) statusBar.findViewById(R.id.status_bar_greeting_layout);
+        mGreetingView = (TextView) statusBar.findViewById(R.id.status_bar_greeting_view);
         mNotificationIcons = (IconMerger) statusBar.findViewById(R.id.notificationIcons);
         mMoreIcon = (ImageView) statusBar.findViewById(R.id.moreIcon);
         mNotificationIcons.setOverflowIndicator(mMoreIcon);
@@ -167,6 +183,8 @@ public class StatusBarIconController {
     }
 
     private void setUpCustomColors() {
+        mGreetingColor = StatusBarColorHelper.getGreetingColor(mContext);
+        mGreetingColorTint = mGreetingColor;
         mBatteryColor = StatusBarColorHelper.getBatteryColor(mContext);
         mBatteryColorOld = mBatteryColor;
         mBatteryColorTint = mBatteryColor;
@@ -285,12 +303,49 @@ public class StatusBarIconController {
         applyNotificationIconsTint();
     }
 
+    public void showGreeting(boolean isPreview) {
+        if (mIsGreetingVisible) {
+            return;
+        }
+        mIsGreetingVisible = true;
+        if (isPreview) {
+            hideSystemIconArea(true);
+            hideNotificationIconArea(true);
+        } else {
+            animateHide(mSystemIconArea, false);
+            if (mClockLocation == Clock.STYLE_CLOCK_CENTER) {
+                animateHide(mClockView, false);
+            }
+            animateHide(mNotificationIconArea, false);
+        }
+        animateShow(mGreetingLayout, true, true);
+    }
+
+    public void hideGreeting() {
+        animateShow(mSystemIconArea, true);
+        if (mClockLocation == Clock.STYLE_CLOCK_CENTER) {
+            animateShow(mClockView, true);
+        }
+        animateShow(mNotificationIconArea, true);
+        animateHide(mGreetingLayout, true, true);
+    }
+
     public void hideSystemIconArea(boolean animate) {
         animateHide(mSystemIconArea, animate);
+        if (mClockLocation == Clock.STYLE_CLOCK_CENTER) {
+            animateHide(mClockView, animate);
+        }
     }
 
     public void showSystemIconArea(boolean animate) {
-        animateShow(mSystemIconArea, animate);
+        if (mShowGreeting != GREETING_HIDDEN && !mHideGreeting && animate) {
+            showGreeting(false);
+        } else {
+            animateShow(mSystemIconArea, animate);
+            if (mClockLocation == Clock.STYLE_CLOCK_CENTER) {
+                animateShow(mClockView, animate);
+            }
+        }
     }
 
     public void hideNotificationIconArea(boolean animate) {
@@ -298,7 +353,9 @@ public class StatusBarIconController {
     }
 
     public void showNotificationIconArea(boolean animate) {
-        animateShow(mNotificationIconArea, animate);
+        if (mShowGreeting == GREETING_HIDDEN || mHideGreeting || !animate) {
+            animateShow(mNotificationIconArea, animate);
+        }
     }
 
     public void setClockVisibility(boolean visible) {
@@ -321,10 +378,14 @@ public class StatusBarIconController {
         mDemoStatusIcons.dispatchDemoCommand(command, args);
     }
 
+    private void animateHide(final View v, boolean animate) {
+        animateHide(v, animate, false);
+    }
+
     /**
      * Hides a view.
      */
-    private void animateHide(final View v, boolean animate) {
+    private void animateHide(final View v, boolean animate, final boolean isGreeting) {
         v.animate().cancel();
         if (!animate) {
             v.setAlpha(0f);
@@ -334,20 +395,28 @@ public class StatusBarIconController {
         v.animate()
                 .alpha(0f)
                 .setDuration(160)
-                .setStartDelay(0)
+                .setStartDelay(mIsGreetingVisible && isGreeting ? mGreetingTimeout : 0)
                 .setInterpolator(PhoneStatusBar.ALPHA_OUT)
                 .withEndAction(new Runnable() {
                     @Override
                     public void run() {
                         v.setVisibility(View.INVISIBLE);
+                        if (isGreeting) {
+                            mIsGreetingVisible = false;
+                            mHideGreeting = true;
+                        }
                     }
                 });
+    }
+
+    private void animateShow(View v, boolean animate) {
+        animateShow(v, animate, false);
     }
 
     /**
      * Shows a view, and synchronizes the animation with Keyguard exit animations, if applicable.
      */
-    private void animateShow(View v, boolean animate) {
+    private void animateShow(View v, boolean animate, boolean isGreeting) {
         v.animate().cancel();
         v.setVisibility(View.VISIBLE);
         if (!animate) {
@@ -358,15 +427,26 @@ public class StatusBarIconController {
                 .alpha(1f)
                 .setDuration(320)
                 .setInterpolator(PhoneStatusBar.ALPHA_IN)
-                .setStartDelay(50)
+                .setStartDelay(mIsGreetingVisible && !isGreeting ? mGreetingTimeout : 50);
 
-                // We need to clean up any pending end action from animateHide if we call
-                // both hide and show in the same frame before the animation actually gets started.
-                // cancel() doesn't really remove the end action.
-                .withEndAction(null);
+        if (isGreeting) {
+            v.animate()
+                    .withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            hideGreeting();
+                        }
+                    });
+        } else {
+            // We need to clean up any pending end action from animateHide if we call
+            // both hide and show in the same frame before the animation actually gets started.
+            // cancel() doesn't really remove the end action.
+            v.animate()
+                    .withEndAction(null);
+        }
 
         // Synchronize the motion with the Keyguard fading if necessary.
-        if (mPhoneStatusBar.isKeyguardFadingAway()) {
+        if (mPhoneStatusBar.isKeyguardFadingAway() && !mIsGreetingVisible && !isGreeting) {
             v.animate()
                     .setDuration(mPhoneStatusBar.getKeyguardFadingAwayDuration())
                     .setInterpolator(mLinearOutSlowIn)
@@ -410,7 +490,9 @@ public class StatusBarIconController {
 
     private void setIconTintInternal(float darkIntensity) {
         mDarkIntensity = darkIntensity;
-        mBatteryColorTint = (int) ArgbEvaluator.getInstance().evaluate(mDarkIntensity,
+        mGreetingColorTint = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
+                mGreetingColor,  StatusBarColorHelper.getGreetingColorDark(mContext));
+        mBatteryColorTint = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
                 mBatteryColor, StatusBarColorHelper.getBatteryColorDark(mContext));
         mBatteryTextColorTint = (int) ArgbEvaluator.getInstance().evaluate(mDarkIntensity,
                 mBatteryTextColor, StatusBarColorHelper.getBatteryTextColorDark(mContext));
@@ -436,6 +518,7 @@ public class StatusBarIconController {
     }
 
     private void applyIconTint() {
+        mGreetingView.setTextColor(mGreetingColorTint);
         mBatteryMeterView.setBatteryColors(mBatteryColorTint);
         mBatteryMeterView.setTextColor(mBatteryTextColorTint);
         mSignalCluster.setIconTint(
@@ -567,6 +650,29 @@ public class StatusBarIconController {
             }
         });
         return animator;
+    }
+
+    public void resetHideGreeting() {
+        if (mShowGreeting == GREETING_ALWAYS) {
+            mHideGreeting = false;
+        }
+    }
+    public void updateShowGreeting(int show) {
+        mShowGreeting = show;
+    }
+
+    public void updateGreetingText(String text) {
+        mGreetingView.setText(text);
+    }
+
+    public void updateGreetingTimeout(int timeout) {
+        mGreetingTimeout = timeout;
+    }
+
+    public void updateGreetingColor() {
+        mGreetingColor = StatusBarColorHelper.getGreetingColor(mContext);
+        mGreetingView.setTextColor(mGreetingColor);
+        mGreetingColorTint = mGreetingColor;
     }
 
     public void updateBatteryIndicator(int indicator) {

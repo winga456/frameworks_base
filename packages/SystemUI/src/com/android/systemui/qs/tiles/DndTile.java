@@ -127,6 +127,7 @@ public class DndTile extends QSTile<QSTile.BooleanState> {
             return;
         }
 
+        Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.setClassName("com.android.settings",
             "com.android.settings.Settings$ZenModeSettingsActivity");
         mHost.startActivityDismissingKeyguard(intent);
