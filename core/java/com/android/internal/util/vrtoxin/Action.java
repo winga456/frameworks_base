@@ -166,7 +166,7 @@ public class Action {
                 } catch (RemoteException e) {
                 }
                 return;
-            } else if (action.equals(ActionConstants.ACTION_PIE)) {
+            /*} else if (action.equals(ActionConstants.ACTION_PIE)) {
                 boolean pieState = isPieEnabled(context);
                 if (pieState && !isNavBarEnabled(context) && isNavBarDefault(context)) {
                     Toast.makeText(context,
