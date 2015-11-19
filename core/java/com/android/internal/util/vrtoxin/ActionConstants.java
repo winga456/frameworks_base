@@ -55,6 +55,11 @@ public class ActionConstants {
     public static final String ACTION_MEDIA_PLAY_PAUSE     = "**media_play_pause**";
     public static final String ACTION_WAKE_DEVICE          = "**wake_device**";
     public static final String ACTION_SMART_PULLDOWN       = "**smart_pulldown**";
+    public static final String ACTION_RESTARTUI          = "**restartui**";
+    public static final String ACTION_APP_CIRCLE_BAR       = "**appcirclebar**";
+    public static final String ACTION_APP_SIDEBAR          = "**appsidebar**";
+    public static final String ACTION_GESTURE_ANYWHERE     = "**gesture_anywhere**";
+    public static final String ACTION_HWKEYS               = "**hwkeys**";
 
     // no action
     public static final String ACTION_NULL            = "**null**";

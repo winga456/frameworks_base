@@ -30,7 +30,6 @@ import android.os.UserHandle;
 import android.util.Log;
 
 import com.android.internal.util.vrtoxin.ImageHelper;
-import com.android.internal.util.vrtoxin.ActionConstants;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -293,6 +292,9 @@ public class ActionHelper {
         } else if (clickAction.equals(ActionConstants.ACTION_TORCH)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_torch", null, null);
+        } else if (clickAction.equals(ActionConstants.ACTION_EXPANDED_DESKTOP)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_expanded_desktop", null, null);
         } else if (clickAction.equals(ActionConstants.ACTION_LAST_APP)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_lastapp", null, null);
@@ -323,6 +325,36 @@ public class ActionHelper {
         } else if (clickAction.equals(ActionConstants.ACTION_VIB_SILENT)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_ring_vib_silent", null, null);
+        } else if (clickAction.equals(ActionConstants.ACTION_SCREENSHOT)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_screenshot", null, null);
+        } else if (clickAction.equals(ActionConstants.ACTION_THEME_SWITCH)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_theme_switch", null, null);
+        } else if (clickAction.equals(ActionConstants.ACTION_PIE)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_pie", null, null);
+        } else if (clickAction.equals(ActionConstants.ACTION_NAVBAR)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_navbar", null, null);
+        } else if (clickAction.equals(ActionConstants.ACTION_PA_PIE)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_lock_pa_pie", null, null);
+        } else if (clickAction.equals(ActionConstants.ACTION_RESTARTUI)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_systemui_restart", null, null);
+        } else if (clickAction.equals(ActionConstants.ACTION_APP_CIRCLE_BAR)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_appcirclebar_on", null, null);
+        } else if (clickAction.equals(ActionConstants.ACTION_APP_SIDEBAR)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_sidebar_on", null, null);
+        } else if (clickAction.equals(ActionConstants.ACTION_GESTURE_ANYWHERE)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_gestures_on", null, null);
+        } else if (clickAction.equals(ActionConstants.ACTION_HWKEYS)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_buttons_on", null, null);
         } else {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_null", null, null);

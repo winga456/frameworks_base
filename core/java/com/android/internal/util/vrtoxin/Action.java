@@ -166,7 +166,7 @@ public class Action {
                 } catch (RemoteException e) {
                 }
                 return;
-            /*} else if (action.equals(ActionConstants.ACTION_PIE)) {
+            } else if (action.equals(ActionConstants.ACTION_PIE)) {
                 boolean pieState = isPieEnabled(context);
                 if (pieState && !isNavBarEnabled(context) && isNavBarDefault(context)) {
                     Toast.makeText(context,
@@ -347,6 +347,63 @@ public class Action {
                 } catch (RemoteException e) {
                 }
                 return;
+            } else if (action.equals(ActionConstants.ACTION_RESTARTUI)) {
+                if (isKeyguardShowing && isKeyguardSecure) {
+                    return;
+                }
+                Helpers.restartSystemUI();
+            } else if (action.equals(ActionConstants.ACTION_APP_CIRCLE_BAR)) {
+                boolean circleBarState = isCircleBarEnabled(context);
+                if (circleBarState && !isNavBarEnabled(context) && isNavBarDefault(context)) {
+                    Toast.makeText(context,
+                            com.android.internal.R.string.disable_pie_navigation_error,
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Settings.System.putIntForUser(
+                        context.getContentResolver(),
+                        Settings.System.ENABLE_APP_CIRCLE_BAR,
+                        circleBarState ? 0 : 1, UserHandle.USER_CURRENT);
+                return;
+            } else if (action.equals(ActionConstants.ACTION_APP_SIDEBAR)) {
+                boolean sideBarState = isSideBarEnabled(context);
+                if (sideBarState && !isNavBarEnabled(context) && isNavBarDefault(context)) {
+                    Toast.makeText(context,
+                            com.android.internal.R.string.disable_pie_navigation_error,
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Settings.System.putIntForUser(
+                        context.getContentResolver(),
+                        Settings.System.APP_SIDEBAR_ENABLED,
+                        sideBarState ? 0 : 1, UserHandle.USER_CURRENT);
+                return;
+            } else if (action.equals(ActionConstants.ACTION_GESTURE_ANYWHERE)) {
+                boolean gestureAnywhereState = isGestureAnywhereEnabled(context);
+                if (gestureAnywhereState && !isNavBarEnabled(context) && isNavBarDefault(context)) {
+                    Toast.makeText(context,
+                            com.android.internal.R.string.disable_pie_navigation_error,
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Settings.System.putIntForUser(
+                        context.getContentResolver(),
+                        Settings.System.GESTURE_ANYWHERE_ENABLED,
+                        gestureAnywhereState ? 0 : 1, UserHandle.USER_CURRENT);
+                return;
+            } else if (action.equals(ActionConstants.ACTION_HWKEYS)) {
+                boolean hWKeysState = isHWKeysEnabled(context);
+                if (hWKeysState && !isNavBarEnabled(context) && isNavBarDefault(context)) {
+                    Toast.makeText(context,
+                            com.android.internal.R.string.disable_pie_navigation_error,
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Settings.System.putIntForUser(
+                        context.getContentResolver(),
+                        Settings.System.ENABLE_HW_KEYS,
+                        hWKeysState ? 0 : 1, UserHandle.USER_CURRENT);
+                return;
             } else {
                 // we must have a custom uri
                 Intent intent = null;
@@ -361,7 +418,7 @@ public class Action {
             }
 
     }
-/*
+
     public static boolean isPieEnabled(Context context) {
         return Settings.System.getIntForUser(context.getContentResolver(),
                 Settings.System.PIE_CONTROLS,
@@ -377,6 +434,30 @@ public class Action {
     public static boolean isNavBarDefault(Context context) {
         return context.getResources().getBoolean(
                 com.android.internal.R.bool.config_showNavigationBar);
+    }
+
+    public static boolean isCircleBarEnabled(Context context) {
+        return Settings.System.getIntForUser(context.getContentResolver(),
+                Settings.System.ENABLE_APP_CIRCLE_BAR,
+                0, UserHandle.USER_CURRENT) == 1;
+    }
+    
+    public static boolean isSideBarEnabled(Context context) {
+        return Settings.System.getIntForUser(context.getContentResolver(),
+                Settings.System.APP_SIDEBAR_ENABLED,
+                0, UserHandle.USER_CURRENT) == 1;
+    }
+    
+    public static boolean isGestureAnywhereEnabled(Context context) {
+        return Settings.System.getIntForUser(context.getContentResolver(),
+                Settings.System.GESTURE_ANYWHERE_ENABLED,
+                0, UserHandle.USER_CURRENT) == 1;
+    }
+
+    public static boolean isHWKeysEnabled(Context context) {
+        return Settings.System.getIntForUser(context.getContentResolver(),
+                Settings.System.ENABLE_HW_KEYS,
+                0, UserHandle.USER_CURRENT) == 1;
     }
 
     public static boolean isActionKeyEvent(String action) {
