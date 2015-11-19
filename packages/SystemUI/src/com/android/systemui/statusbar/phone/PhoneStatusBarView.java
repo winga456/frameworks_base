@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2008 The Android Open Source Project
+ * Copyright (C) 2015 CyanideL
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +19,19 @@ package com.android.systemui.statusbar.phone;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.database.ContentObserver;
+import android.graphics.PorterDuff.Mode;
+import android.net.Uri;
+import android.os.Handler;
+import android.os.UserHandle;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.EventLog;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.android.internal.util.gesture.EdgeGesturePosition;
 import com.android.systemui.DejankUtils;
@@ -49,8 +58,21 @@ public class PhoneStatusBarView extends PanelBar {
         }
     };
 
+    // VRToxin Logo shit
+    private int mVRToxinLogo;
+    private ImageView VRToxinLogo;
+    private int mVRToxinLogoStyle;
+
+    private ContentObserver mObserver = new ContentObserver(new Handler()) {
+        public void onChange(boolean selfChange, Uri uri) {
+            showVRToxinLogo();
+            updateVisibilities();
+        }
+    };
+
     public PhoneStatusBarView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        showVRToxinLogo();
 
         Resources res = getContext().getResources();
         mBarTransitions = new PhoneStatusBarTransitions(this);
@@ -68,9 +90,35 @@ public class PhoneStatusBarView extends PanelBar {
         mScrimController = scrimController;
     }
 
+    private void showVRToxinLogo() {
+        mVRToxinLogo = Settings.System.getIntForUser(getContext().getContentResolver(),
+                Settings.System.STATUS_BAR_VRTOXIN_LOGO_SHOW, 0, UserHandle.USER_CURRENT);
+        mVRToxinLogoStyle = Settings.System.getIntForUser(
+                mContext.getContentResolver(), Settings.System.STATUS_BAR_VRTOXIN_LOGO_STYLE, 0,
+                UserHandle.USER_CURRENT);
+    }
+
     @Override
     public void onFinishInflate() {
+        if (mVRToxinLogoStyle == 0) {
+            VRToxinLogo = (ImageView) findViewById(R.id.left_vrtoxin_logo);
+        } else {
+            VRToxinLogo = (ImageView) findViewById(R.id.vrtoxin_logo);
+        }
+        updateVisibilities();
         mBarTransitions.init();
+    }
+
+    private void updateVisibilities() {
+        if (VRToxinLogo != null) {
+            if (mVRToxinLogo == 2) {
+                VRToxinLogo.setVisibility(View.VISIBLE);
+            } else if (mVRToxinLogo == 3) {
+                VRToxinLogo.setVisibility(View.VISIBLE);
+            } else {
+                VRToxinLogo.setVisibility(View.GONE);
+            }
+        }
     }
 
     @Override
@@ -209,5 +257,17 @@ public class PhoneStatusBarView extends PanelBar {
     private void updateScrimFraction() {
         float scrimFraction = Math.max(mPanelFraction - mMinFraction / (1.0f - mMinFraction), 0);
         mScrimController.setPanelExpansion(scrimFraction);
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                "status_bar_vrtoxinlogo_show"), false, mObserver);
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
     }
 }

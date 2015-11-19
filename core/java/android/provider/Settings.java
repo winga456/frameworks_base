@@ -5011,6 +5011,45 @@ public final class Settings {
         public static final String HW_KEYS_ENABLED = "hw_keys_enabled";
 
         /**
+		 * Statusbar CyanideL logo
+		 * @hide
+		 */
+		public static final String STATUS_BAR_VRTOXIN_LOGO_SHOW = "status_bar_vrtoxin_logo_show";
+
+        /**
+		 * Style of Status bar logo
+         * 0 - Left (default)
+         * 1 - Right
+         * @hide
+		 */
+		public static final String STATUS_BAR_VRTOXIN_LOGO_STYLE = "status_bar_vrtoxin_logo_style";
+
+        /**
+         * Wether to hide the VRToxin logo on the status bar when the custom number of notifications is reached
+         * @hide
+         */
+        public static final String STATUS_BAR_VRTOXIN_LOGO_HIDE_LOGO = "status_bar_vrtoxin_logo_hide_logo";
+
+        /**
+         * Hide the VRToxin logo on the status bar when the notification icons will reach this number
+         * 1: 1 notification icon (always)
+         * 2: 2 notification icons
+         * 3: 3 notification icons
+         * 4: 4 notification icons
+         * 5: 5 notification icons
+         * 6: 6 notification icons
+         * default: 1
+         * @hide
+         */
+        public static final String STATUS_BAR_VRTOXIN_LOGO_NUMBER_OF_NOTIFICATION_ICONS = "status_bar_vrtoxin_logo_number_of_notification_icons";
+
+		/**
+		 * Statusbar CyanideL logo color setting
+		 * @hide
+		 */
+		public static final String STATUS_BAR_VRTOXIN_LOGO_COLOR = "status_bar_cyanide_logo_color";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *

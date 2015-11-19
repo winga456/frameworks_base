@@ -48,6 +48,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.Typeface;
@@ -390,9 +391,15 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private long mKeyguardFadingAwayDuration;
 
     int mKeyguardMaxNotificationCount;
+
     // battery
     private BatteryMeterView mBatteryView;
     private BatteryLevelTextView mBatteryLevel;
+
+    // VRToxin logo
+    private ImageView mVRToxinLogo;
+    private int mVRToxinLogoStyle;
+    private int mVRToxinLogoColor;
 
     boolean mExpandedVisible;
 
@@ -567,6 +574,21 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_BATTERY_STATUS_TEXT_COLOR),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_VRTOXIN_LOGO_SHOW),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+					Settings.System.STATUS_BAR_VRTOXIN_LOGO_STYLE),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+					Settings.System.STATUS_BAR_VRTOXIN_LOGO_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_VRTOXIN_LOGO_HIDE_LOGO),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_VRTOXIN_LOGO_NUMBER_OF_NOTIFICATION_ICONS),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -665,6 +687,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_BATTERY_STATUS_TEXT_COLOR))) {
                 updateBatteryLevelTextColor();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_VRTOXIN_LOGO_SHOW))
+                    || uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_VRTOXIN_LOGO_HIDE_LOGO))
+                    || uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_VRTOXIN_LOGO_NUMBER_OF_NOTIFICATION_ICONS))) {
+                    setVRToxinLogoVisibility();
             }
             update();
         }
@@ -687,6 +716,14 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 removeSidebarView();
                 addSidebarView();
             }
+
+            mVRToxinLogoStyle = Settings.System.getIntForUser(
+                    resolver, Settings.System.STATUS_BAR_VRTOXIN_LOGO_STYLE, 0,
+                    UserHandle.USER_CURRENT);
+
+            mVRToxinLogoColor = Settings.System.getIntForUser(resolver,
+                    Settings.System.STATUS_BAR_VRTOXIN_LOGO_COLOR, 0xFFFFFFFF, mCurrentUserId);
+            showVRToxinLogo(mVRToxinLogoColor);
 
             mWeatherTempStyle = Settings.System.getIntForUser(
                     resolver, Settings.System.STATUS_BAR_WEATHER_TEMP_STYLE, 0,
@@ -826,6 +863,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 break;
         }
         mWeatherTempView.setVisibility(View.VISIBLE);
+    }
+
+    public void showVRToxinLogo(int color) {
+        if (mStatusBarView == null) return;
+        ContentResolver resolver = mContext.getContentResolver();
+        mVRToxinLogo.setColorFilter(color, Mode.SRC_IN);
     }
 
     private boolean isPieEnabled() {
@@ -1376,6 +1419,15 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     mHandler);
         }
 
+        mVRToxinLogoStyle = Settings.System.getIntForUser(
+                mContext.getContentResolver(), Settings.System.STATUS_BAR_VRTOXIN_LOGO_STYLE, 0,
+                UserHandle.USER_CURRENT);
+        if (mVRToxinLogoStyle == 0) {
+            mVRToxinLogo = (ImageView) mStatusBarView.findViewById(R.id.left_vrtoxin_logo);
+        } else {
+            mVRToxinLogo = (ImageView) mStatusBarView.findViewById(R.id.vrtoxin_logo);
+        }
+
         mWeatherTempStyle = Settings.System.getIntForUser(
                 mContext.getContentResolver(), Settings.System.STATUS_BAR_WEATHER_TEMP_STYLE, 0,
                 UserHandle.USER_CURRENT);
@@ -1479,6 +1531,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         setLockScreenCarrierLabelVisibility();
         setWeatherTempVisibility();
         updateBatteryLevelTextColor();
+        setVRToxinLogoVisibility();
 
         return mStatusBarView;
     }
@@ -2040,6 +2093,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mIconController.updateNotificationIcons(mNotificationData);
         setCarrierLabelVisibility();
         setWeatherTempVisibility();
+        setVRToxinLogoVisibility();
     }
 
     @Override
@@ -2461,6 +2515,37 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mWeatherTempView.setVisibility(View.GONE);
             mWeatherTempView = (TextView) mStatusBarView.findViewById(R.id.left_weather_temp);
             setWeatherTempVisibility();
+        }
+    }
+
+    private void setVRToxinLogoVisibility() {
+        final ContentResolver resolver = mContext.getContentResolver();
+
+        final boolean showStat = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_VRTOXIN_LOGO_SHOW, 0) == 2;
+        final boolean showStatLock = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_VRTOXIN_LOGO_SHOW, 0) == 3;
+
+        final boolean forceHide = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_VRTOXIN_LOGO_HIDE_LOGO, 1) == 1;
+        final int maxAllowedIcons = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_VRTOXIN_LOGO_NUMBER_OF_NOTIFICATION_ICONS, 1);
+        boolean forceHideByNumberOfIcons = false;
+        int currentVisibleNotificationIcons = 0;
+
+        if (mNotificationIcons != null) {
+            currentVisibleNotificationIcons = mNotificationIcons.getChildCount();
+        }
+        if (forceHide && currentVisibleNotificationIcons >= maxAllowedIcons) {
+            forceHideByNumberOfIcons = true;
+        }
+        if (mVRToxinLogo != null && showStat) {
+            mVRToxinLogo.setVisibility(showStat && !forceHideByNumberOfIcons
+                    ? View.VISIBLE : View.GONE);
+        }
+        if (mVRToxinLogo != null && showStatLock) {
+            mVRToxinLogo.setVisibility(showStatLock && !forceHideByNumberOfIcons
+                    ? View.VISIBLE : View.GONE);
         }
     }
 

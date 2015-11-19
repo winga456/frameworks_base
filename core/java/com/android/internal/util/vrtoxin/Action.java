@@ -44,6 +44,7 @@ import android.view.KeyEvent;
 import android.view.WindowManagerGlobal;
 import android.widget.Toast;
 
+import com.vrtoxin.util.Helpers;
 import com.android.internal.statusbar.IStatusBarService;
 
 import java.net.URISyntaxException;
@@ -401,7 +402,7 @@ public class Action {
                 }
                 Settings.System.putIntForUser(
                         context.getContentResolver(),
-                        Settings.System.ENABLE_HW_KEYS,
+                        Settings.System.HW_KEYS_ENABLED,
                         hWKeysState ? 0 : 1, UserHandle.USER_CURRENT);
                 return;
             } else {
@@ -456,7 +457,7 @@ public class Action {
 
     public static boolean isHWKeysEnabled(Context context) {
         return Settings.System.getIntForUser(context.getContentResolver(),
-                Settings.System.ENABLE_HW_KEYS,
+                Settings.System.HW_KEYS_ENABLED,
                 0, UserHandle.USER_CURRENT) == 1;
     }
 

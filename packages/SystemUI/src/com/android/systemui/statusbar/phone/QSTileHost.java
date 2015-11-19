@@ -289,7 +289,7 @@ public class QSTileHost implements QSTile.Host {
 				return new ExpandedDesktopTile(this);
             case QSConstants.TILE_SCREEN_TIMEOUT:
 				return new ScreenTimeoutTile(this);
-            case QSConstants.TILE_USB_TETHER:
+            case QSConstants.TILE_USB_TETHERING:
 				return new ScreenTimeoutTile(this);
             case QSConstants.TILE_AMBIENT_DISPLAY:
 				return new AmbientDisplayTile(this);
