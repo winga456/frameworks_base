@@ -239,9 +239,6 @@ public class QSTileHost implements QSTile.Host {
         }
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
     private QSTile<?> createTile(String tileSpec) {
         if (tileSpec.startsWith(IntentTile.PREFIX)) {
             return IntentTile.create(this, tileSpec);
