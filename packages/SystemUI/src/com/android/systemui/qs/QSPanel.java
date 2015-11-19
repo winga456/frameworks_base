@@ -786,7 +786,7 @@ public class QSPanel extends ViewGroup {
                 1, UserHandle.USER_CURRENT) == 1;
             mUseMainTiles = Settings.System.getIntForUser(
             mContext.getContentResolver(), Settings.System.QS_USE_MAIN_TILES,
-                1, UserHandle.USER_CURRENT) == 1;
+                0, UserHandle.USER_CURRENT) == 1;
         }
     }
 }
