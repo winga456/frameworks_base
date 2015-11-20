@@ -25,10 +25,21 @@
     android:baselineAligned="false"
     >
 
+    <com.android.systemui.statusbar.AlphaImageView
+        android:id="@+id/vrtoxin_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/status_bar_header_height"
+        android:layout_alignParentEnd="true"
+        android:paddingEnd="2dp"
+        android:src="@drawable/ic_status_bar_vrtoxin_logo"
+        android:scaleType="center"
+        android:visibility="gone" />
+
     <com.android.systemui.statusbar.phone.MultiUserSwitch android:id="@+id/multi_user_switch"
         android:layout_width="@dimen/multi_user_switch_width_keyguard"
         android:layout_height="@dimen/status_bar_header_height_keyguard"
-        android:layout_alignParentEnd="true"
+        android:layout_toStartOf="@id/vrtoxin_logo"
+        android:layout_alignWithParentIfMissing="true"
         android:background="@drawable/ripple_drawable"
         android:layout_marginEnd="@dimen/multi_user_switch_keyguard_margin">
         <ImageView android:id="@+id/multi_user_avatar"
@@ -75,5 +86,14 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="#ffffff"
         android:singleLine="true" />
+
+    <com.android.systemui.statusbar.AlphaImageView
+        android:id="@+id/left_vrtoxin_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/status_bar_header_height"
+        android:paddingStart="2dp"
+        android:src="@drawable/ic_status_bar_vrtoxin_logo"
+        android:scaleType="center"
+        android:visibility="gone" />
 
 </com.android.systemui.statusbar.phone.KeyguardStatusBarView>

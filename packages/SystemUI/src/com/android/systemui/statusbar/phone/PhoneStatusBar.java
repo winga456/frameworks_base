@@ -690,6 +690,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_VRTOXIN_LOGO_SHOW))
                     || uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_VRTOXIN_LOGO_STYLE))
+                    || uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_VRTOXIN_LOGO_COLOR))
+                    || uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_VRTOXIN_LOGO_HIDE_LOGO))
                     || uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_VRTOXIN_LOGO_NUMBER_OF_NOTIFICATION_ICONS))) {
