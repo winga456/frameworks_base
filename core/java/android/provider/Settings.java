@@ -5396,6 +5396,15 @@ public final class Settings {
         public static final String NOTIFICATION_CLEAR_ALL_ICON_COLOR = "notification_clear_all_icon_color";
 
         /**
+         * MediaScanner behavior on boot.
+         * 0 = enabled
+         * 1 = ask (notification)
+         * 2 = disabled
+         * @hide
+         */
+        public static final String MEDIA_SCANNER_ON_BOOT = "media_scanner_on_boot";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
