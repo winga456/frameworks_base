@@ -4895,7 +4895,6 @@ public final class Settings {
         public static final String MEM_TEXT_COLOR = "mem_text_color";
 
         /**
-<<<<<<< HEAD
          * Battery status style on the status bar
          * 0 - Icon portrait
          * 1 - Icon landscape
