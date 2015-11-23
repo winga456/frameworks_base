@@ -101,23 +101,17 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     private int mCollapsedHeight;
     private int mExpandedHeight;
 
-    private int mMultiUserExpandedMargin;
-    private int mMultiUserCollapsedMargin;
-
     private int mClockMarginBottomExpanded;
     private int mClockMarginBottomCollapsed;
-    private int mMultiUserSwitchWidthCollapsed;
-    private int mMultiUserSwitchWidthExpanded;
 
     private int mClockCollapsedSize;
     private int mClockExpandedSize;
 
     /**
-     * In collapsed QS, the clock and avatar are scaled down a bit post-layout to allow for a nice
+     * In collapsed QS, the clock is scaled down a bit post-layout to allow for a nice
      * transition. These values determine that factor.
      */
     private float mClockCollapsedScaleFactor;
-    private float mAvatarCollapsedScaleFactor;
 
     private ActivityStarter mActivityStarter;
     private BatteryController mBatteryController;
@@ -178,7 +172,6 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         loadDimens();
         updateVisibilities();
         updateClockScale();
-        updateAvatarScale();
         updateBackgroundColor();
         updateTextColor();
         updateIconColor();
@@ -269,20 +262,9 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mCollapsedHeight = getResources().getDimensionPixelSize(R.dimen.status_bar_header_height);
         mExpandedHeight = getResources().getDimensionPixelSize(
                 R.dimen.status_bar_header_height_expanded);
-        mMultiUserExpandedMargin =
-                getResources().getDimensionPixelSize(R.dimen.multi_user_switch_expanded_margin);
-        mMultiUserCollapsedMargin =
-                getResources().getDimensionPixelSize(R.dimen.multi_user_switch_collapsed_margin);
         mClockMarginBottomExpanded =
                 getResources().getDimensionPixelSize(R.dimen.clock_expanded_bottom_margin);
         updateClockCollapsedMargin();
-        mMultiUserSwitchWidthCollapsed =
-                getResources().getDimensionPixelSize(R.dimen.multi_user_switch_width_collapsed);
-        mMultiUserSwitchWidthExpanded =
-                getResources().getDimensionPixelSize(R.dimen.multi_user_switch_width_expanded);
-        mAvatarCollapsedScaleFactor =
-                getResources().getDimensionPixelSize(R.dimen.multi_user_avatar_collapsed_size)
-                / (float) mMultiUserAvatar.getLayoutParams().width;
         mClockCollapsedSize = getResources().getDimensionPixelSize(R.dimen.qs_time_collapsed_size);
         mClockExpandedSize = getResources().getDimensionPixelSize(R.dimen.qs_time_expanded_size);
         mClockCollapsedScaleFactor = (float) mClockCollapsedSize / (float) mClockExpandedSize;
@@ -338,11 +320,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     public void updateEverything() {
         updateHeights();
         updateVisibilities();
-        updateSystemIconsLayoutParams();
         updateClickTargets();
-        updateMultiUserSwitch();
         updateClockScale();
-        updateAvatarScale();
         updateClockLp();
         requestCaptureValues();
         updateBackgroundColor();
@@ -363,7 +342,6 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mDateCollapsed.setVisibility(mExpanded && mAlarmShowing ? View.VISIBLE : View.INVISIBLE);
         mDateExpanded.setVisibility(mExpanded && mAlarmShowing ? View.INVISIBLE : View.VISIBLE);
         mAlarmStatus.setVisibility(mExpanded && mAlarmShowing ? View.VISIBLE : View.INVISIBLE);
-        mSettingsContainer.setVisibility(mExpanded ? View.VISIBLE : View.INVISIBLE);
         mQsDetailHeader.setVisibility(mExpanded && mShowingDetail? View.VISIBLE : View.INVISIBLE);
         if (mSignalCluster != null) {
             updateSignalClusterDetachment();
@@ -394,17 +372,6 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mSystemIcons.addView(mSignalCluster, 1);
     }
 
-    private void updateSystemIconsLayoutParams() {
-        RelativeLayout.LayoutParams lp = (LayoutParams) mSystemIconsSuperContainer.getLayoutParams();
-        int rule = mExpanded
-                ? mSettingsContainer.getId()
-                : mMultiUserSwitch.getId();
-        if (rule != lp.getRules()[RelativeLayout.START_OF]) {
-            lp.addRule(RelativeLayout.START_OF, rule);
-            mSystemIconsSuperContainer.setLayoutParams(lp);
-        }
-    }
-
     private void updateListeners() {
         if (mListening) {
             mSettingsObserver.observe();
@@ -414,16 +381,6 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             mBatteryController.removeStateChangedCallback(this);
             mNextAlarmController.removeStateChangedCallback(this);
             mSettingsObserver.unobserve();
-        }
-    }
-
-    private void updateAvatarScale() {
-        if (mExpanded) {
-            mMultiUserAvatar.setScaleX(1f);
-            mMultiUserAvatar.setScaleY(1f);
-        } else {
-            mMultiUserAvatar.setScaleX(mAvatarCollapsedScaleFactor);
-            mMultiUserAvatar.setScaleY(mAvatarCollapsedScaleFactor);
         }
     }
 
@@ -478,24 +435,6 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         if (marginBottom != lp.bottomMargin) {
             lp.bottomMargin = marginBottom;
             mDateGroup.setLayoutParams(lp);
-        }
-    }
-
-    private void updateMultiUserSwitch() {
-        int marginEnd;
-        int width;
-        if (mExpanded) {
-            marginEnd = mMultiUserExpandedMargin;
-            width = mMultiUserSwitchWidthExpanded;
-        } else {
-            marginEnd = mMultiUserCollapsedMargin;
-            width = mMultiUserSwitchWidthCollapsed;
-        }
-        MarginLayoutParams lp = (MarginLayoutParams) mMultiUserSwitch.getLayoutParams();
-        if (marginEnd != lp.getMarginEnd() || lp.width != width) {
-            lp.setMarginEnd(marginEnd);
-            lp.width = width;
-            mMultiUserSwitch.setLayoutParams(lp);
         }
     }
 
@@ -601,9 +540,6 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         target.alarmStatusAlpha = getAlphaForVisibility(mAlarmStatus);
         target.dateCollapsedAlpha = getAlphaForVisibility(mDateCollapsed);
         target.dateExpandedAlpha = getAlphaForVisibility(mDateExpanded);
-        target.avatarScale = mMultiUserAvatar.getScaleX();
-        target.avatarX = mMultiUserSwitch.getLeft() + mMultiUserAvatar.getLeft();
-        target.avatarY = mMultiUserSwitch.getTop() + mMultiUserAvatar.getTop();
         if (getLayoutDirection() == LAYOUT_DIRECTION_LTR) {
             target.batteryX = mSystemIconsSuperContainer.getLeft()
                     + mSystemIconsContainer.getRight();
@@ -643,10 +579,6 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mClock.setY(values.clockY - mClock.getHeight());
         mDateGroup.setY(values.dateY);
         mAlarmStatus.setY(values.dateY - mAlarmStatus.getPaddingTop());
-        mMultiUserAvatar.setScaleX(values.avatarScale);
-        mMultiUserAvatar.setScaleY(values.avatarScale);
-        mMultiUserAvatar.setX(values.avatarX - mMultiUserSwitch.getLeft());
-        mMultiUserAvatar.setY(values.avatarY - mMultiUserSwitch.getTop());
         if (getLayoutDirection() == LAYOUT_DIRECTION_LTR) {
             mSystemIconsSuperContainer.setX(values.batteryX - mSystemIconsContainer.getRight());
         } else {
@@ -703,9 +635,6 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         float timeScale = 1f;
         float clockY;
         float dateY;
-        float avatarScale;
-        float avatarX;
-        float avatarY;
         float batteryX;
         float batteryY;
         float batteryLevelAlpha;
@@ -719,9 +648,6 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             timeScale = v1.timeScale * (1 - t) + v2.timeScale * t;
             clockY = v1.clockY * (1 - t) + v2.clockY * t;
             dateY = v1.dateY * (1 - t) + v2.dateY * t;
-            avatarScale = v1.avatarScale * (1 - t) + v2.avatarScale * t;
-            avatarX = v1.avatarX * (1 - t) + v2.avatarX * t;
-            avatarY = v1.avatarY * (1 - t) + v2.avatarY * t;
             batteryX = v1.batteryX * (1 - t) + v2.batteryX * t;
             batteryY = v1.batteryY * (1 - t) + v2.batteryY * t;
             settingsTranslation = v1.settingsTranslation * (1 - t) + v2.settingsTranslation * t;
