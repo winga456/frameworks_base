@@ -121,6 +121,18 @@ public class DndTile extends QSTile<QSTile.BooleanState> {
     }
 
     @Override
+    protected void handleLongClick() {
+        if (mState.value) {
+            showDetail(true);
+            return;
+        }
+
+        intent.setClassName("com.android.settings",
+            "com.android.settings.Settings$ZenModeSettingsActivity");
+        mHost.startActivityDismissingKeyguard(intent);
+    }
+
+    @Override
     protected void handleUpdateState(BooleanState state, Object arg) {
         final int zen = arg instanceof Integer ? (Integer) arg : mController.getZen();
         final boolean newValue = zen != Global.ZEN_MODE_OFF;
