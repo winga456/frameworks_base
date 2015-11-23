@@ -231,8 +231,6 @@ public class NotificationPanelView extends PanelView implements
     private Handler mHandler = new Handler();
     private SettingsObserver mSettingsObserver;
     private int mOneFingerQuickSettingsIntercept;
-
-    private int mQSBackgroundColor;
     private int mQsSmartPullDown;
 
     public NotificationPanelView(Context context, AttributeSet attrs) {
@@ -794,8 +792,17 @@ public class NotificationPanelView extends PanelView implements
         boolean twoFingerQsEvent = mTwoFingerQsExpandPossible
                 && (event.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN
                 && event.getPointerCount() == 2);
-        boolean oneFingerQsOverride = isOpenQsEvent(event);
-        if ((twoFingerQsEvent || oneFingerQsOverride)
+        boolean oneFingerQsOverride = event.getActionMasked() == MotionEvent.ACTION_DOWN
+                && shouldQuickSettingsIntercept(event.getX(), event.getY(), -1, false);
+
+        if (mQsSmartPullDown == 1 && !mStatusBar.hasActiveClearableNotifications()
+                || mQsSmartPullDown == 2 && !mStatusBar.hasActiveVisibleNotifications()
+                || (mQsSmartPullDown == 3 && !mStatusBar.hasActiveVisibleNotifications()
+                        && !mStatusBar.hasActiveClearableNotifications())) {
+            oneFingerQsOverride = true;
+        }
+
+        if ((twoFingerQsEvent || oneFingerQsOverride) && isOpenQsEvent(event)
                 && event.getY(event.getActionIndex()) < mStatusBarMinHeight) {
             MetricsLogger.count(mContext, COUNTER_PANEL_OPEN_QS, 1);
             mQsExpandImmediate = true;
@@ -2507,16 +2514,35 @@ public class NotificationPanelView extends PanelView implements
             super.observe();
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.QS_BACKGROUND_COLOR), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.QS_ICON_COLOR), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.QS_TEXT_COLOR), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.QS_RIPPLE_COLOR), false, this);
-             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_QUICK_PULLDOWN),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_SMART_PULLDOWN),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_BACKGROUND_COLOR),
+                    false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_ICON_COLOR),
+                    false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_RIPPLE_COLOR),
+                    false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_TEXT_COLOR),
+                    false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_SHOW_BRIGHTNESS_SLIDER),
+                    false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_BRIGHTNESS_SLIDER_COLOR),
+                    false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_BRIGHTNESS_SLIDER_BG_COLOR),
+                    false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_BRIGHTNESS_SLIDER_ICON_COLOR),
+                    false, this);
             update();
         }
 
@@ -2538,6 +2564,12 @@ public class NotificationPanelView extends PanelView implements
                     Settings.System.QS_BACKGROUND_COLOR))) {
                 setQSBackgroundColor();
             } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.QS_BRIGHTNESS_SLIDER_COLOR))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.QS_BRIGHTNESS_SLIDER_BG_COLOR))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.QS_BRIGHTNESS_SLIDER_ICON_COLOR))
+                || uri.equals(Settings.System.getUriFor(
                     Settings.System.QS_ICON_COLOR))
                 || uri.equals(Settings.System.getUriFor(
                     Settings.System.QS_RIPPLE_COLOR))
@@ -2551,7 +2583,8 @@ public class NotificationPanelView extends PanelView implements
         public void update() {
             ContentResolver resolver = mContext.getContentResolver();
             mOneFingerQuickSettingsIntercept = Settings.System.getIntForUser(resolver,
-                    Settings.System.QS_QUICK_PULLDOWN, 0, UserHandle.USER_CURRENT);
+                    Settings.System.QS_QUICK_PULLDOWN, 1,
+                    UserHandle.USER_CURRENT);
             mQsSmartPullDown = Settings.System.getIntForUser(
                     resolver, Settings.System.QS_SMART_PULLDOWN, 0,
                     UserHandle.USER_CURRENT);
@@ -2561,8 +2594,9 @@ public class NotificationPanelView extends PanelView implements
     }
 
     private void setQSBackgroundColor() {
-        final int bgColor = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.QS_BACKGROUND_COLOR, 0xff263238);
+        ContentResolver resolver = mContext.getContentResolver();
+        final int bgColor = Settings.System.getInt(
+                resolver, Settings.System.QS_BACKGROUND_COLOR, 0xff263238);
         if (mQsContainer != null) {
             mQsContainer.getBackground().setColorFilter(
                     bgColor, Mode.MULTIPLY);

@@ -250,10 +250,6 @@ public class QSTileView extends ViewGroup {
         }
     }
 
-    protected int getIconColor() {
-		return mIconColor;
-	}
-
     public void setRippleColor() {
         if (mTileBackground instanceof RippleDrawable) {
             setRippleColor((RippleDrawable) mTileBackground);
@@ -276,6 +272,10 @@ public class QSTileView extends ViewGroup {
         if (rd instanceof RippleDrawable) {
             rd.setColor(color);
         }
+    }
+
+    protected int getIconColor() {
+        return mIconColor;
     }
 
     private void setRipple(RippleDrawable tileBackground) {
