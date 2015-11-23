@@ -409,6 +409,8 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
                     Settings.System.RECENTS_CLEAR_ALL_LOCATION, Constants.DebugFlags.App.RECENTS_CLEAR_ALL_BOTTOM_RIGHT);
             int bgColor = Settings.System.getInt(mResolver,
                     Settings.System.RECENT_APPS_CLEAR_ALL_BG_COLOR, 0xff009688);
+            int iconColor = Settings.System.getInt(mResolver,
+                    Settings.System.RECENT_APPS_CLEAR_ALL_ICON_COLOR, 0xffffffff);
             FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)
                     mFloatingButton.getLayoutParams();
             params.topMargin = taskStackBounds.top;
