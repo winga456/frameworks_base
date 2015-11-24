@@ -136,13 +136,12 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     private boolean mShowingDetail;
     private boolean mDetailTransitioning;
     private boolean mShowBatteryTextExpanded;
-    private int mTextColor;
-    private int mIconColor;
-    private SettingsObserver mSettingsObserver;
 
     public StatusBarHeaderView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
+
+    private SettingsObserver mSettingsObserver;
 
     @Override
     protected void onFinishInflate() {
@@ -151,9 +150,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mSystemIconsContainer = (ViewGroup) findViewById(R.id.system_icons_container);
         mSystemIconsSuperContainer.setOnClickListener(this);
         mDateGroup = findViewById(R.id.date_group);
-        mDateGroup.setOnClickListener(this);
         mClock = findViewById(R.id.clock);
-        mClock.setOnClickListener(this);
         mTime = (TextView) findViewById(R.id.time_view);
         mAmPm = (TextView) findViewById(R.id.am_pm_view);
         mMultiUserSwitch = (MultiUserSwitch) findViewById(R.id.multi_user_switch);
@@ -179,9 +176,6 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         updateVisibilities();
         updateClockScale();
         updateAvatarScale();
-        updateBackgroundColor();
-        updateTextColor();
-        updateIconColor();
         addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right,
@@ -345,9 +339,6 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         updateAvatarScale();
         updateClockLp();
         requestCaptureValues();
-        updateBackgroundColor();
-        updateTextColor();
-        updateIconColor();
     }
 
     private void updateHeights() {
@@ -866,12 +857,6 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_BATTERY_STATUS_PERCENT_STYLE),
                     false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_EXPANDED_HEADER_TEXT_COLOR),
-                    false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_EXPANDED_HEADER_ICON_COLOR),
-                    false, this);
             updateSettings();
         }
 
@@ -887,23 +872,12 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 || uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_BATTERY_STATUS_PERCENT_STYLE))) {
                 updateBatteryPercentageSettings();
-            } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_EXPANDED_HEADER_BG_COLOR))) {
-                updateBackgroundColor();
-            } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_EXPANDED_HEADER_TEXT_COLOR))) {
-                updateTextColor();
-            } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_EXPANDED_HEADER_ICON_COLOR))) {
-                updateIconColor();
             }
+
         }
 
         public void updateSettings() {
             updateBatteryPercentageSettings();
-            updateBackgroundColor();
-            updateTextColor();
-            updateIconColor();
         }
     }
 
@@ -924,48 +898,5 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         }
         mShowBatteryTextExpanded = showExpandedBatteryPercentage;
         updateBatteryLevelVisibility();
-    }
-
-    private void updateBackgroundColor() {
-        ContentResolver resolver = mContext.getContentResolver();
-        int backgroundColor = Settings.System.getInt(resolver,
-                Settings.System.STATUS_BAR_EXPANDED_HEADER_BG_COLOR, 0xff384248);
-
-        getBackground().setColorFilter(backgroundColor, Mode.MULTIPLY);
-    }
-
-    private void updateTextColor() {
-        ContentResolver resolver = mContext.getContentResolver();
-        mTextColor = Settings.System.getInt(resolver,
-                Settings.System.STATUS_BAR_EXPANDED_HEADER_TEXT_COLOR, 0xffffffff);
-
-        mTime.setTextColor(mTextColor);
-        mAmPm.setTextColor(mTextColor);
-        mDateCollapsed.setTextColor(
-                getTransparentColor(mTextColor, 178));
-        mDateExpanded.setTextColor(
-                getTransparentColor(mTextColor, 178));
-        mBatteryLevel.setTextColor(true);
-        mAlarmStatus.setTextColor(
-                getTransparentColor(mTextColor, 100));
-    }
-
-    private void updateIconColor() {
-        ContentResolver resolver = mContext.getContentResolver();
-        mIconColor = Settings.System.getInt(resolver,
-                Settings.System.STATUS_BAR_EXPANDED_HEADER_ICON_COLOR, 0xffffffff);
-
-        ((ImageView)mSettingsButton).setColorFilter(mIconColor, Mode.MULTIPLY);
-        Drawable alarmIcon = getResources().getDrawable(R.drawable.ic_access_alarms_small);
-        alarmIcon.setColorFilter(mIconColor, Mode.MULTIPLY);
-        mAlarmStatus.setCompoundDrawablesWithIntrinsicBounds(alarmIcon, null, null, null);
-    }
-
-    private int getTransparentColor(int color, int alpha) {
-        int r = Color.red(color);
-        int g = Color.green(color);
-        int b = Color.blue(color);
-        int transparentColor = (alpha << 24) + (r << 16) + (g << 8) + b;
-        return transparentColor;
     }
 }
