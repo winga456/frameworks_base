@@ -128,7 +128,6 @@ import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.KeyguardUpdateMonitorCallback;
 import com.android.keyguard.ViewMediatorCallback;
 import com.android.systemui.BatteryMeterView;
-import com.android.systemui.BatteryLevelTextView;
 import com.android.systemui.DemoMode;
 import com.android.systemui.EventLogConstants;
 import com.android.systemui.EventLogTags;
@@ -394,10 +393,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     int mKeyguardMaxNotificationCount;
 
-    // battery
-    private BatteryMeterView mBatteryView;
-    private BatteryLevelTextView mBatteryLevel;
-
     // VRToxin logo
     private ImageView mVRToxinLogo;
     private int mVRToxinLogoStyle;
@@ -582,9 +577,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_BATTERY_STATUS_TEXT_COLOR),
-                    false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_VRTOXIN_LOGO_SHOW),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -702,9 +694,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.NAVIGATION_BAR_CAN_MOVE))) {
                 prepareNavigationBarView();
-            } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_BATTERY_STATUS_TEXT_COLOR))) {
-                updateBatteryLevelTextColor();
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_VRTOXIN_LOGO_SHOW))
                     || uri.equals(Settings.System.getUriFor(
@@ -1312,8 +1301,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         if (mClockController == null) mClockController = new Clock(mContext, mClockView);
         updateClockView();
 
-        mBatteryView = (BatteryMeterView) mStatusBarView.findViewById(R.id.battery);
-        mBatteryLevel = (BatteryLevelTextView) mStatusBarView.findViewById(R.id.battery_level_text);
         mStackScroller = (NotificationStackScrollLayout) mStatusBarWindow.findViewById(
                 R.id.notification_stack_scroller);
         mStackScroller.setLongPressListener(getNotificationLongClicker());
@@ -1532,8 +1519,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mUserInfoController.reloadUserInfo();
 
         mHeader.setBatteryController(mBatteryController);
-        mBatteryView.setBatteryController(mBatteryController);
-        mBatteryLevel.setBatteryController(mBatteryController);
+        ((BatteryMeterView) mStatusBarView.findViewById(R.id.battery)).setBatteryController(
+                mBatteryController);
         mKeyguardStatusBar.setBatteryController(mBatteryController);
         mHeader.setNextAlarmController(mNextAlarmController);
 
@@ -1573,7 +1560,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         setLockScreenCarrierLabelVisibility();
         setWeatherTempVisibility();
         setKeyguardTextAndIconColors();
-        updateBatteryLevelTextColor();
         setVRToxinLogoVisibility();
 
         return mStatusBarView;
@@ -2633,15 +2619,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         if (mWeatherTempView != null && showTempState) {
             mWeatherTempView.setVisibility(showTempState && !forceHideByNumberOfIcons
                     ? View.VISIBLE : View.GONE);
-        }
-    }
-
-    private void updateBatteryLevelTextColor() {
-        if (mBatteryLevel != null) {
-            mBatteryLevel.setTextColor(false);
-        }
-        if (mKeyguardStatusBar != null) {
-            mKeyguardStatusBar.setBatteryLevelTextColor();
         }
     }
 

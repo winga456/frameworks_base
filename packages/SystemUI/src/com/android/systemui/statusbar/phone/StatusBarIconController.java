@@ -366,6 +366,7 @@ public class StatusBarIconController {
         }
         mSignalCluster.setIconTint(mIconTint, mDarkIntensity);
         mMoreIcon.setImageTintList(ColorStateList.valueOf(mIconTint));
+        mBatteryMeterView.setDarkIntensity(mDarkIntensity);
         mClock.setTextColor(mIconTint);
         applyNotificationIconsTint();
     }
