@@ -51,6 +51,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
