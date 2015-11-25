@@ -1016,6 +1016,32 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     };
 
+    private class VRSettingsObserver extends ContentObserver {
+        VRSettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_ROTATION),
+                    false, this, UserHandle.USER_ALL);
+            mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.ACCELEROMETER_ROTATION),
+                    false, this, UserHandle.USER_ALL);
+
+            update();
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            update();
+        }
+
+        public void update() {
+            mStatusBarWindowManager.updateKeyguardScreenRotation();
+        }
+    }
+    private VRSettingsObserver mVRSettingsObserver = new VRSettingsObserver(mHandler);
     private int mInteractingWindows;
     private boolean mAutohideSuspended;
     private int mStatusBarMode;
@@ -1234,6 +1260,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         // Status bar settings observer
         SettingsObserver observer = new SettingsObserver(mHandler);
         observer.observe();
+
+        // must be after addNavigationBar
+        mVRSettingsObserver.observe();
 
         // Lastly, call to the icon policy to install/update all the icons.
         mIconPolicy = new PhoneStatusBarPolicy(mContext, mCastController, mHotspotController,
@@ -4171,6 +4200,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         resetUserSetupObserver();
         setControllerUsers();
         mAssistManager.onUserSwitched(newUserId);
+        mVRSettingsObserver.update();
     }
 
     private void setControllerUsers() {
