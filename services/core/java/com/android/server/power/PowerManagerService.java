@@ -651,6 +651,7 @@ public final class PowerManagerService extends SystemService
                     false, mSettingsObserver, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.Global.getUriFor(
                     Settings.Global.WAKE_WHEN_PLUGGED_OR_UNPLUGGED),
+                    false, mSettingsObserver, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
 		            Settings.System.WAKELOCK_BLOCKING_ENABLED),
 		            false, mSettingsObserver, UserHandle.USER_ALL);
