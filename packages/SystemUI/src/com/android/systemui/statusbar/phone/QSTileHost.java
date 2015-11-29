@@ -50,6 +50,7 @@ import com.android.systemui.qs.tiles.HotspotTile;
 import com.android.systemui.qs.tiles.IntentTile;
 import com.android.systemui.qs.tiles.LocationTile;
 import com.android.systemui.qs.tiles.NfcTile;
+import com.android.systemui.qs.tiles.RebootTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
 import com.android.systemui.qs.tiles.ScreenOffTile;
 import com.android.systemui.qs.tiles.ScreenshotTile;
@@ -297,6 +298,8 @@ public class QSTileHost implements QSTile.Host {
             case QSConstants.TILE_NFC:
 				return new NfcTile(this);
             case QSConstants.TILE_HEADSUP:
+				return new HeadsUpTile(this);
+            case QSConstants.TILE_REBOOT:
 				return new HeadsUpTile(this);
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
