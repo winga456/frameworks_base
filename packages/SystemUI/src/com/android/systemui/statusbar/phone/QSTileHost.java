@@ -49,6 +49,7 @@ import com.android.systemui.qs.tiles.HeadsUpTile;
 import com.android.systemui.qs.tiles.HotspotTile;
 import com.android.systemui.qs.tiles.IntentTile;
 import com.android.systemui.qs.tiles.LocationTile;
+import com.android.systemui.qs.tiles.MusicTile;
 import com.android.systemui.qs.tiles.NfcTile;
 import com.android.systemui.qs.tiles.RebootTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
@@ -304,6 +305,8 @@ public class QSTileHost implements QSTile.Host {
 				return new RebootTile(this);
             case QSConstants.TILE_SYNC:
 				return new SyncTile(this);
+            case QSConstants.TILE_MUSIC:
+				return new MusicTile(this);
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
         }
