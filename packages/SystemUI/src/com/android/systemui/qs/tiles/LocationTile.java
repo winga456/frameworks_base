@@ -45,12 +45,18 @@ public class LocationTile extends QSTile<QSTile.BooleanState> {
     private final LocationDetailAdapter mDetailAdapter;
     private final KeyguardMonitor mKeyguard;
     private final Callback mCallback = new Callback();
+    
+    private boolean mForceToggleState = false;
 
     public LocationTile(Host host) {
         super(host);
         mController = host.getLocationController();
         mDetailAdapter = new LocationDetailAdapter();
         mKeyguard = host.getKeyguardMonitor();
+    }
+
+    protected void setForceToggleState(boolean force) {
+        mForceToggleState = force;
     }
 
     @Override
