@@ -187,6 +187,7 @@ public class NavigationBarView extends LinearLayout {
     private SettingsObserver mSettingsObserver;
 
     private GestureDetector mDoubleTapGesture;
+    private boolean mDoubleTapToSleep;
 
     private class NavTransitionListener implements TransitionListener {
         private boolean mBackTransitioning;
@@ -249,6 +250,9 @@ public class NavigationBarView extends LinearLayout {
     private final OnTouchListener mNavButtonsTouchListener = new OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
+                if (mDoubleTapToSleep) {
+                     mDoubleTapGesture.onTouchEvent(event);
+                }
                 onNavButtonTouched();
             return true;
         }
@@ -408,6 +412,9 @@ public class NavigationBarView extends LinearLayout {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         initDownStates(event);
+        if (mDoubleTapToSleep) {
+            mDoubleTapGesture.onTouchEvent(event);
+        }
         if (mDimNavButtonsTouchAnywhere) {
             onNavButtonTouched();
         }
@@ -420,10 +427,6 @@ public class NavigationBarView extends LinearLayout {
         if (mDelegateHelper != null && mDelegateIntercepted) {
             boolean ret = mDelegateHelper.onInterceptTouchEvent(event);
             if (ret) return true;
-        }
-        if (Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.DOUBLE_TAP_SLEEP_NAVBAR, 1) == 1) {
-            mDoubleTapGesture.onTouchEvent(event);
         }
         return super.onTouchEvent(event);
     }
@@ -1324,6 +1327,8 @@ public class NavigationBarView extends LinearLayout {
                     Settings.System.DIM_NAV_BUTTONS_TOUCH_ANYWHERE), false, this);
             resolver.registerContentObserver(Settings.Global.getUriFor(
                     Settings.Global.POLICY_CONTROL), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.DOUBLE_TAP_SLEEP_NAVBAR), false, this);
 
             onChange(false);
         }
@@ -1369,6 +1374,9 @@ public class NavigationBarView extends LinearLayout {
                     Settings.Global.POLICY_CONTROL, UserHandle.USER_CURRENT);
             mIsExpandedDesktopOn = (expDeskString != null ?
                     expDeskString.equals("immersive.full=*") : false);
+            mDoubleTapToSleep = (Settings.System.getIntForUser(resolver,
+                    Settings.System.DOUBLE_TAP_SLEEP_NAVBAR, 0,
+                    UserHandle.USER_CURRENT) == 1);
         }
     }
 
