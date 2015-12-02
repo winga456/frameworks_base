@@ -1923,8 +1923,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         // Setup hardware keys
         boolean keyRebindingDisabled = Settings.System.getIntForUser(
                 mContext.getContentResolver(),
-                Settings.System.HARDWARE_KEY_REBINDING, 0,
-                UserHandle.USER_CURRENT) == 0;
+                Settings.System.HARDWARE_KEY_REBINDING, 1,
+                UserHandle.USER_CURRENT) == 1;
 
         // Home button
         mPressOnHomeBehavior =
