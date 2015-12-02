@@ -236,6 +236,7 @@ public class NotificationPanelView extends PanelView implements
     public NotificationPanelView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setWillNotDraw(!DEBUG);
+        mSettingsObserver = new SettingsObserver(mHandler);
     }
 
     public void setStatusBar(PhoneStatusBar bar) {
@@ -376,6 +377,34 @@ public class NotificationPanelView extends PanelView implements
             mQsContainer.setHeightOverride(mQsContainer.getDesiredHeight());
         }
         updateMaxHeadsUpTranslation();
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mSettingsObserver.observe();
+
+        mNotificationStackScroller.setOnHeightChangedListener(this);
+        mNotificationStackScroller.setOverscrollTopChangedListener(this);
+        mNotificationStackScroller.setOnEmptySpaceClickListener(this);
+        mNotificationStackScroller.setScrollView(mScrollView);
+
+        mScrollView.setListener(this);
+
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mSettingsObserver.unobserve();
+
+        mNotificationStackScroller.setOnHeightChangedListener(null);
+        mNotificationStackScroller.setOverscrollTopChangedListener(null);
+        mNotificationStackScroller.setOnEmptySpaceClickListener(null);
+        mNotificationStackScroller.setScrollView(null);
+
+        mScrollView.setListener(null);
+
     }
 
     private void startQsSizeChangeAnimation(int oldHeight, final int newHeight) {
@@ -896,7 +925,6 @@ public class NotificationPanelView extends PanelView implements
         }
         final float y = event.getY(pointerIndex);
         final float x = event.getX(pointerIndex);
-        final float h = y - mInitialTouchY;
 
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
@@ -924,6 +952,7 @@ public class NotificationPanelView extends PanelView implements
                 break;
 
             case MotionEvent.ACTION_MOVE:
+                final float h = y - mInitialTouchY;
                 setQsExpansion(h + mInitialHeightOnTouch);
                 if (h >= getFalsingThreshold()) {
                     mQsTouchAboveFalsingThreshold = true;
@@ -2252,6 +2281,11 @@ public class NotificationPanelView extends PanelView implements
 
         // Hide "No notifications" in QS.
         mNotificationStackScroller.updateEmptyShadeView(mShadeEmpty && !mQsExpanded);
+        if (mStatusBarState == StatusBarState.KEYGUARD
+                && (!mQsExpanded || mQsExpandImmediate || mIsExpanding
+                && mQsExpandedWhenExpandingStarted)) {
+            positionClockAndNotifications();
+        }
     }
 
     public void setQsScrimEnabled(boolean qsScrimEnabled) {
@@ -2515,35 +2549,24 @@ public class NotificationPanelView extends PanelView implements
             super.observe();
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.QS_QUICK_PULLDOWN),
-                    false, this, UserHandle.USER_ALL);
+                    Settings.System.QS_QUICK_PULLDOWN), false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_BACKGROUND_COLOR), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_ICON_COLOR), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QS_TEXT_COLOR), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QS_SMART_PULLDOWN),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.QS_BACKGROUND_COLOR),
-                    false, this);
+                    Settings.System.QS_RIPPLE_COLOR), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.QS_ICON_COLOR),
-                    false, this);
+                    Settings.System.QS_BRIGHTNESS_SLIDER_COLOR), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.QS_RIPPLE_COLOR),
-                    false, this);
+                    Settings.System.QS_BRIGHTNESS_SLIDER_BG_COLOR), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.QS_TEXT_COLOR),
-                    false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.QS_SHOW_BRIGHTNESS_SLIDER),
-                    false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.QS_BRIGHTNESS_SLIDER_COLOR),
-                    false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.QS_BRIGHTNESS_SLIDER_BG_COLOR),
-                    false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.QS_BRIGHTNESS_SLIDER_ICON_COLOR),
-                    false, this);
+                    Settings.System.QS_BRIGHTNESS_SLIDER_ICON_COLOR), false, this);
             update();
         }
 
@@ -2584,10 +2607,9 @@ public class NotificationPanelView extends PanelView implements
         public void update() {
             ContentResolver resolver = mContext.getContentResolver();
             mOneFingerQuickSettingsIntercept = Settings.System.getIntForUser(resolver,
-                    Settings.System.QS_QUICK_PULLDOWN, 1,
-                    UserHandle.USER_CURRENT);
+                    Settings.System.QS_QUICK_PULLDOWN, 1, UserHandle.USER_CURRENT);
             mQsSmartPullDown = Settings.System.getIntForUser(
-                    resolver, Settings.System.QS_SMART_PULLDOWN, 0,
+                    resolver, Settings.System.QS_SMART_PULLDOWN, 1,
                     UserHandle.USER_CURRENT);
             setQSBackgroundColor();
             setQSColors();
@@ -2596,8 +2618,8 @@ public class NotificationPanelView extends PanelView implements
 
     private void setQSBackgroundColor() {
         ContentResolver resolver = mContext.getContentResolver();
-        final int bgColor = Settings.System.getInt(
-                resolver, Settings.System.QS_BACKGROUND_COLOR, 0xff263238);
+        final int bgColor = Settings.System.getInt(resolver,
+                Settings.System.QS_BACKGROUND_COLOR, 0xff263238);
         if (mQsContainer != null) {
             mQsContainer.getBackground().setColorFilter(
                     bgColor, Mode.MULTIPLY);

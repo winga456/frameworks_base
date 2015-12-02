@@ -657,6 +657,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         @Override
         public void onChange(boolean selfChange, Uri uri) {
+            super.onChange(selfChange, uri);
+
             if (uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_CARRIER_LABEL_USE_CUSTOM))
                 || uri.equals(Settings.System.getUriFor(
@@ -849,9 +851,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mClockLocation = Settings.System.getInt(
                     resolver, Settings.System.STATUS_BAR_CLOCK, Clock.STYLE_CLOCK_RIGHT);
             updateClockView();
-
-            updateStatusBarWeatherTemp();
-            updateBarWeatherTempStyle();
 
             if (mNavigationBarView != null) {
                 boolean navLeftInLandscape = Settings.System.getInt(resolver,
@@ -2695,6 +2694,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         int iconColor =
                 Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.LOCK_SCREEN_ICON_COLOR, 0xffffffff);
+        int logoColor =
+                Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_VRTOXIN_LOGO_COLOR, 0xffffffff);
+        if (mKeyguardStatusBar != null) {
+            mKeyguardStatusBar.updateLogoColor(logoColor);
+        }
         if (mKeyguardBottomArea != null) {
             mKeyguardBottomArea.updateTextColor(textColor);
             mKeyguardBottomArea.updateIconColor(iconColor);

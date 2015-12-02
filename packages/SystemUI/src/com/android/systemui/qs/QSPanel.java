@@ -792,6 +792,12 @@ public class QSPanel extends ViewGroup {
             mContext.getContentResolver().unregisterContentObserver(this);
         }
 
+        @Override
+        public void onChange(boolean selfChange) {
+            super.onChange(selfChange);
+            update();
+        }
+
         public void update() {
             ContentResolver resolver = mContext.getContentResolver();
             mBrightnessSliderEnabled = Settings.System.getIntForUser(
