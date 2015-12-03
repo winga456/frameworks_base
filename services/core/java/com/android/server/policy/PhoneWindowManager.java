@@ -6314,6 +6314,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             case KeyEvent.KEYCODE_MEDIA_AUDIO_TRACK:
             case KeyEvent.KEYCODE_CAMERA:
                 return false;
+            case KeyEvent.KEYCODE_HOME:
+                return mHomeWakeScreen;
         }
         return true;
     }
