@@ -283,6 +283,7 @@ public class PhoneStatusBarPolicy implements Callback {
         boolean zenVisible = false;
         int zenIconId = 0;
         String zenDescription = null;
+        boolean zenModeNoInterruptions = false;
 
         boolean volumeVisible = false;
         int volumeIconId = 0;
@@ -304,6 +305,8 @@ public class PhoneStatusBarPolicy implements Callback {
             zenDescription = mContext.getString(R.string.quick_settings_dnd_label);
         } else if (mZen == Global.ZEN_MODE_NO_INTERRUPTIONS) {
             zenVisible = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.SHOW_VOLUME_ICON, 1) == 1;
+            zenModeNoInterruptions = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.SHOW_VOLUME_ICON, 1) == 1;
             zenIconId = R.drawable.stat_sys_zen_none;
             zenDescription = mContext.getString(R.string.interruption_level_none);
@@ -340,6 +343,10 @@ public class PhoneStatusBarPolicy implements Callback {
         if (zenVisible != mZenVisible) {
             mService.setIconVisibility(SLOT_ZEN, zenVisible);
             mZenVisible = zenVisible;
+        }
+        // overrules volume icon
+        if (zenModeNoInterruptions) {
+            volumeVisible = false;
         }
 
         if (volumeVisible) {
