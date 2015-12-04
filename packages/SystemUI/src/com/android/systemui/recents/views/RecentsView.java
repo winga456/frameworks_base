@@ -613,7 +613,7 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
 
     public void startFABanimation() {
         // Animate the action button in
-        mFloatingButton = ((View)getParent()).findViewById(R.id.floating_action_button);
+        mFloatingButton = (FrameLayout) ((View)getParent()).findViewById(R.id.floating_action_button);
         mFloatingButton.animate().alpha(1f)
                 .setStartDelay(mConfig.taskBarEnterAnimDelay)
                 .setDuration(mConfig.taskBarEnterAnimDuration)
@@ -624,7 +624,7 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
 
     public void endFABanimation() {
         // Animate the action button away
-        mFloatingButton = ((View)getParent()).findViewById(R.id.floating_action_button);
+        mFloatingButton = (FrameLayout) ((View)getParent()).findViewById(R.id.floating_action_button);
         mFloatingButton.animate().alpha(0f)
                 .setStartDelay(0)
                 .setDuration(mConfig.taskBarExitAnimDuration)
