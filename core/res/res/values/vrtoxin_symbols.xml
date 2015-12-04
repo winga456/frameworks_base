@@ -241,4 +241,7 @@
   <!-- Blur effects -->
   <java-symbol type="bool" name="config_ui_blur_enabled" />
 
+  <!-- Screen record shortcut -->
+  <java-symbol type="bool" name="config_enableScreenrecordChord" />
+
 </resources>
