@@ -2653,8 +2653,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         setKeyguardTextAndIconColors();
         setVRToxinLogoVisibility();
         UpdateNotifPanelClearAllIconColor();
-        setCarrierLabelVisibility();
-        setLockScreenCarrierLabelVisibility();
     }
 
     private void updateShowGreeting() {
