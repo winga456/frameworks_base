@@ -776,11 +776,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.NAVIGATION_BAR_CAN_MOVE))) {
                 prepareNavigationBarView();
             } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_VRTOXIN_LOGO_SHOW))
-                    || uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_VRTOXIN_LOGO_STYLE))
                     || uri.equals(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_VRTOXIN_LOGO_COLOR))
+                    Settings.System.STATUS_BAR_VRTOXIN_LOGO_COLOR))) {
+                    updateVRToxinLogoStyle();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_VRTOXIN_LOGO_SHOW))
                     || uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_VRTOXIN_LOGO_HIDE_LOGO))
                     || uri.equals(Settings.System.getUriFor(
@@ -898,8 +899,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                         Settings.System.NAVBAR_LEFT_IN_LANDSCAPE, 0) == 1;
                 mNavigationBarView.setLeftInLandscape(navLeftInLandscape);
             }
-            updateStatusBarWeatherTemp();
-            updateBarWeatherTempStyle();
+            updateSettings();
         }
     }
 
@@ -1727,13 +1727,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         // Private API call to make the shadows look better for Recents
         ThreadedRenderer.overrideProperty("ambientRatio", String.valueOf(1.5f));
 
-        setCarrierLabelVisibility();
-        setLockScreenCarrierLabelVisibility();
-        setWeatherTempVisibility();
-        setKeyguardTextAndIconColors();
-        setVRToxinLogoVisibility();
         updateSettings();
-        UpdateNotifPanelClearAllIconColor();
 
         return mStatusBarView;
     }
@@ -2641,6 +2635,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     }
 
     private void updateSettings() {
+        setCarrierLabelVisibility();
+        setLockScreenCarrierLabelVisibility();
         updateShowGreeting();
         updateGreetingText();
         updateGreetingTimeout();
@@ -2652,6 +2648,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         updateCutOutBatteryText();
         updateBatteryColors(false);
         updateStatusNetworkIconColors(false);
+        updateVRToxinLogoStyle();
+        setWeatherTempVisibility();
+        setKeyguardTextAndIconColors();
+        setVRToxinLogoVisibility();
+        UpdateNotifPanelClearAllIconColor();
+        setCarrierLabelVisibility();
+        setLockScreenCarrierLabelVisibility();
     }
 
     private void updateShowGreeting() {
@@ -2782,6 +2785,25 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mWeatherTempView.setVisibility(View.GONE);
             mWeatherTempView = (TextView) mStatusBarView.findViewById(R.id.left_weather_temp);
             setWeatherTempVisibility();
+        }
+    }
+
+    private void updateVRToxinLogoStyle() {
+        ContentResolver resolver = mContext.getContentResolver();
+
+        mVRToxinLogoStyle = Settings.System.getIntForUser(
+                resolver, Settings.System.STATUS_BAR_VRTOXIN_LOGO_STYLE, 0,
+                UserHandle.USER_CURRENT);
+
+        if (mVRToxinLogoStyle == 0) {
+            mVRToxinLogo.setVisibility(View.GONE);
+            mVRToxinLogo = (ImageView) mStatusBarView.findViewById(R.id.left_vrtoxin_logo);
+            setVRToxinLogoVisibility();
+        }
+        if (mVRToxinLogoStyle == 1) {
+            mVRToxinLogo.setVisibility(View.GONE);
+            mVRToxinLogo = (ImageView) mStatusBarView.findViewById(R.id.vrtoxin_logo);
+            setVRToxinLogoVisibility();
         }
     }
 
