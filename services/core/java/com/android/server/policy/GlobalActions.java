@@ -90,6 +90,8 @@ import com.android.internal.util.vrtoxin.PowerMenuConstants;
 import com.android.internal.util.vrtoxin.PowerMenuHelper;
 import com.android.internal.util.vrtoxin.ActionConfig;
 
+import com.vrtoxin.util.Helpers;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -318,6 +320,8 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_GESTURE_ANYWHERE)) {
                 constructGestureAnywhereToggle();
                 mItems.add(mGestureAnywhereModeOn);
+            } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_RESTARTUI)) {
+                mItems.add(getRestartAction());
             } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_SCREENSHOT)) {
                 mItems.add(getScreenshotAction());
             } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_SOUND) && mShowSilentToggle) {
@@ -750,6 +754,28 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             }
         };
         onGestureAnywhereModeChanged();
+    }
+
+    private Action getRestartAction() {
+        return new SinglePressAction(com.android.internal.R.drawable.ic_lock_restart,
+                R.string.global_action_restart) {
+
+             public void onPress() {
+                 Helpers.restartSystemUI();
+             }
+
+             public boolean onLongPress() {
+                 return false;
+             }
+
+             public boolean showDuringKeyguard() {
+                 return true;
+             }
+
+             public boolean showBeforeProvisioning() {
+                 return true;
+             }
+        };
     }
 
     private Action getScreenshotAction() {

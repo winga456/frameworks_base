@@ -122,6 +122,10 @@
   <java-symbol type="string" name="global_actions_gesture_anywhere_mode_off_status" />
   <java-symbol type="drawable" name="ic_lock_gestures" />
 
+  <!-- Restart SystemUI -->
+  <java-symbol type="string" name="global_action_restart" />
+  <java-symbol type="drawable" name="ic_lock_restart" />
+
   <!-- VRToxin Theme -->
   <java-symbol type="style" name="Theme.Material.Dialog.VRToxin" />
   <java-symbol type="style" name="Theme.Material.Dialog.Alert.VRToxin" />

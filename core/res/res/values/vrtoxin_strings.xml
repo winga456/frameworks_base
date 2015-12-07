@@ -84,11 +84,12 @@
     <!-- status message in phone options dialog for when pie is off -->
     <string name="global_actions_gesture_anywhere_mode_off_status">Gesture Anywhere is OFF</string>
 
-    <string name="global_actions_toggle_pie_mode">Pie control</string>
-    <string name="global_actions_toggle_nav_bar">Navigation bar</string>
+    <string name="global_actions_toggle_pie_mode">Pie Control</string>
+    <string name="global_actions_toggle_nav_bar">Navigation Bar</string>
     <string name="global_actions_toggle_appcirclebar_mode">AppCircleBar</string>
     <string name="global_actions_toggle_appsidebar_mode">AppSideBar</string>
     <string name="global_actions_toggle_gesture_anywhere_mode">Gesture Anywhere</string>
+    <string name="global_action_restart">Restart SystemUI</string>
 
     <!-- Slimseekbar -->
     <string name="default_string">Default</string>
