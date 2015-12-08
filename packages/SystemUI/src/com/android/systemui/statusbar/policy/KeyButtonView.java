@@ -22,6 +22,7 @@ import android.app.ActivityManager;
 import android.app.ActivityManagerNative;
 import android.app.IActivityManager;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.PorterDuff.Mode;
@@ -37,6 +38,7 @@ import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.HapticFeedbackConstants;
 import android.view.InputDevice;
 import android.view.KeyCharacterMap;
@@ -68,6 +70,7 @@ public class KeyButtonView extends ImageView {
     // TODO: Get rid of this
     public static final float DEFAULT_QUIESCENT_ALPHA = 1f;
 
+    private int mContentDescriptionRes;
     private long mDownTime;
     private int mCode;
     String mClickAction;
@@ -125,12 +128,27 @@ public class KeyButtonView extends ImageView {
 
         setDrawingAlpha(mQuiescentAlpha);
 
+        TypedValue value = new TypedValue();
+        if (a.getValue(R.styleable.KeyButtonView_android_contentDescription, value)) {
+            mContentDescriptionRes = value.resourceId;
+        }
+
         a.recycle();
+
 
         setClickable(true);
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         setBackground(mRipple = new KeyButtonRipple(context, this));
+    }
+
+    @Override
+    protected void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        if (mContentDescriptionRes != 0) {
+            setContentDescription(mContext.getString(mContentDescriptionRes));
+        }
     }
 
     @Override
