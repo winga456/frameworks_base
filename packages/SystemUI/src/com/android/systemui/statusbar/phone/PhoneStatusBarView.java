@@ -184,14 +184,6 @@ public class PhoneStatusBarView extends PanelBar {
             openPanel.sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
         }
         mLastFullyOpenedPanel = openPanel;
-        // Panel is open disable bottom edge and enable all other
-        // if the user activated them
-//        if (mShouldFade) {
-            mBar.updatePieTriggerMask(EdgeGesturePosition.LEFT.FLAG
-                    | EdgeGesturePosition.RIGHT.FLAG
-                    | EdgeGesturePosition.TOP.FLAG, true);
-            mBar.setOverwriteImeIsActive(true);
-//        }
     }
 
     @Override
@@ -263,7 +255,7 @@ public class PhoneStatusBarView extends PanelBar {
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
-                "status_bar_vrtoxinlogo_show"), false, mObserver);
+                "status_bar_vrtoxin_logo_show"), false, mObserver);
     }
 
     @Override

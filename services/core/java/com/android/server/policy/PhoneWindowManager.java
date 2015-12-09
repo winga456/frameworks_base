@@ -4811,15 +4811,15 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         if (mHasNavigationBar) {
             if (mNavigationBarOnBottom) {
                 newMask |= EdgeGesturePosition.RIGHT.FLAG;
-                /*if (isPortrait && mNavigationBarHeight == 0
+                if (isPortrait && mUpsideDownRotation == 0
                         || !isPortrait && mNavigationBarOnBottom) {
                     newMask |= EdgeGesturePosition.BOTTOM.FLAG;
-                }*/
+                }
             } else {
                 newMask |= EdgeGesturePosition.BOTTOM.FLAG;
-                /*if (mNavigationBarHeight == 0) {
+                if (mSeascapeRotation == 0) {
                     newMask |= EdgeGesturePosition.RIGHT.FLAG;
-                }*/
+                }
             }
         } else {
             newMask |= EdgeGesturePosition.RIGHT.FLAG

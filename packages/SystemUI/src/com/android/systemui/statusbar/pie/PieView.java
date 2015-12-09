@@ -65,10 +65,10 @@ public class PieView extends View implements View.OnTouchListener {
     private static final int TIME_FADEIN_DELAY = 500;
 
     // Default size, must fit with PieStyleSettings.java in settings
-    public static final float PIE_CONTROL_SIZE_DEFAULT = 0.67f;
+    public static final float PIE_CONTROL_SIZE_DEFAULT = 0.97f;
     // Default icon start factor when icon should start to resize
     // related to PIE_SIZE value
-    public static final float PIE_ICON_START_SIZE_FACTOR = 0.67f;
+    public static final float PIE_ICON_START_SIZE_FACTOR = 0.97f;
 
     private Paint mBackgroundPaint = new Paint();
     private float mBackgroundFraction;
