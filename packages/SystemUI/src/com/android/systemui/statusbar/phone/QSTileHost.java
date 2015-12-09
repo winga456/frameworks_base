@@ -39,6 +39,7 @@ import com.android.systemui.qs.QSTile;
 import com.android.systemui.qs.tiles.AdbOverNetworkTile;
 import com.android.systemui.qs.tiles.AirplaneModeTile;
 import com.android.systemui.qs.tiles.AmbientDisplayTile;
+import com.android.systemui.qs.tiles.BatterySaverTile;
 import com.android.systemui.qs.tiles.BluetoothTile;
 import com.android.systemui.qs.tiles.BrightnessTile;
 import com.android.systemui.qs.tiles.CastTile;
@@ -321,6 +322,8 @@ public class QSTileHost implements QSTile.Host {
 				return new CompassTile(this);
             case QSConstants.TILE_LOCKSCREEN:
 				return new LockscreenToggleTile(this);
+            case QSConstants.TILE_BATTERY_SAVER:
+				return new BatterySaverTile(this);
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
         }
