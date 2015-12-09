@@ -225,4 +225,8 @@
 
   <java-symbol type="string" name="default_greeting_welcome" />
 
+  <!-- Config.xml entries -->
+  <java-symbol type="string" name="config_deviceKeyHandlerLib" />
+  <java-symbol type="string" name="config_deviceKeyHandlerClass" />
+
 </resources>
