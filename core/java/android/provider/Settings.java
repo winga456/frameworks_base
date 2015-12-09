@@ -2688,6 +2688,13 @@ public final class Settings {
                 sNonNegativeIntegerValidator;
 
         /**
+         * Volume key controls ringtone or media sound stream
+         * @hide
+         */
+        public static final String VOLUME_KEYS_CONTROL_RING_STREAM =
+                "volume_keys_control_ring_stream";
+
+        /**
          * Whether vibrate is on for different events. This is used internally,
          * changing this value will not change the vibrate. See AudioManager.
          */
