@@ -119,6 +119,9 @@ public class PowerMenuHelper {
         } else if (clickAction.equals(PowerMenuConstants.ACTION_RESTARTUI)) {
             return res.getDrawable(
                 com.android.internal.R.drawable.ic_lock_restart);
+        } else if (clickAction.equals(PowerMenuConstants.ACTION_SCREENRECORD)) {
+            return res.getDrawable(
+                com.android.internal.R.drawable.ic_lock_screenrecord);
         }
         return null;
     }

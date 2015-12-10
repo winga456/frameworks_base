@@ -322,6 +322,8 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 mItems.add(mGestureAnywhereModeOn);
             } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_RESTARTUI)) {
                 mItems.add(getRestartAction());
+            } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_SCREENRECORD)) {
+                mItems.add(getScreenRecordAction());
             } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_SCREENSHOT)) {
                 mItems.add(getScreenshotAction());
             } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_SOUND) && mShowSilentToggle) {
@@ -778,6 +780,26 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         };
     }
 
+    private Action getScreenRecordAction() {
+        return new SinglePressAction(com.android.internal.R.drawable.ic_lock_screen_record, R.string.global_action_screen_record) {
+
+             @Override
+             public void onPress() {
+                 toggleScreenRecord();
+             }
+
+             @Override
+             public boolean showDuringKeyguard() {
+                 return true;
+             }
+
+             @Override
+             public boolean showBeforeProvisioning() {
+                 return true;
+             }
+        };
+    }
+
     private Action getScreenshotAction() {
         return new SinglePressAction(com.android.internal.R.drawable.ic_lock_screenshot,
                 R.string.global_action_screenshot) {
@@ -811,6 +833,70 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private boolean isCurrentUserOwner() {
         UserInfo currentUser = getCurrentUser();
         return currentUser == null || currentUser.isPrimary();
+    }
+
+    /**
+     * functions needed for taking screen record.
+     */
+    final Object mScreenrecordLock = new Object();
+    ServiceConnection mScreenrecordConnection = null;
+
+    final Runnable mScreenrecordTimeout = new Runnable() {
+        @Override public void run() {
+            synchronized (mScreenrecordLock) {
+                if (mScreenrecordConnection != null) {
+                    mContext.unbindService(mScreenrecordConnection);
+                    mScreenrecordConnection = null;
+                }
+            }
+        }
+    };
+
+    private void toggleScreenRecord() {
+        synchronized (mScreenrecordLock) {
+            if (mScreenrecordConnection != null) {
+                return;
+            }
+            ComponentName cn = new ComponentName("com.android.systemui",
+                    "com.android.systemui.vrtoxin.screenrecord.TakeScreenrecordService");
+            Intent intent = new Intent();
+            intent.setComponent(cn);
+            ServiceConnection conn = new ServiceConnection() {
+                @Override
+                public void onServiceConnected(ComponentName name, IBinder service) {
+                    synchronized (mScreenrecordLock) {
+                        Messenger messenger = new Messenger(service);
+                        Message msg = Message.obtain(null, 1);
+                        final ServiceConnection myConn = this;
+                        Handler h = new Handler(mHandler.getLooper()) {
+                            @Override
+                            public void handleMessage(Message msg) {
+                                synchronized (mScreenrecordLock) {
+                                    if (mScreenrecordConnection == myConn) {
+                                        mContext.unbindService(mScreenrecordConnection);
+                                        mScreenrecordConnection = null;
+                                        mHandler.removeCallbacks(mScreenrecordTimeout);
+                                    }
+                                }
+                            }
+                        };
+                        msg.replyTo = new Messenger(h);
+                        msg.arg1 = msg.arg2 = 0;
+                        try {
+                            messenger.send(msg);
+                        } catch (RemoteException e) {
+                        }
+                    }
+                }
+                @Override
+                public void onServiceDisconnected(ComponentName name) {}
+            };
+            if (mContext.bindServiceAsUser(
+                    intent, conn, Context.BIND_AUTO_CREATE, UserHandle.CURRENT)) {
+                mScreenrecordConnection = conn;
+                mHandler.postDelayed(mScreenrecordTimeout, 31 * 60 * 1000);
+            }
+        }
     }
 
     private void addUsersToMenu(ArrayList<Action> items) {

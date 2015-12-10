@@ -34,6 +34,7 @@ public class PowerMenuConstants {
     public static final String ACTION_RESTARTUI            = "**restartui**";
     public static final String ACTION_SCREENSHOT           = "**screenshot**";
     public static final String ACTION_SOUND                = "**sound**";
+    public static final String ACTION_SCREENRECORD         = "**screenrecord**";
 
     // no action
     public static final String ACTION_NULL            = "**null**";
