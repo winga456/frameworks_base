@@ -142,12 +142,11 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     private boolean mShowingDetail;
     private boolean mDetailTransitioning;
 
-    private SettingsObserver mSettingsObserver;
-
     public StatusBarHeaderView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
+    private SettingsObserver mSettingsObserver;
     private boolean mShowWeather;
     private boolean mShowWeatherLocation;
 
@@ -369,14 +368,18 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mDateExpanded.setVisibility(mExpanded && mAlarmShowing ? View.INVISIBLE : View.VISIBLE);
         mAlarmStatus.setVisibility(mExpanded && mAlarmShowing ? View.VISIBLE : View.INVISIBLE);
         mSettingsContainer.setVisibility(mExpanded ? View.VISIBLE : View.INVISIBLE);
-        mWeatherContainer.setVisibility(mExpanded && mShowWeather ? View.VISIBLE : View.GONE);
-        mWeatherLine2.setVisibility(mExpanded && mShowWeather && mShowWeatherLocation ? View.VISIBLE : View.GONE);
         mQsDetailHeader.setVisibility(mExpanded && mShowingDetail? View.VISIBLE : View.INVISIBLE);
         if (mSignalCluster != null) {
             updateSignalClusterDetachment();
         }
         mEmergencyCallsOnly.setVisibility(mExpanded && mShowEmergencyCallsOnly ? VISIBLE : GONE);
         mBatteryLevel.setVisibility(mExpanded ? View.VISIBLE : View.GONE);
+        updateWeatherVisibility();
+    }
+
+    private void updateWeatherVisibility() {
+        mWeatherContainer.setVisibility(mExpanded && mShowWeather ? View.VISIBLE : View.GONE);
+        mWeatherLine2.setVisibility(mExpanded && mShowWeather && mShowWeatherLocation ? View.VISIBLE : View.GONE);
     }
 
     private void updateSignalClusterDetachment() {
@@ -575,6 +578,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     public boolean onLongClick(View v) {
         if (v == mSettingsButton) {
             startSettingsLongClickActivity();
+        } else if (v == mWeatherContainer) {
+            startForecastLongClickActivity();
         }
         return false;
     }
@@ -600,6 +605,13 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setComponent(WeatherControllerImpl.COMPONENT_WEATHER_FORECAST);
+        mActivityStarter.startActivity(intent, true /* dismissShade */);
+    }
+
+    private void startForecastLongClickActivity() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setClassName("com.cyanogenmod.lockclock",
+            "com.cyanogenmod.lockclock.preference.Preferences");
         mActivityStarter.startActivity(intent, true /* dismissShade */);
     }
 
@@ -964,7 +976,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                     Settings.System.STATUS_BAR_EXPANDED_HEADER_SHOW_WEATHER))
                 || uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_EXPANDED_HEADER_SHOW_WEATHER_LOCATION))) {
-                updateVisibilities();
+                updateWeatherSettings();
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_EXPANDED_HEADER_BG_COLOR))
                 || uri.equals(Settings.System.getUriFor(
@@ -1005,6 +1017,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         }
 
         void updateSettings() {
+            updateWeatherSettings();
             updateBackgroundColor();
             updateTextColor();
             updateIconColor();
@@ -1050,6 +1063,15 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 SBEHeaderColorHelper.getTextColor(mContext, 102));
         mAlarmStatus.setTextColor(
                 SBEHeaderColorHelper.getTextColor(mContext, 100));
+    }
+
+    private void updateWeatherSettings() {
+        ContentResolver resolver = mContext.getContentResolver();
+        mShowWeather = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_EXPANDED_HEADER_SHOW_WEATHER, 0) == 1;
+        mShowWeatherLocation = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_EXPANDED_HEADER_SHOW_WEATHER_LOCATION, 1) == 1;
+        updateWeatherVisibility();
     }
 
     private void updateIconColor() {
