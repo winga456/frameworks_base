@@ -1667,6 +1667,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         updateWeatherTextState(mWeatherController.getWeatherInfo().temp,
             mWeatherTempColor, mWeatherTempSize, mWeatherTempFontStyle);
 
+        mWeatherController = new WeatherControllerImpl(mContext);
         mKeyguardUserSwitcher = new KeyguardUserSwitcher(mContext,
                 (ViewStub) mStatusBarWindow.findViewById(R.id.keyguard_user_switcher),
                 mKeyguardStatusBar, mNotificationPanel, mUserSwitcherController);
@@ -1702,6 +1703,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         ((BatteryMeterView) mStatusBarView.findViewById(R.id.battery)).setBatteryController(
                 mBatteryController);
         mKeyguardStatusBar.setBatteryController(mBatteryController);
+        mHeader.setWeatherController(mWeatherController);
         mHeader.setNextAlarmController(mNextAlarmController);
 
         PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);

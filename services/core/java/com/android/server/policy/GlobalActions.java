@@ -29,6 +29,7 @@ import android.app.ActivityManagerNative;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -36,6 +37,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.UserInfo;
 import android.content.res.ColorStateList;
+import android.content.ServiceConnection;
 import android.database.ContentObserver;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
@@ -43,10 +45,12 @@ import android.graphics.PorterDuff.Mode;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.os.IBinder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Messenger;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemClock;
@@ -781,7 +785,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     }
 
     private Action getScreenRecordAction() {
-        return new SinglePressAction(com.android.internal.R.drawable.ic_lock_screen_record, R.string.global_action_screen_record) {
+        return new SinglePressAction(com.android.internal.R.drawable.ic_lock_screenrecord, R.string.global_action_screenrecord) {
 
              @Override
              public void onPress() {
