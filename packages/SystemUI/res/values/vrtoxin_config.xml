@@ -37,8 +37,5 @@
     <!-- The min animation duration for animating the task bar out. -->
     <integer name="recents_animate_task_bar_exit_duration">125</integer>
 
-    <!-- Doze: shake accelerometer threshold minimum is 2 and maximum is 10-->
-    <integer name="doze_shake_accelerometer_threshold">10</integer>
-
 </resources>
 
