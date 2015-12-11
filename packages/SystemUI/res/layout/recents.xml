@@ -41,6 +41,12 @@
            android:layout_width="match_parent"
            android:layout_height="match_parent" />
 
+    <!-- Empty View with VRToxin Logo -->
+    <ViewStub android:id="@+id/empty_view_stub_vrtoxin"
+           android:layout="@layout/recents_empty_vrtoxin"
+           android:layout_width="match_parent"
+           android:layout_height="match_parent" />
+
     <!-- Debug Overlay View -->
     <ViewStub android:id="@+id/debug_overlay_stub"
            android:layout="@layout/recents_debug_overlay"

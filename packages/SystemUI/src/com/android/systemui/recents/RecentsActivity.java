@@ -22,6 +22,7 @@ import android.app.SearchManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -67,6 +68,7 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
     RecentsView mRecentsView;
     SystemBarScrimViews mScrimViews;
     ViewStub mEmptyViewStub;
+    ViewStub mEmptyViewStubVRToxin;
     ViewStub mDebugOverlayStub;
     View mEmptyView;
     DebugOverlayView mDebugOverlay;
@@ -194,6 +196,8 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
 
         boolean mRecentsSearchbar = Settings.System.getInt(
                 getContentResolver(), Settings.System.RECENTS_SEARCH_BAR, 1) == 1;
+        boolean mVRToxinLogo = Settings.System.getInt(
+                getContentResolver(), Settings.System.RECENTS_EMPTY_VRTOXIN_LOGO, 0) == 1;
         RecentsTaskLoader loader = RecentsTaskLoader.getInstance();
         RecentsTaskLoadPlan plan = Recents.consumeInstanceLoadPlan();
         if (plan == null) {
@@ -252,7 +256,13 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
         // Update the top level view's visibilities
         if (mConfig.launchedWithNoRecentTasks) {
             if (mEmptyView == null) {
-                mEmptyView = mEmptyViewStub.inflate();
+            //boolean vrtoxinLogo = Settings.System.getInt(getContentResolver(),
+            //        Settings.System.RECENTS_EMPTY_VRTOXIN_LOGO, 0) == 1;
+
+                if (mVRToxinLogo)
+                    mEmptyView = mEmptyViewStubVRToxin.inflate();
+                else
+                    mEmptyView = mEmptyViewStub.inflate();
             }
             mRecentsView.enableShake(false);
             mEmptyView.setVisibility(View.VISIBLE);
@@ -370,6 +380,7 @@ public class RecentsActivity extends Activity implements RecentsView.RecentsView
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
                 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         mEmptyViewStub = (ViewStub) findViewById(R.id.empty_view_stub);
+        mEmptyViewStubVRToxin = (ViewStub) findViewById(R.id.empty_view_stub_vrtoxin);
         mDebugOverlayStub = (ViewStub) findViewById(R.id.debug_overlay_stub);
         mScrimViews = new SystemBarScrimViews(this, mConfig);
         inflateDebugOverlay();

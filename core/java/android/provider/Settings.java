@@ -5780,6 +5780,12 @@ public final class Settings {
         public static final String STATUS_BAR_EXPANDED_HEADER_SHOW_WEATHER_LOCATION = "status_bar_expanded_header_show_weather_location";
 
         /**
+         * Recents empty show VRToxin logo
+         * @hide
+         */
+        public static final String RECENTS_EMPTY_VRTOXIN_LOGO = "recents_empty_vrtoxin_logo";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
