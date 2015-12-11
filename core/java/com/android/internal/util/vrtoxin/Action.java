@@ -22,6 +22,7 @@ import android.app.ActivityManagerNative;
 import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.hardware.input.InputManager;
 import android.media.AudioManager;
@@ -42,6 +43,7 @@ import android.view.IWindowManager;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.WindowManagerGlobal;
+import android.view.WindowManagerPolicyControl;
 import android.widget.Toast;
 
 import com.vrtoxin.util.Helpers;
@@ -298,6 +300,15 @@ public class Action {
                 if (!powerManager.isScreenOn()) {
                     powerManager.wakeUp(SystemClock.uptimeMillis());
                 }
+                return;
+            } else if (action.equals(ActionConstants.ACTION_EXPANDED_DESKTOP)) {
+                ContentResolver cr = context.getContentResolver();
+                String value = Settings.Global.getString(cr, Settings.Global.POLICY_CONTROL);
+                boolean isExpanded = "immersive.full=*".equals(value);
+                Settings.Global.putString(cr, Settings.Global.POLICY_CONTROL,
+                        isExpanded ? "" : "immersive.full=*");
+                if (isExpanded)
+                    WindowManagerPolicyControl.reloadFromSetting(context);
                 return;
             } else if (action.equals(ActionConstants.ACTION_SCREENSHOT)) {
                 try {

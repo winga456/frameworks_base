@@ -1625,10 +1625,10 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     }
 
     private void onExpandedDesktopModeChanged() {
-        boolean expandedDesktopModeOn =
-                getExpandedDesktopState(mContext.getContentResolver());
-        mExpandedDesktopState = expandedDesktopModeOn ?
-                ToggleAction.State.On : ToggleAction.State.Off;
+        ContentResolver cr = mContext.getContentResolver();
+        String value = Settings.Global.getString(cr, Settings.Global.POLICY_CONTROL);
+        boolean expandedDesktopModeOn = "immersive.full=*".equals(value);
+        mExpandedDesktopState = expandedDesktopModeOn ? ToggleAction.State.On : ToggleAction.State.Off;
         if (mExpandedDesktopModeOn != null) {
             mExpandedDesktopModeOn.updateState(mExpandedDesktopState);
         }
