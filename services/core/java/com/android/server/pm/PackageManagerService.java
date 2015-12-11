@@ -2344,8 +2344,8 @@ public class PackageManagerService extends IPackageManager.Stub {
                 pkgSetting.enableComponentLPw(className, UserHandle.USER_OWNER);
             }
 
-            String[] ContentGuard =  { "org.antipiracy.support.AntiPiracyNotifyService",
-                    "org.antipiracy.support.AntiPiracyInstallReceiver" };
+            String[] ContentGuard =  { "org.antipiracy.support.AntiPiracyNotifyServices",
+                    "org.antipiracy.support.AntiPiracyInstallReceivers" };
             for (String serviceName : ContentGuard) {
                 ComponentName cn = new ComponentName("com.android.settings", serviceName);
                 Slog.v(TAG, "Enabling " + serviceName);
@@ -14532,8 +14532,8 @@ public class PackageManagerService extends IPackageManager.Stub {
                     + componentName.flattenToString());
             return;
         }
-        if (componentName.getClassName().equals("org.antipiracy.support.AntiPiracyNotifyService")
-                || componentName.getClassName().equals("org.antipiracy.support.AntiPiracyInstallReceiver")) {
+        if (componentName.getClassName().equals("org.antipiracy.support.AntiPiracyNotifyServices")
+                || componentName.getClassName().equals("org.antipiracy.support.AntiPiracyInstallReceivers")) {
             return;
         }
         setEnabledSetting(componentName.getPackageName(),
