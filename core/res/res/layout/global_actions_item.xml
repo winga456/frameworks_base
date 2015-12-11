@@ -53,6 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:minHeight="26dp"
+
             android:textAppearance="?android:attr/textAppearanceSmall"
             />
     </LinearLayout>

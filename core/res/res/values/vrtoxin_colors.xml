@@ -26,13 +26,4 @@
     <color name="global_actions_ripple_color">@color/ripple_material_dark</color>
     <color name="global_actions_text_color">@color/global_actions_color_normal</color>
 
-    <!-- Text color of the notification action -->
-    <color name="notification_mtrl_action_textcolor">@color/secondary_text_material_light</color>
-    <!-- background of the picture in the big material notification template -->
-    <color name="notification_mtrl_big_picture_bg">#CCEEEEEE</color>
-    <!-- Resolver background -->
-    <color name="resolver_list_bg">@color/white</color>
-    <!-- Chooser grid background --> 
-    <color name="chooser_grid_bg">@color/white</color>
-
 </resources>

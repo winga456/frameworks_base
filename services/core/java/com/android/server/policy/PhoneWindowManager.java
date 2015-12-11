@@ -7568,7 +7568,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                             PackageManager.FEATURE_TELEVISION)) {
                         theme = com.android.internal.R.style.Theme_Leanback_Dialog_Alert;
                     } else {
-                        theme = 6; // DayNight
+                        theme = 6; // Theme.Material.Dialog.Alert.VRToxin
                     }
 
                     mBootMsgDialog = new ProgressDialog(mContext, theme) {
