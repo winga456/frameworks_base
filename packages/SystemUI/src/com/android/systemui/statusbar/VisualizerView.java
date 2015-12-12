@@ -32,7 +32,7 @@ import android.provider.Settings.Secure;
 import android.support.v7.graphics.Palette;
 import android.util.AttributeSet;
 import android.view.View;
-import com.android.systemui.cm.UserContentObserver;
+import com.android.systemui.vrtoxin.UserContentObserver;
 import com.android.systemui.statusbar.policy.KeyguardMonitor;
 
 import java.util.Arrays;
