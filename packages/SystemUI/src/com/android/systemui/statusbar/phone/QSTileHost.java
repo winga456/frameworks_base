@@ -231,32 +231,31 @@ public class QSTileHost implements QSTile.Host {
         return mSecurity;
     }
 
+    @SuppressWarnings("rawtypes")
     private void recreateTiles() {
-        if (DEBUG) Log.d(TAG, "Recreating tiles");
-        final List<String> tileSpecs = loadTileSpecs();
-        for (QSTile oldTile : mTiles.values()) {
-            oldTile.destroy();
-        }
-        final LinkedHashMap<String, QSTile<?>> newTiles = new LinkedHashMap<>();
-        for (String tileSpec : tileSpecs) {
-            QSTile<?> t = createTile(tileSpec);
-            if (t != null) {
-                newTiles.put(tileSpec, t);
+        synchronized (mTiles) {
+            if (DEBUG) Log.d(TAG, "Recreating tiles");
+            final List<String> tileSpecs = loadTileSpecs();
+            for (QSTile oldTile : mTiles.values()) {
+                oldTile.destroy();
             }
-        }
+            final LinkedHashMap<String, QSTile<?>> newTiles = new LinkedHashMap<>();
+            for (String tileSpec : tileSpecs) {
+                QSTile<?> t = createTile(tileSpec);
+                if (t != null) {
+                    newTiles.put(tileSpec, t);
+                }
+            }
 
-        mTiles.clear();
-        mTiles.putAll(newTiles);
-        if (mCallback != null) {
-            mCallback.onTilesChanged();
+            mTiles.clear();
+            mTiles.putAll(newTiles);
+            if (mCallback != null) {
+                mCallback.onTilesChanged();
+            }
         }
     }
 
     private QSTile<?> createTile(String tileSpec) {
-        if (tileSpec.startsWith(IntentTile.PREFIX)) {
-            return IntentTile.create(this, tileSpec);
-        }
-
         // Ensure tile is supported on this device
         if (!QSUtils.getAvailableTiles(mContext).contains(tileSpec)) {
             return null;
@@ -283,7 +282,7 @@ public class QSTileHost implements QSTile.Host {
                 return new CastTile(this);
             case QSConstants.TILE_HOTSPOT:
                 return new HotspotTile(this);
-            case QSConstants.TILE_DDS:
+            case QSConstants.TILE_DND:
                 return new DndTile(this);
             case QSConstants.TILE_VRTOXIN:
 				return new VRToxinTile(this);
