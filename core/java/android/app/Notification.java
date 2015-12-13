@@ -2108,6 +2108,7 @@ public class Notification implements Parcelable
         private int mVisibility = VISIBILITY_PRIVATE;
         private Notification mPublicVersion = null;
         private final NotificationColorUtil mColorUtil;
+        private final boolean mIsLegacy;
         private ArrayList<String> mPeople;
         private int mColor = COLOR_DEFAULT;
 
@@ -2173,8 +2174,10 @@ public class Notification implements Parcelable
             mPriority = PRIORITY_DEFAULT;
             mPeople = new ArrayList<String>();
 
-            mColorUtil = context.getApplicationInfo().targetSdkVersion < Build.VERSION_CODES.LOLLIPOP ?
-                    NotificationColorUtil.getInstance(mContext) : null;
+            mIsLegacy = context.getApplicationInfo().targetSdkVersion < Build.VERSION_CODES.LOLLIPOP ?
+                    true : false;
+
+            mColorUtil = NotificationColorUtil.getInstance(mContext);
         }
 
         /**
@@ -3208,7 +3211,7 @@ public class Notification implements Parcelable
          *         doesn't create material notifications by itself) app.
          */
         private boolean isLegacy() {
-            return mColorUtil != null;
+            return mIsLegacy;
         }
 
         private void processLegacyAction(Action action, RemoteViews button) {

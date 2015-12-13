@@ -394,8 +394,49 @@ final class UiModeManagerService extends SystemService {
 
             try {
                 ActivityManagerNative.getDefault().updateConfiguration(mConfiguration);
+                updateThemeColors();
             } catch (RemoteException e) {
                 Slog.w(TAG, "Failure communicating with activity manager", e);
+            }
+        }
+    }
+
+    private void updateThemeColors() {
+
+        boolean overrideCustomColors = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.OVERRIDE_CUSTOM_COLORS, 1) == 0;
+
+        if (overrideCustomColors) {
+            if (mNightMode == UiModeManager.MODE_NIGHT_NO) {
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.NOTIFICATION_BG_COLOR, 0xffffffff);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.NOTIFICATION_TEXT_COLOR, 0xff000000);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.QS_BACKGROUND_COLOR, 0xff263238);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.POWER_MENU_TEXT_COLOR, 0xff000000);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.POWER_MENU_ICON_NORMAL_COLOR, 0xff009688);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.POWER_MENU_ICON_ENABLED_SELECTED_COLOR, 0xff33b5e5);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.STATUS_BAR_EXPANDED_HEADER_BG_COLOR, 0xff384248);
+            } else if (mNightMode == UiModeManager.MODE_NIGHT_YES) {
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.NOTIFICATION_BG_COLOR, 0xff1b1f23);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.NOTIFICATION_TEXT_COLOR, 0xffffffff);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.QS_BACKGROUND_COLOR, 0xff1b1f23);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.POWER_MENU_TEXT_COLOR, 0xffffffff);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.POWER_MENU_ICON_NORMAL_COLOR, 0xffffffff);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.POWER_MENU_ICON_ENABLED_SELECTED_COLOR, 0xff33b5e5);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.STATUS_BAR_EXPANDED_HEADER_BG_COLOR, 0xff263238);
             }
         }
     }
