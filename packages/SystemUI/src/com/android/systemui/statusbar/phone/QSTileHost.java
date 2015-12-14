@@ -135,8 +135,9 @@ public class QSTileHost implements QSTile.Host {
         ht.start();
         mLooper = ht.getLooper();
 
-    recreateTiles();
-    mObserver.register();
+        recreateTiles();
+        mObserver.register();
+
     }
 
     public void destroy() {
@@ -332,8 +333,16 @@ public class QSTileHost implements QSTile.Host {
     private List<String> loadTileSpecs() {
         final Resources res = mContext.getResources();
         final String defaultTileList = res.getString(R.string.quick_settings_tiles_default);
-        String tileList = Settings.System.getString(mContext.getContentResolver(),
+        final int qsType = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.QS_TYPE, 0);
+        final boolean show = qsType == 0;
+        String tileList;
+        if (show) {
+            tileList = Settings.System.getString(mContext.getContentResolver(),
                 Settings.System.QS_TILES);
+        } else {
+            tileList = "";
+        }
         if (DEBUG) Log.d(TAG, "Config string: "+tileList);
         if (tileList == null) {
             tileList = res.getString(R.string.quick_settings_tiles);
@@ -369,6 +378,9 @@ public class QSTileHost implements QSTile.Host {
             if (mRegistered) {
                 mContext.getContentResolver().unregisterContentObserver(this);
             }
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.QS_TYPE),
+                    false, this);
             mContext.getContentResolver().registerContentObserver(
                     Settings.System.getUriFor(Settings.System.QS_TILES),
                     false, this);

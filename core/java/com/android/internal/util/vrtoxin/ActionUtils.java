@@ -21,7 +21,7 @@ package com.android.internal.util.vrtoxin;
 import android.content.Context;
 
 import com.android.internal.util.vrtoxin.QsDeviceUtils;
-//import com.android.internal.util.vrtoxin.QSBarConstants;
+import com.android.internal.util.vrtoxin.QSBarConstants;
 import com.android.internal.util.vrtoxin.ActionConstants;
 
 import java.util.ArrayList;
@@ -59,7 +59,7 @@ public class ActionUtils {
                         && !QsDeviceUtils.deviceSupportsVibrator(context)
                 || action.equals(ActionConstants.ACTION_VIB_SILENT)
                         && !QsDeviceUtils.deviceSupportsVibrator(context)
-                /*|| action.equals(QSBarConstants.BUTTON_BLUETOOTH)
+                || action.equals(QSBarConstants.BUTTON_BLUETOOTH)
                         && !QsDeviceUtils.deviceSupportsBluetooth()
                 || action.equals(QSBarConstants.BUTTON_DATA)
                         && !QsDeviceUtils.deviceSupportsMobileData(context)
@@ -67,10 +67,8 @@ public class ActionUtils {
                         && !QsDeviceUtils.deviceSupportsFlashLight(context)
                 || action.equals(QSBarConstants.BUTTON_HOTSPOT)
                         && !QsDeviceUtils.deviceSupportsMobileData(context)
-                /*|| action.equals(QSBarConstants.BUTTON_LTE)
-                        && !QsDeviceUtils.deviceSupportsLte(context)
                 || action.equals(QSBarConstants.BUTTON_NFC)
-                        && !QsDeviceUtils.deviceSupportsNfc(context)*/) {
+                        && !QsDeviceUtils.deviceSupportsNfc(context)) {
             return false;
         }
         return true;

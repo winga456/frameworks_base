@@ -2594,11 +2594,27 @@ public final class Settings {
          */
         public static final String QS_NUM_TILE_COLUMNS = "sysui_qs_num_tile_columns";
 
+        /**
+         * Type of QS
+         * 0: Panel
+         * 1: Bar
+         * 2: Hidden
+         * default: 0
+         * @hide
+         */
+        public static final String QS_TYPE = "qs_type";
+
         /** Whether to show the brightness slider in quick settings panel.
          *
          * @hide
          */
         public static final String QS_SHOW_BRIGHTNESS_SLIDER = "qs_show_brightness_slider";
+
+        /**
+         * List of Quick access bar button names
+         * @hide
+         */
+        public static final String QS_BUTTONS = "qs_buttons";
         
         /**
          * Color of the quick settings panel background

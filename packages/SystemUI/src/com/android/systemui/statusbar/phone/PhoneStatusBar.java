@@ -144,6 +144,7 @@ import com.android.systemui.Prefs;
 import com.android.systemui.R;
 import com.android.systemui.assist.AssistManager;
 import com.android.systemui.vrtoxin.UserContentObserver;
+import com.android.systemui.vrtoxin.QuickAccess.QuickAccessBar;
 import com.android.systemui.doze.DozeHost;
 import com.android.systemui.doze.DozeLog;
 import com.android.systemui.doze.ShakeSensorManager;
@@ -393,6 +394,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     TextView mNotificationPanelDebugText;
 
     // settings
+    private QuickAccessBar mQSBar;
     private QSPanel mQSPanel;
 
     // top bar
@@ -1705,6 +1707,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 }
             });
         }
+
+        // Set up the quick access bar
+        mQSBar = (QuickAccessBar) mStatusBarWindow.findViewById(R.id.quick_access_bar);
+        if (mQSBar != null) {
+            mQSBar.setUp(this, mBluetoothController, mNetworkController, mRotationLockController,
+                    mLocationController, mHotspotController, mFlashlightController);
+         }
 
         // User info. Trigger first load.
         mHeader.setUserInfoController(mUserInfoController);
