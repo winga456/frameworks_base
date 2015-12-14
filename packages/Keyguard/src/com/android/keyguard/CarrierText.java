@@ -171,9 +171,7 @@ public class CarrierText extends TextView {
                 // "No SIM card"
                 // Grab the first subscripton, because they all should contain the emergency text,
                 // described above.
-                displayText =  makeCarrierStringOnEmergencyCapable(
-                        getContext().getText(R.string.keyguard_missing_sim_message_short),
-                        subs.get(0).getCarrierName());
+                displayText = mCustomLabel;
             } else {
                 // We don't have a SubscriptionInfo to get the emergency calls only from.
                 // Grab it from the old sticky broadcast if possible instead. We can use it
@@ -199,16 +197,15 @@ public class CarrierText extends TextView {
                         text = concatenate(plmn, spn);
                     }
                 }
-                displayText =  makeCarrierStringOnEmergencyCapable(
-                        getContext().getText(R.string.keyguard_missing_sim_message_short), text);
+                displayText = mCustomLabel;
             }
         }
 
         // APM (airplane mode) != no carrier state. There are carrier services
         // (e.g. WFC = Wi-Fi calling) which may operate in APM.
-        if (!anySimReadyAndInService && WirelessUtils.isAirplaneModeOn(mContext)) {
+        /*if (!anySimReadyAndInService && WirelessUtils.isAirplaneModeOn(mContext)) {
             displayText = getContext().getString(R.string.airplane_mode);
-        }
+        }*/
         setText(displayText);
     }
 
