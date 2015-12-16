@@ -216,9 +216,9 @@ public class AlertDialog extends Dialog implements DialogInterface {
         } else if (themeResId == THEME_HOLO_LIGHT) {
             return R.style.Theme_Holo_Light_Dialog_Alert;
         } else if (themeResId == THEME_DEVICE_DEFAULT_DARK) {
-            return R.style.Theme_DeviceDefault_Dialog_Alert;
+            return R.style.Theme_Material_DayNight_Dialog_Alert;
         } else if (themeResId == THEME_DEVICE_DEFAULT_LIGHT) {
-            return R.style.Theme_DeviceDefault_Light_Dialog_Alert;
+            return R.style.Theme_Material_DayNight_Dialog_Alert;
         } else if (themeResId == THEME_MATERIAL_DAYNIGHT) {
             return R.style.Theme_Material_DayNight_Dialog_Alert;
         } else if (themeResId == THEME_MATERIAL_DARK) {
