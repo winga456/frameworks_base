@@ -168,6 +168,7 @@ final class UiModeManagerService extends SystemService {
                 new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
         mConfiguration.setToDefaults();
+        updateThemeColors();
 
         final Resources res = context.getResources();
         mDefaultUiModeType = res.getInteger(
@@ -403,10 +404,10 @@ final class UiModeManagerService extends SystemService {
 
     private void updateThemeColors() {
 
-        boolean overrideCustomColors = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.OVERRIDE_CUSTOM_COLORS, 1) == 0;
+        final int mOverrideCustomColors = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.OVERRIDE_CUSTOM_COLORS, 0);
 
-        if (overrideCustomColors) {
+        if (mOverrideCustomColors == 0) {
             if (mNightMode == UiModeManager.MODE_NIGHT_NO) {
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.NOTIFICATION_BG_COLOR, 0xffffffff);
