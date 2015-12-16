@@ -3222,11 +3222,7 @@ public class Notification implements Parcelable
         }
 
         private CharSequence processText(int color, CharSequence charSequence) {
-            if (isLegacy()) {
-                return mColorUtil.processCharSequenceColors(color, charSequence);
-            } else {
-                return charSequence;
-            }
+            return mColorUtil.processCharSequenceColors(color, charSequence);
         }
 
         /**

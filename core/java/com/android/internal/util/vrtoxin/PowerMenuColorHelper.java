@@ -25,7 +25,7 @@ import com.android.internal.R;
 
 public class PowerMenuColorHelper {
 
-    private static int DEFAULT_COLOR = 0xffffffff;
+    private static int DEFAULT_COLOR = 0xff000000;
 
     public static int getIconNormalColor(Context context) {
         return Settings.System.getInt(context.getContentResolver(),

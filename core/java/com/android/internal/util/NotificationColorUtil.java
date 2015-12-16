@@ -271,8 +271,8 @@ public class NotificationColorUtil {
 
     private int processColor(int color) {
         return Color.argb(Color.alpha(color),
-                Color.red(color),
-                Color.green(color),
-                Color.blue(color));
+                195 - Color.red(color),
+                195 - Color.green(color),
+                195 - Color.blue(color));
     }
 }

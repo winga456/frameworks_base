@@ -6596,7 +6596,7 @@ public class PackageManagerService extends IPackageManager.Stub {
                     mResolveActivity.launchMode = ActivityInfo.LAUNCH_MULTIPLE;
                     mResolveActivity.documentLaunchMode = ActivityInfo.DOCUMENT_LAUNCH_NEVER;
                     mResolveActivity.flags = ActivityInfo.FLAG_EXCLUDE_FROM_RECENTS;
-                    mResolveActivity.theme = R.style.Theme_Holo_Dialog_Alert;
+                    mResolveActivity.theme = R.style.Theme_Material_DayNight_Dialog_Alert;
                     mResolveActivity.exported = true;
                     mResolveActivity.enabled = true;
                     mResolveInfo.activityInfo = mResolveActivity;
