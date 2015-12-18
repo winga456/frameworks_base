@@ -18,7 +18,7 @@ package com.android.internal.util.vrtoxin;
 
 public class QSBarConstants {
 
-    public static final String BUTTON_AIRPLANE   = "airplane";
+    public static final String BUTTON_AIRPLANE         = "airplane";
     public static final String BUTTON_AMBIENT          = "ambient";
     public static final String BUTTON_APPCIRCLEBAR     = "appcirclebar";
     public static final String BUTTON_APPSIDEBAR       = "appsidebar";

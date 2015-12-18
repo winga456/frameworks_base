@@ -39,15 +39,26 @@ import com.android.internal.util.vrtoxin.QSColorHelper;
 
 import com.android.systemui.R;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.AirplaneModeButton;
+import com.android.systemui.vrtoxin.QuickAccess.buttons.AppCircleBarButton;
+import com.android.systemui.vrtoxin.QuickAccess.buttons.AppSideBarButton;
+import com.android.systemui.vrtoxin.QuickAccess.buttons.AmbientButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.BluetoothButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.ColorInversionButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.DataButton;
+import com.android.systemui.vrtoxin.QuickAccess.buttons.GestureAnywhereButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.HotspotButton;
+import com.android.systemui.vrtoxin.QuickAccess.buttons.HWKeysButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.LocationButton;
+import com.android.systemui.vrtoxin.QuickAccess.buttons.NavBarButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.NfcButton;
+import com.android.systemui.vrtoxin.QuickAccess.buttons.PowerMenuButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.QabButton;
+import com.android.systemui.vrtoxin.QuickAccess.buttons.RestartUIButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.RotationLockButton;
+import com.android.systemui.vrtoxin.QuickAccess.buttons.ScreenOffButton;
+import com.android.systemui.vrtoxin.QuickAccess.buttons.SlimPieButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.TorchButton;
+import com.android.systemui.vrtoxin.QuickAccess.buttons.VRToxinButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.WifiButton;
 import com.android.systemui.statusbar.phone.PhoneStatusBar;
 import com.android.systemui.statusbar.policy.BluetoothController;
@@ -146,6 +157,18 @@ public class QuickAccessBar extends LinearLayout {
             button = new AirplaneModeButton(mContext, this,
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_airplane),
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_airplane_off));
+        } else if (action.equals(QSBarConstants.BUTTON_APPCIRCLEBAR)) {
+            button = new AppCircleBarButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_appcirclebar_on),
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_appcirclebar_off));
+        } else if (action.equals(QSBarConstants.BUTTON_APPSIDEBAR)) {
+            button = new AppSideBarButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_sidebar_on),
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_sidebar_off));
+        } else if (action.equals(QSBarConstants.BUTTON_AMBIENT)) {
+            button = new AmbientButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_doze),
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_doze_off));
         } else if (action.equals(QSBarConstants.BUTTON_BLUETOOTH)) {
             button = new BluetoothButton(mContext, this,
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_bt),
@@ -158,10 +181,18 @@ public class QuickAccessBar extends LinearLayout {
             button = new TorchButton(mContext, this,
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_torch),
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_torch_off));
+        } else if (action.equals(QSBarConstants.BUTTON_GESTUREANYWHERE)) {
+            button = new GestureAnywhereButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_gestures_on),
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_gestures_off));
         } else if (action.equals(QSBarConstants.BUTTON_HOTSPOT)) {
             button = new HotspotButton(mContext, this,
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_hotspot),
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_hotspot_off));
+        } else if (action.equals(QSBarConstants.BUTTON_HWKEYS)) {
+            button = new HWKeysButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_buttons_on),
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_buttons_off));
         } else if (action.equals(QSBarConstants.BUTTON_INVERSION)) {
             button = new ColorInversionButton(mContext, this,
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_inversion),
@@ -170,14 +201,38 @@ public class QuickAccessBar extends LinearLayout {
             button = new LocationButton(mContext, this,
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_location),
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_location_off));
+        } else if (action.equals(QSBarConstants.BUTTON_NAVBAR)) {
+            button = new NavBarButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_navbar_on),
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_navbar_off));
         } else if (action.equals(QSBarConstants.BUTTON_NFC)) {
             button = new NfcButton(mContext, this,
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_nfc),
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_nfc_off));
+        } else if (action.equals(QSBarConstants.BUTTON_POWER_MENU)) {
+            button = new PowerMenuButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_sysbar_power),
+                    mContext.getResources().getDrawable(R.drawable.ic_sysbar_power));
+        } else if (action.equals(QSBarConstants.BUTTON_RESTARTUI)) {
+            button = new RestartUIButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_systemui_restart),
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_systemui_restart));
         } else if (action.equals(QSBarConstants.BUTTON_ROTATION)) {
             button = new RotationLockButton(mContext, this,
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_rotation),
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_rotation_off));
+        } else if (action.equals(QSBarConstants.BUTTON_SCREENOFF)) {
+            button = new ScreenOffButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_sysbar_power),
+                    mContext.getResources().getDrawable(R.drawable.ic_sysbar_power));
+        } else if (action.equals(QSBarConstants.BUTTON_SLIMPIE)) {
+            button = new SlimPieButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_pie_global_on),
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_pie_global_off));
+        } else if (action.equals(QSBarConstants.BUTTON_VRTOXIN)) {
+            button = new VRToxinButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_cyanide_on),
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_cyanide_on));
         } else if (action.equals(QSBarConstants.BUTTON_WIFI)) {
             button = new WifiButton(mContext, this,
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_wifi),
@@ -269,6 +324,27 @@ public class QuickAccessBar extends LinearLayout {
         void observe() {
             mContext.getContentResolver().registerContentObserver(
                     Settings.System.getUriFor(Settings.System.QS_BUTTONS),
+                    false, this, UserHandle.USER_ALL);
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.Secure.getUriFor(Settings.Secure.ACCESSIBILITY_DISPLAY_INVERSION_ENABLED),
+                    false, this, UserHandle.USER_ALL);
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.ENABLE_APP_CIRCLE_BAR),
+                    false, this, UserHandle.USER_ALL);
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.APP_SIDEBAR_ENABLED),
+                    false, this, UserHandle.USER_ALL);
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.Secure.getUriFor(Settings.Secure.DOZE_ENABLED),
+                    false, this, UserHandle.USER_ALL);
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.GESTURE_ANYWHERE_ENABLED),
+                    false, this, UserHandle.USER_ALL);
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.NAVIGATION_BAR_SHOW),
+                    false, this, UserHandle.USER_ALL);
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.PIE_CONTROLS),
                     false, this, UserHandle.USER_ALL);
             update();
         }
