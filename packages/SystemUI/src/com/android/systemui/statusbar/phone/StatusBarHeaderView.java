@@ -484,14 +484,15 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     @Override
     public void onWeatherChanged(WeatherController.WeatherInfo info) {
         if (info.temp == null || info.condition == null) {
-            mWeatherLine1.setText(null);
+            mWeatherLine1.setText(mContext.getString(R.string.weather_info_not_available));
+            mWeatherLine2.setText(null);
         } else {
             mWeatherLine1.setText(mContext.getString(
                     R.string.status_bar_expanded_header_weather_format,
                     info.temp,
                     info.condition));
+            mWeatherLine2.setText(info.city);
         }
-        mWeatherLine2.setText(info.city);
     }
 
     private void updateClickTargets() {
@@ -594,7 +595,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     @Override
     public boolean onLongClick(View v) {
         if (v == mSettingsButton) {
-            startSettingsLongClickActivity();        
+            startSettingsLongClickActivity();
         } else if (v == mSystemIconsSuperContainer) {
             startBatteryLongClickActivity();
         } else if (v == mClock) {
@@ -614,7 +615,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
 
     private void startSettingsLongClickActivity() {
         Intent intent = new Intent(Intent.ACTION_MAIN);
-	    intent.setClassName("com.android.settings",
+	intent.setClassName("com.android.settings",
             "com.android.settings.Settings$StatusBarSettingsSettingsActivity");
         mActivityStarter.startActivity(intent, true /* dismissShade */);
     }
