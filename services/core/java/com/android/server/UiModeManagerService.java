@@ -245,6 +245,7 @@ final class UiModeManagerService extends SystemService {
             switch (mode) {
                 case UiModeManager.MODE_NIGHT_NO:
                 case UiModeManager.MODE_NIGHT_YES:
+                case UiModeManager.MODE_NIGHT_BLACKOUT:
                 case UiModeManager.MODE_NIGHT_AUTO:
                     break;
                 default:
@@ -434,6 +435,21 @@ final class UiModeManagerService extends SystemService {
                         Settings.System.POWER_MENU_TEXT_COLOR, 0xff1976D2);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.POWER_MENU_ICON_NORMAL_COLOR, 0xff00ff00);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.POWER_MENU_ICON_ENABLED_SELECTED_COLOR, 0xff33b5e5);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.STATUS_BAR_EXPANDED_HEADER_BG_COLOR, 0xff263238);
+            } else if (mNightMode == UiModeManager.MODE_NIGHT_BLACKOUT) {
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.NOTIFICATION_BG_COLOR, 0xff000000);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.NOTIFICATION_TEXT_COLOR, 0xffffffff);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.QS_BACKGROUND_COLOR, 0xff000000);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.POWER_MENU_TEXT_COLOR, 0xffffffff);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.POWER_MENU_ICON_NORMAL_COLOR, 0xffffffff);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.POWER_MENU_ICON_ENABLED_SELECTED_COLOR, 0xff1976D2);
                 Settings.System.putInt(mContext.getContentResolver(),

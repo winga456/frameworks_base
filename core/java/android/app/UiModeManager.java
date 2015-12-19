@@ -108,6 +108,11 @@ public class UiModeManager {
      */
     public static final int MODE_NIGHT_YES = Configuration.UI_MODE_NIGHT_YES >> 4;
 
+    /** Constant for {@link #setNightMode(int)} and {@link #getNightMode()}:
+     * always run in night mode.
+     */
+    public static final int MODE_NIGHT_BLACKOUT = Configuration.UI_MODE_NIGHT_BLACKOUT >> 4;
+
     private IUiModeManager mService;
 
     /*package*/ UiModeManager() {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2014 The Android Open Source Project
+<!--
+     Copyright (C) 2015 The VRToxin Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -16,16 +17,14 @@
 
 <!-- Colors specific to Material themes. -->
 <resources>
-    <!-- Primary & accent colors -->
-    <eat-comment />
 
-    <color name="material_grey_900">#ff21272b</color>
-    <color name="material_grey_850">#ff1b1f23</color>
-    <color name="material_grey_800">#ff263238</color>
-    <color name="material_grey_600">#ff546e7a</color>
-    <color name="material_grey_300">#ff90a4ae</color>
-    <color name="material_grey_100">#ffcfd8dc</color>
-    <color name="material_grey_50">#ffeceff1</color>
+    <color name="background_floating_material_dark">@color/material_grey_850</color>
+    <color name="notification_action_color_filter">#9F9F9F</color>
+    <color name="primary_text_material_light">#ffffffff</color>
+    <color name="primary_text_material_dark">#ffffffff</color>
+    <color name="secondary_text_material_light">#ffffffff</color>
+    <color name="secondary_text_material_dark">#ffffffff</color>
+    <!-- background of the picture in the big material notification template -->
+    <color name="notification_mtrl_big_picture_bg">#CC111111</color>
 
-    <color name="material_deep_teal_200">#ff009688</color>
 </resources>
