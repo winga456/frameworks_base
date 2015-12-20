@@ -75,6 +75,7 @@ public class QSConstants {
     public static final String TILE_VRTUPDATER = "vrtupdater";
     public static final String TILE_SOUNDS = "sounds";
     public static final String TILE_CAFFEINE = "caffeine";
+    public static final String TILE_SCREEN_RECORD = "screen_record";
 
     protected static final ArrayList<String> STATIC_TILES_AVAILABLE = new ArrayList<String>();
     protected static final ArrayList<String> TILES_AVAILABLE = new ArrayList<String>();
@@ -127,6 +128,7 @@ public class QSConstants {
         STATIC_TILES_AVAILABLE.add(TILE_POWERMENU);
         STATIC_TILES_AVAILABLE.add(TILE_VRTUPDATER);
         STATIC_TILES_AVAILABLE.add(TILE_SOUNDS);
+        STATIC_TILES_AVAILABLE.add(TILE_SCREEN_RECORD);
 
         TILES_AVAILABLE.addAll(STATIC_TILES_AVAILABLE);
     }

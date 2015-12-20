@@ -67,6 +67,7 @@ import com.android.systemui.qs.tiles.PowerMenuTile;
 import com.android.systemui.qs.tiles.RebootTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
 import com.android.systemui.qs.tiles.ScreenOffTile;
+import com.android.systemui.qs.tiles.ScreenrecordTile;
 import com.android.systemui.qs.tiles.ScreenshotTile;
 import com.android.systemui.qs.tiles.SlimActionTile;
 import com.android.systemui.qs.tiles.ScreenTimeoutTile;
@@ -373,6 +374,8 @@ public class QSTileHost implements QSTile.Host {
                 return new SoundTile(this);
             case QSConstants.TILE_CAFFEINE:
                 return new CaffeineTile(this);
+            case QSConstants.TILE_SCREEN_RECORD:
+                return new ScreenrecordTile(this);
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
         }
