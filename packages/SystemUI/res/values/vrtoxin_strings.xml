@@ -251,4 +251,8 @@
     <string name="onthego_front_camera">Use front camera</string>
     <string name="onthego_service_toggle">Automatically restart service</string>
 
+    <!-- Navigation Bar tile -->
+    <string name="quick_settings_navbar">NavBar</string>
+    <string name="quick_settings_navbar_off">NavBar Disabled</string>
+
 </resources>
