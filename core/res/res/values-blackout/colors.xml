@@ -20,9 +20,9 @@
 
     <color name="background_floating_material_dark">@color/material_grey_850</color>
     <color name="notification_action_color_filter">#9F9F9F</color>
-    <color name="primary_text_material_light">#ffffffff</color>
+    <!--<color name="primary_text_material_light">#ffffffff</color>-->
     <color name="primary_text_material_dark">#ffffffff</color>
-    <color name="secondary_text_material_light">#ffffffff</color>
+    <!--<color name="secondary_text_material_light">#ffffffff</color>-->
     <color name="secondary_text_material_dark">#ffffffff</color>
     <!-- background of the picture in the big material notification template -->
     <color name="notification_mtrl_big_picture_bg">#CC111111</color>
