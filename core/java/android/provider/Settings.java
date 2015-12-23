@@ -5656,6 +5656,12 @@ public final class Settings {
         public static final String DOZE_AUTO_BRIGHTNESS = "doze_auto_brightness";
 
         /**
+         * Configure the vibration when double tapping the power button to launch right LS target
+         * @hide
+         */
+        public static final String DT2L_TARGET_VIBRATE_CONFIG = "dt2l_target_vibrate_config";
+
+        /**
          * Whether to display recents in full screen
          * @hide
          */
