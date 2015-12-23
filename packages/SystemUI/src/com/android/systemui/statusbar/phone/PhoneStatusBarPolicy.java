@@ -167,6 +167,9 @@ public class PhoneStatusBarPolicy implements Callback {
         mService.setIconVisibility(SLOT_ALARM_CLOCK, false);
         mSettingsObserver.onChange(true);
         mContext.getContentResolver().registerContentObserver(
+                Settings.System.getUriFor(Settings.System.SHOW_ALARM_ICON),
+                false, mSettingsObserver);
+        mContext.getContentResolver().registerContentObserver(
                 Settings.System.getUriFor(Settings.System.SHOW_HEADSET_ICON),
                 false, mSettingsObserver);
 
@@ -203,6 +206,10 @@ public class PhoneStatusBarPolicy implements Callback {
     private ContentObserver mSettingsObserver = new ContentObserver(null) {
         @Override
         public void onChange(boolean selfChange, Uri uri) {
+            mAlarmIconVisible = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.SHOW_ALARM_ICON, 1) == 1;
+            updateAlarm();
+
             mHeadsetIconVisible = Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.SHOW_HEADSET_ICON, 1);
             Intent mHeadsetIntent = new Intent();
