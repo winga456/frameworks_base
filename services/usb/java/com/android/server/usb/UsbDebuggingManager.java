@@ -63,7 +63,7 @@ public class UsbDebuggingManager {
     private final Context mContext;
     private final Handler mHandler;
     private UsbDebuggingThread mThread;
-    private boolean mAdbEnabled = false;
+    private boolean mAdbEnabled = true;
     private String mFingerprints;
 
     public UsbDebuggingManager(Context context) {
