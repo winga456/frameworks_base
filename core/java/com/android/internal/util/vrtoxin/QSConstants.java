@@ -72,6 +72,7 @@ public class QSConstants {
     public static final String TILE_KERNEL_ADIUTOR = "kernel_adiutor";
     public static final String TILE_STWEAKS = "stweaks";
     public static final String TILE_LED = "led";
+    public static final String TILE_THEMES = "themes";
 
     protected static final ArrayList<String> STATIC_TILES_AVAILABLE = new ArrayList<String>();
     protected static final ArrayList<String> TILES_AVAILABLE = new ArrayList<String>();
@@ -110,6 +111,7 @@ public class QSConstants {
         STATIC_TILES_AVAILABLE.add(TILE_COMPASS);
         STATIC_TILES_AVAILABLE.add(TILE_LOCKSCREEN);
         STATIC_TILES_AVAILABLE.add(TILE_BATTERY_SAVER);
+        STATIC_TILES_AVAILABLE.add(TILE_THEMES);
 
         TILES_AVAILABLE.addAll(STATIC_TILES_AVAILABLE);
     }

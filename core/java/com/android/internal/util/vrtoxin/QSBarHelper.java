@@ -145,6 +145,9 @@ public class QSBarHelper {
         } else if (clickAction.equals(QSBarConstants.BUTTON_SLIMPIE)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_pie_global_on", null, null);
+        } else if (clickAction.equals(QSBarConstants.BUTTON_THEMES)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_settings_themes_alpha", null, null);
         } else if (clickAction.equals(QSBarConstants.BUTTON_VRTOXIN)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_cyanide_on", null, null);

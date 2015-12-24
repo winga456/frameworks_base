@@ -37,6 +37,7 @@ public class QSBarConstants {
     public static final String BUTTON_ROTATION         = "rotation";
     public static final String BUTTON_SCREENOFF        = "screenoff";
     public static final String BUTTON_SLIMPIE          = "slimpie";
+    public static final String BUTTON_THEMES           = "themes";
     public static final String BUTTON_VRTOXIN          = "vrtoxin";
     public static final String BUTTON_WIFI             = "wifi";
 
@@ -57,5 +58,7 @@ public class QSBarConstants {
         + BUTTON_VRTOXIN    + BUTTON_DELIMITER
         + ICON_EMPTY        + BUTTON_DELIMITER
         + BUTTON_AMBIENT    + BUTTON_DELIMITER
+        + ICON_EMPTY        + BUTTON_DELIMITER
+        + BUTTON_THEMES   + BUTTON_DELIMITER
         + ICON_EMPTY;
 }

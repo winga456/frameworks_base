@@ -57,6 +57,7 @@ import com.android.systemui.vrtoxin.QuickAccess.buttons.RestartUIButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.RotationLockButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.ScreenOffButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.SlimPieButton;
+import com.android.systemui.vrtoxin.QuickAccess.buttons.ThemeButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.TorchButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.VRToxinButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.WifiButton;
@@ -229,6 +230,10 @@ public class QuickAccessBar extends LinearLayout {
             button = new SlimPieButton(mContext, this,
                     mContext.getResources().getDrawable(R.drawable.ic_qs_pie_global_on),
                     mContext.getResources().getDrawable(R.drawable.ic_qs_pie_global_off));
+        } else if (action.equals(QSBarConstants.BUTTON_THEMES)) {
+            button = new ThemeButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_settings_themes_alpha),
+                    mContext.getResources().getDrawable(R.drawable.ic_settings_themes_alpha));
         } else if (action.equals(QSBarConstants.BUTTON_VRTOXIN)) {
             button = new VRToxinButton(mContext, this,
                     mContext.getResources().getDrawable(R.drawable.ic_qs_cyanide_on),
