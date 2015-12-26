@@ -60,6 +60,30 @@
     <string name="quick_settings_nfc_label">NFC</string>
     <string name="quick_settings_heads_up_label">Heads Up</string>
     <string name="quick_settings_themes_label">Themes</string>
+    <string name="quick_settings_network_adb_enabled_label">Enabled</string>
+    <string name="quick_settings_network_adb_disabled_label">Disabled</string>
+    <string name="qs_tile_adb_over_network">ADB Over Network</string>
+    <string name="qs_tile_compass">Compass</string>
+    <string name="quick_settings_compass_value" translatable="false"><xliff:g id="degrees">%1$.0f</xliff:g>\u00b0 <xliff:g id="direction">%2$s</xliff:g></string>
+    <string name="quick_settings_compass_off">Compass off</string>
+    <string name="quick_settings_compass_init">Initializing\u2026</string>
+    <string name="quick_settings_lockscreen_label">Lockscreen</string>
+    <string name="quick_settings_lockscreen_label_enforced">Lock screen enforced</string>
+    <string name="quick_settings_slimpie_on">SlimPie Enabled</string>
+	<string name="quick_settings_slimpie_off">SlimPie Disabled</string>
+	<string name="quick_settings_gesture_anywhere_on">Gestures Enabled</string>
+	<string name="quick_settings_gesture_anywhere_off">Gestures Disabled</string>
+    <string name="quick_settings_hwkeys_on">Hardware Keys Enabled</string>
+	<string name="quick_settings_hwkeys_off">Hardware Keys Disabled</string>
+	<string name="quick_settings_appsidebar_on">AppSideBar On</string>
+    <string name="quick_settings_appsidebar_off">AppSideBar Off</string>
+    <string name="quick_settings_appcirclebar_on">AppCircleBar On</string>
+    <string name="quick_settings_appcirclebar_off">AppCircleBar Off</string>
+    <string name="quick_settings_battery_saver">Battery Saver</string>
+    <string name="quick_settings_battery_saver_off">Battery Saver off</string>
+    <string name="quick_settings_navbar">NavBar</string>
+    <string name="quick_settings_navbar_off">NavBar Disabled</string>
+    <string name="quick_settings_stweaks">STweaks</string>
 
     <!-- Expanded desktop tile -->
     <string name="quick_settings_expanded_desktop_label">Expanded desktop</string>
@@ -225,20 +249,6 @@
     <string name="toggle">Toggle</string>
     <string name="shortcut_toggle_title">Action to perform</string>
 
-    <string name="quick_settings_network_adb_enabled_label">Enabled</string>
-    <string name="quick_settings_network_adb_disabled_label">Disabled</string>
-    <string name="qs_tile_adb_over_network">ADB Over Network</string>
-    <string name="qs_tile_compass">Compass</string>
-    <string name="quick_settings_compass_value" translatable="false"><xliff:g id="degrees">%1$.0f</xliff:g>\u00b0 <xliff:g id="direction">%2$s</xliff:g></string>
-    <string name="quick_settings_compass_off">Compass off</string>
-    <string name="quick_settings_compass_init">Initializing\u2026</string>
-    <string name="quick_settings_lockscreen_label">Lockscreen</string>
-    <string name="quick_settings_lockscreen_label_enforced">Lock screen enforced</string>
-
-    <!-- Battery Saver QS Tile -->
-    <string name="quick_settings_battery_saver">Battery saver</string>
-    <string name="quick_settings_battery_saver_off">Battery saver off</string>
-
     <!-- On The Go -->
     <string name="onthego_notif_ticker">On-The-Go activated</string>
     <string name="onthego_notif_title">On-The-Go is active</string>
@@ -250,9 +260,5 @@
     <string name="onthego_transparency">Transparency</string>
     <string name="onthego_front_camera">Use front camera</string>
     <string name="onthego_service_toggle">Automatically restart service</string>
-
-    <!-- Navigation Bar tile -->
-    <string name="quick_settings_navbar">NavBar</string>
-    <string name="quick_settings_navbar_off">NavBar Disabled</string>
 
 </resources>

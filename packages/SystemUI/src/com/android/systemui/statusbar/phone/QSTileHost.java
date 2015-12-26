@@ -39,6 +39,8 @@ import com.android.systemui.qs.QSTile;
 import com.android.systemui.qs.tiles.AdbOverNetworkTile;
 import com.android.systemui.qs.tiles.AirplaneModeTile;
 import com.android.systemui.qs.tiles.AmbientDisplayTile;
+import com.android.systemui.qs.tiles.AppSideBarTile;
+import com.android.systemui.qs.tiles.AppCircleBarTile;
 import com.android.systemui.qs.tiles.BatterySaverTile;
 import com.android.systemui.qs.tiles.BluetoothTile;
 import com.android.systemui.qs.tiles.BrightnessTile;
@@ -51,6 +53,7 @@ import com.android.systemui.qs.tiles.ExpandedDesktopTile;
 import com.android.systemui.qs.tiles.FlashlightTile;
 import com.android.systemui.qs.tiles.HeadsUpTile;
 import com.android.systemui.qs.tiles.HotspotTile;
+import com.android.systemui.qs.tiles.HWKeysTile;
 import com.android.systemui.qs.tiles.IntentTile;
 import com.android.systemui.qs.tiles.LocationTile;
 import com.android.systemui.qs.tiles.MusicTile;
@@ -62,8 +65,10 @@ import com.android.systemui.qs.tiles.RotationLockTile;
 import com.android.systemui.qs.tiles.ScreenOffTile;
 import com.android.systemui.qs.tiles.ScreenshotTile;
 import com.android.systemui.qs.tiles.ScreenTimeoutTile;
+import com.android.systemui.qs.tiles.SlimPieTile;
 import com.android.systemui.qs.tiles.VolumeTile;
 import com.android.systemui.qs.tiles.UsbTetherTile;
+import com.android.systemui.qs.tiles.STweaksTile;
 import com.android.systemui.qs.tiles.SyncTile;
 import com.android.systemui.qs.tiles.ThemesTile;
 import com.android.systemui.qs.tiles.WifiTile;
@@ -331,6 +336,16 @@ public class QSTileHost implements QSTile.Host {
 				return new ThemesTile(this);
             case QSConstants.TILE_NAVBAR:
 				return new NavBarTile(this);
+            case QSConstants.TILE_APPCIRCLEBAR:
+				return new AppCircleBarTile(this);
+            case QSConstants.TILE_APPSIDEBAR:
+				return new AppSideBarTile(this);
+            case QSConstants.TILE_HWKEYS:
+				return new HWKeysTile(this);
+            case QSConstants.TILE_STWEAKS:
+				return new STweaksTile(this);
+            case QSConstants.TILE_SLIMPIE:
+				return new SlimPieTile(this);
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
         }
