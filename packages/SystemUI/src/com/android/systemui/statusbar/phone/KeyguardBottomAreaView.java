@@ -619,17 +619,6 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
                 .setDuration(DOZE_ANIMATION_ELEMENT_DURATION);
     }
 
-    public void updateTextColor(int color) {
-        mIndicationText.setTextColor(color);
-
-    }
-
-    public void updateIconColor(int color) {
-        mCameraImageView.updateColorSettings(color);
-        mLeftAffordanceView.updateColorSettings(color);
-        mLockIcon.updateColorSettings(color);
-    }
-
     public void updateIndicationTextColor() {
         ContentResolver resolver = getContext().getContentResolver();
         int color = Settings.System.getInt(resolver,
@@ -651,6 +640,16 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
             });
         }
     };
+
+    public void updateTextColor(int color) {
+        mIndicationController.setTextColor(color);
+    }
+
+    public void updateIconColor(int color) {
+        mCameraImageView.updateColorSettings(color);
+        mLeftAffordanceView.updateColorSettings(color);
+        mLockIcon.updateColorSettings(color);
+    }
 
     private final KeyguardUpdateMonitorCallback mUpdateMonitorCallback =
             new KeyguardUpdateMonitorCallback() {

@@ -22,6 +22,7 @@ import android.animation.ArgbEvaluator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Canvas;
 import android.graphics.CanvasProperty;
 import android.graphics.Color;
@@ -37,6 +38,8 @@ import android.view.ViewAnimationUtils;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.ImageView;
+
+import com.android.internal.util.vrtoxin.ColorHelper;
 
 import com.android.systemui.R;
 import com.android.systemui.statusbar.phone.KeyguardAffordanceHelper;
@@ -59,7 +62,7 @@ public class KeyguardAffordanceView extends ImageView {
     private final Interpolator mAppearInterpolator;
     private final Interpolator mDisappearInterpolator;
     private int mInverseColor;
-    private int mNormalColor;
+    protected int mNormalColor;
     private final ArgbEvaluator mColorInterpolator;
     private final FlingAnimationUtils mFlingAnimationUtils;
     private float mCircleRadius;
@@ -141,7 +144,6 @@ public class KeyguardAffordanceView extends ImageView {
                 android.R.interpolator.fast_out_linear_in);
         mColorInterpolator = new ArgbEvaluator();
         mFlingAnimationUtils = new FlingAnimationUtils(mContext, 0.3f);
-
         updateColorSettings(iconColor);
     }
 
@@ -553,27 +555,12 @@ public class KeyguardAffordanceView extends ImageView {
         mLaunchingAffordance = launchingAffordance;
     }
 
-    public void updateColorSettings() {
-        updateColorSettings(mNormalColor);
-    }
-
     public void updateColorSettings(int color) {
         mCircleColor = color;
         mNormalColor = color;
-        mInverseColor = isColorDark(color) ? 0xffffffff : 0xff000000;
+        mInverseColor = ColorHelper.isColorDark(color) ? 0xffffffff : 0xff000000;
 
         mCirclePaint.setColor(mCircleColor);
-        updateIconColor();
-    }
-
-    private boolean isColorDark(int color) {
-        double a = 1- (0.299 * Color.red(color)
-                + 0.587 * Color.green(color)
-                + 0.114 * Color.blue(color)) / 255;
-        if (a < 0.5) {
-            return false;
-        } else {
-            return true;
-        }
+        setImageTintList(ColorStateList.valueOf(mNormalColor));
     }
 }
