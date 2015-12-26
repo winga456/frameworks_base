@@ -5662,10 +5662,11 @@ public final class Settings {
         public static final String RECENTS_FULL_SCREEN = "recents_full_screen";
 
         /**
-         * Hidden shit
+         * Whether to display set of animations when prompting the power menu
+         *
          * @hide
          */
-        public static final String HIDDEN_SHIT = "hidden_shit";
+        public static final String POWER_MENU_ANIMATIONS = "power_menu_animations";
 
         /**
          * Three Finger Gesture from Oppo
