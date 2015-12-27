@@ -4464,8 +4464,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mQSPanel.updateResources();
         }
 
-        addSidebarView();
-
         loadDimens();
 
         if (mNotificationPanel != null) {
