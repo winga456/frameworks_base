@@ -1421,6 +1421,11 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             mContext = context;
         }
 
+        private int ringerModeToIndex(int ringerMode) {
+            // They just happen to coincide
+            return ringerMode;
+        }
+
         private int indexToRingerMode(int index) {
             if (index == 2) {
                 return AudioManager.RINGER_MODE_SILENT;
