@@ -101,5 +101,5 @@
     <bool name="config_useSystemClockforSensors">false</bool>
 
     <!-- Default, comma-delimited, quick settings tiles. See QSConstants.java for a list of all available tiles -->
-    <string name="config_defaultQuickSettingsTiles">wifi,bt,inversion,dnd,cell,airplane,rotation,flashlight,location,cast,vrtoxin_settings,usb_tether,ambient_display</string>
+    <string name="config_defaultQuickSettingsTiles">wifi,bt,inversion,dnd,cell,airplane,rotation,flashlight,location,themes,vrtoxin_settings,toggleSlimPie,ambient_display</string>
 </resources>

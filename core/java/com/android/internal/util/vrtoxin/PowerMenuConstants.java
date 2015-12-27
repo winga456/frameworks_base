@@ -48,9 +48,9 @@ public class PowerMenuConstants {
         + ICON_EMPTY              + ACTION_DELIMITER
         + ACTION_REBOOT           + ACTION_DELIMITER
         + ICON_EMPTY              + ACTION_DELIMITER
-        + ACTION_AIRPLANE         + ACTION_DELIMITER
+        + ACTION_RESTARTUI        + ACTION_DELIMITER
         + ICON_EMPTY              + ACTION_DELIMITER
-        + ACTION_SYSTEM_SETTINGS  + ACTION_DELIMITER
+        + ACTION_ONTHEGO          + ACTION_DELIMITER
         + ICON_EMPTY              + ACTION_DELIMITER
         + ACTION_SOUND            + ACTION_DELIMITER
         + ICON_EMPTY;
