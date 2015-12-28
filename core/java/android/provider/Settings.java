@@ -2561,6 +2561,18 @@ public final class Settings {
         public static final String BUTTON_BACKLIGHT_TIMEOUT = "button_backlight_timeout";
 
         /**
+         * Whether to show battery saver notification
+         * @hide
+         */
+        public static final String BATTERY_SAVER_NOTIFICATION = "battery_saver_notification";
+
+        /**
+         * Whether to show low battery notification
+         * @hide
+         */
+        public static final String BATTERY_LOW_NOTIFICATION = "battery_low_notification";
+
+        /**
          * Quick Settings Quick Pulldown
          * 0 = off, 1 = right, 2 = left
          * @hide
@@ -5644,16 +5656,23 @@ public final class Settings {
         public static final String DOZE_AUTO_BRIGHTNESS = "doze_auto_brightness";
 
         /**
+         * Configure the vibration when double tapping the power button to launch right LS target
+         * @hide
+         */
+        public static final String DT2L_TARGET_VIBRATE_CONFIG = "dt2l_target_vibrate_config";
+
+        /**
          * Whether to display recents in full screen
          * @hide
          */
         public static final String RECENTS_FULL_SCREEN = "recents_full_screen";
 
         /**
-         * Hidden shit
+         * Whether to display set of animations when prompting the power menu
+         *
          * @hide
          */
-        public static final String HIDDEN_SHIT = "hidden_shit";
+        public static final String POWER_MENU_ANIMATIONS = "power_menu_animations";
 
         /**
          * Three Finger Gesture from Oppo

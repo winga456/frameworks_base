@@ -178,7 +178,6 @@ import com.android.systemui.statusbar.policy.BatteryController.BatteryStateChang
 import com.android.internal.util.vrtoxin.WeatherController;
 import com.android.internal.util.vrtoxin.WeatherControllerImpl;
 import com.android.internal.util.vrtoxin.WeatherController.WeatherInfo;
-import com.android.internal.util.vrtoxin.VRPackageMonitor;
 import com.android.systemui.statusbar.policy.BluetoothControllerImpl;
 import com.android.systemui.statusbar.policy.BrightnessMirrorController;
 import com.android.systemui.statusbar.policy.CastControllerImpl;
@@ -190,8 +189,6 @@ import com.android.systemui.statusbar.policy.KeyButtonView;
 import com.android.systemui.statusbar.policy.KeyguardMonitor;
 import com.android.systemui.statusbar.policy.KeyguardUserSwitcher;
 import com.android.systemui.statusbar.policy.LocationControllerImpl;
-import com.android.systemui.statusbar.policy.MinitBattery;
-import com.android.systemui.statusbar.policy.MinitBatteryController;
 import com.android.systemui.statusbar.policy.NetworkControllerImpl;
 import com.android.systemui.statusbar.policy.NextAlarmController;
 import com.android.systemui.statusbar.policy.PreviewInflater;
@@ -346,7 +343,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     AccessibilityController mAccessibilityController;
     FingerprintUnlockController mFingerprintUnlockController;
     WeatherControllerImpl mWeatherController;
-    MinitBatteryController mMinitBatteryController;
 
     int mNaturalBarHeight = -1;
 
@@ -426,6 +422,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     boolean mExpandedVisible;
 
+    private int mDt2lTargetVibrateConfig;
+
     private int mNavigationBarWindowState = WINDOW_STATE_SHOWING;
 
     private int mStatusBarHeaderHeight;
@@ -486,7 +484,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     private int mBlurRadius;
     private Bitmap mBlurredImage = null;
-    private VRPackageMonitor mPackageMonitor;
 
     class SettingsObserver extends UserContentObserver {
         SettingsObserver(Handler handler) {
@@ -621,10 +618,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.STATUS_BAR_VRTOXIN_LOGO_SHOW),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-					Settings.System.STATUS_BAR_VRTOXIN_LOGO_STYLE),
+                    Settings.System.STATUS_BAR_VRTOXIN_LOGO_STYLE),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-					Settings.System.STATUS_BAR_VRTOXIN_LOGO_COLOR),
+                    Settings.System.STATUS_BAR_VRTOXIN_LOGO_COLOR),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_VRTOXIN_LOGO_HIDE_LOGO),
@@ -673,7 +670,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.LOCKSCREEN_BLUR_RADIUS),
-                    false, this, UserHandle.USER_ALL);	
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.DT2L_TARGET_VIBRATE_CONFIG),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -877,6 +877,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mVRToxinLogoColor = Settings.System.getIntForUser(resolver,
                     Settings.System.STATUS_BAR_VRTOXIN_LOGO_COLOR, 0xFFFFFFFF, mCurrentUserId);
             showVRToxinLogo(mVRToxinLogoColor);
+
+            mDt2lTargetVibrateConfig = Settings.System.getIntForUser(resolver,
+                    Settings.System.DT2L_TARGET_VIBRATE_CONFIG, 1, mCurrentUserId);
 
             mWeatherTempStyle = Settings.System.getIntForUser(
                     resolver, Settings.System.STATUS_BAR_WEATHER_TEMP_STYLE, 0,
@@ -1412,9 +1415,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         PanelHolder holder = (PanelHolder) mStatusBarWindow.findViewById(R.id.panel_holder);
         mStatusBarView.setPanelHolder(holder);
 
-        mPackageMonitor = new VRPackageMonitor();
-        mPackageMonitor.register(mContext, mHandler);
-
         mNotificationPanel = (NotificationPanelView) mStatusBarWindow.findViewById(
                 R.id.notification_panel);
         mNotificationPanel.setStatusBar(this);
@@ -1569,9 +1569,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         // set the inital view visibility
         setAreThereNotifications();
-
-        mMinitBatteryController = new MinitBatteryController(mContext, mStatusBarView, mHeader, mKeyguardStatusBar);
-        mPackageMonitor.addListener(mMinitBatteryController);
 
         mIconController = new StatusBarIconController(
                 mContext, mStatusBarView, mKeyguardStatusBar, this);
@@ -4475,8 +4472,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mQSPanel.updateResources();
         }
 
-        addSidebarView();
-
         loadDimens();
 
         if (mNotificationPanel != null) {
@@ -4717,8 +4712,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
         mContext.unregisterReceiver(mBroadcastReceiver);
         mContext.unregisterReceiver(mDemoReceiver);
-        mPackageMonitor.removeListener(mMinitBatteryController);
-        mPackageMonitor.unregister();
         mAssistManager.destroy();
 
         final SignalClusterView signalCluster =
@@ -5413,8 +5406,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     }
 
     private void vibrateForCameraGesture() {
-        // Make sure to pass -1 for repeat so VibratorService doesn't stop us when going to sleep.
-        mVibrator.vibrate(new long[] { 0, 750L }, -1 /* repeat */);
+        mVibrator.vibrate(new long[] { 0, mDt2lTargetVibrateConfig }, -1 /* repeat */);
     }
 
     public void onScreenTurnedOn() {

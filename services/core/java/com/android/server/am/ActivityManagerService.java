@@ -4100,8 +4100,8 @@ public final class ActivityManagerService extends ActivityManagerNative
                         if (debug) {
                             Slog.v(TAG, "Next matching activity: found current " + r.packageName
                                     + "/" + r.info.name);
-                            Slog.v(TAG, "Next matching activity: next is " + aInfo.packageName
-                                    + "/" + aInfo.name);
+                            Slog.v(TAG, "Next matching activity: next is " + ((aInfo == null)
+                                    ? "null" : aInfo.packageName + "/" + aInfo.name));
                         }
                         break;
                     }
@@ -9544,6 +9544,7 @@ public final class ActivityManagerService extends ActivityManagerNative
 
                 checkTime(startTime, "getContentProviderImpl: incProviderCountLocked");
 
+                boolean importantCaller = false;
                 // In this case the provider instance already exists, so we can
                 // return it right away.
                 conn = incProviderCountLocked(r, cpr, token, stable);
@@ -9553,6 +9554,7 @@ public final class ActivityManagerService extends ActivityManagerNative
                         // make sure to count it as being accessed and thus
                         // back up on the LRU list.  This is good because
                         // content providers are often expensive to start.
+                        importantCaller = true;
                         checkTime(startTime, "getContentProviderImpl: before updateLruProcess");
                         updateLruProcessLocked(cpr.proc, false, null);
                         checkTime(startTime, "getContentProviderImpl: after updateLruProcess");
@@ -9565,36 +9567,38 @@ public final class ActivityManagerService extends ActivityManagerNative
                                 "com.android.providers.calendar/.CalendarProvider2")) {
                             Slog.v(TAG, "****************** KILLING "
                                 + cpr.name.flattenToShortString());
-                            Process.killProcess(cpr.proc.pid);
+                            cpr.proc.kill("test killing calendar provider", true);
                         }
                     }
-                    checkTime(startTime, "getContentProviderImpl: before updateOomAdj");
-                    boolean success = updateOomAdjLocked(cpr.proc);
-                    maybeUpdateProviderUsageStatsLocked(r, cpr.info.packageName, name);
-                    checkTime(startTime, "getContentProviderImpl: after updateOomAdj");
-                    if (DEBUG_PROVIDER) Slog.i(TAG_PROVIDER, "Adjust success: " + success);
-                    // NOTE: there is still a race here where a signal could be
-                    // pending on the process even though we managed to update its
-                    // adj level.  Not sure what to do about this, but at least
-                    // the race is now smaller.
+
+                    boolean success = !cpr.proc.killedByAm;
+                    if (success) {
+                        checkTime(startTime, "getContentProviderImpl: before updateOomAdj");
+                        success = updateOomAdjLocked(cpr.proc);
+                        maybeUpdateProviderUsageStatsLocked(r, cpr.info.packageName, name);
+                        checkTime(startTime, "getContentProviderImpl: after updateOomAdj");
+                        if (DEBUG_PROVIDER) Slog.i(TAG_PROVIDER, "Adjust success: " + success);
+                    }
+
+                    // There is still a race here where a signal could be pending on
+                    // the process even though we managed to update its adj level.
+                    // We check this case for perceptible app but exclude persistent
+                    // because it should not be killed normally.
+                    if (success && importantCaller && r != null && !r.persistent
+                            && r.pid != cpr.proc.pid && !cpr.proc.persistent) {
+                        success = ProcessList.isAlive(cpr.proc.pid, true);
+                    }
+
                     if (!success) {
-                        // Uh oh...  it looks like the provider's process
-                        // has been killed on us.  We need to wait for a new
-                        // process to be started, and make sure its death
-                        // doesn't kill our process.
+                        // It looks like the provider's process has been killed.
+                        // We need to wait for a new process to be started,
+                        // and make sure its death doesn't kill caller process.
                         Slog.i(TAG, "Existing provider " + cpr.name.flattenToShortString()
-                                + " is crashing; detaching " + r);
-                        boolean lastRef = decProviderCountLocked(conn, cpr, token, stable);
-                        checkTime(startTime, "getContentProviderImpl: before appDied");
-                        appDiedLocked(cpr.proc);
-                        checkTime(startTime, "getContentProviderImpl: after appDied");
-                        if (!lastRef) {
-                            // This wasn't the last ref our process had on
-                            // the provider...  we have now been killed, bail.
-                            return null;
+                                + " is gone; waiting it to restart for " + r);
+                        if (cpr.provider != null) {
+                            cpr.provider = null;
+                            mLaunchingProviders.add(cpr);
                         }
-                        providerRunning = false;
-                        conn = null;
                     }
                 }
 
@@ -9697,20 +9701,8 @@ public final class ActivityManagerService extends ActivityManagerNative
                             + (r != null ? r.uid : null) + " pruid " + cpr.appInfo.uid + "): "
                             + cpr.info.name + " callers=" + Debug.getCallers(6));
 
-                // This is single process, and our app is now connecting to it.
-                // See if we are already in the process of launching this
-                // provider.
-                final int N = mLaunchingProviders.size();
-                int i;
-                for (i = 0; i < N; i++) {
-                    if (mLaunchingProviders.get(i) == cpr) {
-                        break;
-                    }
-                }
-
-                // If the provider is not already being launched, then get it
-                // started.
-                if (i >= N) {
+                // If the provider is not already being launched, then get it started.
+                if (!mLaunchingProviders.contains(cpr)) {
                     final long origId = Binder.clearCallingIdentity();
 
                     try {

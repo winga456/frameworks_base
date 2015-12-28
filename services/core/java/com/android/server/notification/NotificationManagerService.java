@@ -655,8 +655,9 @@ public class NotificationManagerService extends SystemService {
                         "Bad notification posted from package " + pkg
                         + ": " + message);
             } catch (RemoteException e) {
+            } finally {
+                Binder.restoreCallingIdentity(ident);
             }
-            Binder.restoreCallingIdentity(ident);
         }
 
         @Override
@@ -820,13 +821,13 @@ public class NotificationManagerService extends SystemService {
         }
     };
 
-    private final class LEDSettingsObserver extends ContentObserver {
+    class SettingsObserver extends ContentObserver {
         private final Uri NOTIFICATION_LIGHT_PULSE_URI
                 = Settings.System.getUriFor(Settings.System.NOTIFICATION_LIGHT_PULSE);
         private final Uri ENABLED_NOTIFICATION_LISTENERS_URI
                 = Settings.Secure.getUriFor(Settings.Secure.ENABLED_NOTIFICATION_LISTENERS);
 
-        LEDSettingsObserver(Handler handler) {
+        SettingsObserver(Handler handler) {
             super(handler);
         }
 
@@ -921,7 +922,7 @@ public class NotificationManagerService extends SystemService {
         }
     }
 
-    private LEDSettingsObserver mSettingsObserver;
+    private SettingsObserver mSettingsObserver;
     private ZenModeHelper mZenModeHelper;
 
     private final Runnable mBuzzBeepBlinked = new Runnable() {
@@ -1075,7 +1076,7 @@ public class NotificationManagerService extends SystemService {
         getContext().registerReceiverAsUser(mPackageIntentReceiver, UserHandle.ALL, sdFilter, null,
                 null);
 
-        mSettingsObserver = new LEDSettingsObserver(mHandler);
+        mSettingsObserver = new SettingsObserver(mHandler);
         mSettingsObserver.observe();
 
         mArchive = new Archive(resources.getInteger(
@@ -1118,8 +1119,9 @@ public class NotificationManagerService extends SystemService {
             // Grab our optional AudioService
             mAudioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
             mAudioManagerInternal = getLocalService(AudioManagerInternal.class);
-            updateDisableDucking();
             mZenModeHelper.onSystemReady();
+
+            updateDisableDucking();
         } else if (phase == SystemService.PHASE_THIRD_PARTY_APPS_CAN_START) {
             // This observer will force an update when observe is called, causing us to
             // bind to listener services.
