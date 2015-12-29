@@ -288,6 +288,14 @@ public final class ShutdownThread extends Thread {
                 attrs.windowAnimations = R.style.PowerMenuTopAnimation;
                 attrs.gravity = Gravity.TOP|Gravity.CENTER_HORIZONTAL;
             }
+            if (powermenuAnimations == 3) {
+                attrs.windowAnimations = R.style.PowerMenuLeftAnimation;
+                attrs.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
+            }
+            if (powermenuAnimations == 4) {
+                attrs.windowAnimations = R.style.PowerMenuRightAnimation;
+                attrs.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
+            }
 
             sConfirmDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG);
             sConfirmDialog.show();
