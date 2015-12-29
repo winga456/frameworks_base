@@ -56,4 +56,7 @@
         <item name="windowEnterAnimation">@anim/slide_in_right</item>
         <item name="windowExitAnimation">@anim/slide_out_right</item>
     </style>
+    <style name="PowerMenuRotateAnimation">
+        <item name="windowEnterAnimation">@anim/rotate</item>
+    </style>
 </resources>
