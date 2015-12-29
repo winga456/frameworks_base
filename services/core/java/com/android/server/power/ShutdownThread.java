@@ -285,18 +285,22 @@ public final class ShutdownThread extends Thread {
                 attrs.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
             }
             if (powermenuAnimations == 2) {
-                attrs.windowAnimations = R.style.PowerMenuLeftAnimation;
+                attrs.windowAnimations = R.style.PowerMenuGrowAnimation;
                 attrs.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
             }
             if (powermenuAnimations == 3) {
-                attrs.windowAnimations = R.style.PowerMenuRightAnimation;
+                attrs.windowAnimations = R.style.PowerMenuLeftAnimation;
                 attrs.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
             }
             if (powermenuAnimations == 4) {
-                attrs.windowAnimations = R.style.PowerMenuRotateAnimation;
+                attrs.windowAnimations = R.style.PowerMenuRightAnimation;
                 attrs.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
             }
             if (powermenuAnimations == 5) {
+                attrs.windowAnimations = R.style.PowerMenuRotateAnimation;
+                attrs.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
+            }
+            if (powermenuAnimations == 6) {
                 attrs.windowAnimations = R.style.PowerMenuTopAnimation;
                 attrs.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
             }

@@ -59,4 +59,8 @@
     <style name="PowerMenuRotateAnimation">
         <item name="windowEnterAnimation">@anim/rotate</item>
     </style>
+    <style name="PowerMenuGrowAnimation">
+        <item name="windowEnterAnimation">@anim/grow_fade_in</item>
+        <item name="windowExitAnimation">@anim/shrink_fade_out</item>
+    </style>
 </resources>
