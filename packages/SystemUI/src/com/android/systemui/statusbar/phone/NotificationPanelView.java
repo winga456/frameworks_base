@@ -824,8 +824,8 @@ public class NotificationPanelView extends PanelView implements
         boolean twoFingerQsEvent = mTwoFingerQsExpandPossible
                 && (event.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN
                 && event.getPointerCount() == 2);
-        boolean oneFingerQsOverride = event.getActionMasked() == MotionEvent.ACTION_DOWN
-                && shouldQuickSettingsIntercept(event.getX(), event.getY(), -1, false);
+
+        boolean oneFingerQsOverride = isOpenQsEvent(event);
 
         if (mQsSmartPullDown == 1 && !mStatusBar.hasActiveClearableNotifications()
                 || mQsSmartPullDown == 2 && !mStatusBar.hasActiveVisibleNotifications()
@@ -834,7 +834,7 @@ public class NotificationPanelView extends PanelView implements
             oneFingerQsOverride = true;
         }
 
-        if ((twoFingerQsEvent || oneFingerQsOverride) && isOpenQsEvent(event)
+        if ((twoFingerQsEvent || oneFingerQsOverride)
                 && event.getY(event.getActionIndex()) < mStatusBarMinHeight) {
             MetricsLogger.count(mContext, COUNTER_PANEL_OPEN_QS, 1);
             mQsExpandImmediate = true;
@@ -2609,10 +2609,11 @@ public class NotificationPanelView extends PanelView implements
 
         public void update() {
             ContentResolver resolver = mContext.getContentResolver();
-            mOneFingerQuickSettingsIntercept = Settings.System.getIntForUser(resolver,
-                    Settings.System.QS_QUICK_PULLDOWN, 1, UserHandle.USER_CURRENT);
+            mOneFingerQuickSettingsIntercept = Settings.System.getIntForUser(
+                    resolver, Settings.System.QS_QUICK_PULLDOWN, 1,
+                    UserHandle.USER_CURRENT);
             mQsSmartPullDown = Settings.System.getIntForUser(
-                    resolver, Settings.System.QS_SMART_PULLDOWN, 1,
+                    resolver, Settings.System.QS_SMART_PULLDOWN, 0,
                     UserHandle.USER_CURRENT);
             setQSType();
             setQSBackgroundColor();
