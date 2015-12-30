@@ -1449,9 +1449,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 new NavigationBarView.OnVerticalChangedListener() {
             @Override
             public void onVerticalChanged(boolean isVertical) {
-                /*if (mAssistManager != null) {
-                    mSearchPanelView.setHorizontal(isVertical);
-                }*/
+                if (mAssistManager != null) {
+                    mAssistManager.onConfigurationChanged();
+                }
                 mNotificationPanel.setQsScrimEnabled(!isVertical);
             }
         });
