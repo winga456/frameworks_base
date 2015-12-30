@@ -179,12 +179,6 @@ public final class Phone {
         }
     }
 
-    final void onMergeFailed(ParcelableCall parcelableCall) {
-         Call call = mCallByTelecomCallId.get(parcelableCall.getId());
-         if (call != null) {
-             call.onMergeFailed();
-         }
-    }
     /**
      * Called to destroy the phone and cleanup any lingering calls.
      */

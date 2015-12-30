@@ -102,8 +102,6 @@ public abstract class ConnectionService extends Service {
     private static final int MSG_MERGE_CONFERENCE = 18;
     private static final int MSG_SWAP_CONFERENCE = 19;
     private static final int MSG_SET_LOCAL_HOLD = 20;
-    //Proprietary values starts after this.
-    private static final int MSG_ADD_PARTICIPANT_WITH_CONFERENCE = 30;
 
     private static Connection sNullConnection;
 
@@ -220,14 +218,6 @@ public abstract class ConnectionService extends Service {
         @Override
         public void splitFromConference(String callId) {
             mHandler.obtainMessage(MSG_SPLIT_FROM_CONFERENCE, callId).sendToTarget();
-        }
-
-        @Override
-        public void addParticipantWithConference(String callId, String participant) {
-            SomeArgs args = SomeArgs.obtain();
-            args.arg1 = callId;
-            args.arg2 = participant;
-            mHandler.obtainMessage(MSG_ADD_PARTICIPANT_WITH_CONFERENCE, args).sendToTarget();
         }
 
         @Override
@@ -366,17 +356,6 @@ public abstract class ConnectionService extends Service {
                 case MSG_SPLIT_FROM_CONFERENCE:
                     splitFromConference((String) msg.obj);
                     break;
-                case MSG_ADD_PARTICIPANT_WITH_CONFERENCE: {
-                    SomeArgs args = (SomeArgs) msg.obj;
-                    try {
-                        String callId = (String) args.arg1;
-                        String participant = (String) args.arg2;
-                        addParticipantWithConference(callId, participant);
-                    } finally {
-                        args.recycle();
-                    }
-                    break;
-                }
                 case MSG_MERGE_CONFERENCE:
                     mergeConference((String) msg.obj);
                     break;
@@ -452,16 +431,6 @@ public abstract class ConnectionService extends Service {
             Log.d(this, "call capabilities: conference: %s",
                     Connection.capabilitiesToString(connectionCapabilities));
             mAdapter.setConnectionCapabilities(id, connectionCapabilities);
-        }
-
-        @Override
-        public void onConnectionPropertiesChanged(
-                Conference conference,
-                int connectionProperties) {
-            String id = mIdByConference.get(conference);
-            Log.d(this, "call properties: conference: %s",
-                    Connection.propertiesToString(connectionProperties));
-            mAdapter.setConnectionProperties(id, connectionProperties);
         }
 
         @Override
@@ -581,14 +550,6 @@ public abstract class ConnectionService extends Service {
         }
 
         @Override
-        public void onConnectionPropertiesChanged(Connection c, int properties) {
-            String id = mIdByConnection.get(c);
-            Log.d(this, "properties: parcelableconnection: %s",
-                    Connection.propertiesToString(properties));
-            mAdapter.setConnectionProperties(id, properties);
-        }
-
-        @Override
         public void onVideoProviderChanged(Connection c, Connection.VideoProvider videoProvider) {
             String id = mIdByConnection.get(c);
             Log.d(this, "onVideoProviderChanged: Connection: %s, VideoProvider: %s", c,
@@ -643,12 +604,6 @@ public abstract class ConnectionService extends Service {
                 mAdapter.setExtras(id, extras);
             }
         }
-
-        @Override
-        public void onCdmaConnectionTimeReset(Connection c) {
-            String id = mIdByConnection.get(c);
-            mAdapter.resetCdmaConnectionTime(id);
-        }
     };
 
     /** {@inheritDoc} */
@@ -694,11 +649,10 @@ public abstract class ConnectionService extends Service {
 
         Uri address = connection.getAddress();
         String number = address == null ? "null" : address.getSchemeSpecificPart();
-        Log.v(this, "createConnection, number: %s, state: %s, capabilities: %s, properties: %s",
+        Log.v(this, "createConnection, number: %s, state: %s, capabilities: %s",
                 Connection.toLogSafePhoneNumber(number),
                 Connection.stateToString(connection.getState()),
-                Connection.capabilitiesToString(connection.getConnectionCapabilities()),
-                Connection.propertiesToString(connection.getConnectionProperties()));
+                Connection.capabilitiesToString(connection.getConnectionCapabilities()));
 
         Log.d(this, "createConnection, calling handleCreateConnectionSuccessful %s", callId);
         mAdapter.handleCreateConnectionComplete(
@@ -708,7 +662,6 @@ public abstract class ConnectionService extends Service {
                         request.getAccountHandle(),
                         connection.getState(),
                         connection.getConnectionCapabilities(),
-                        connection.getConnectionProperties(),
                         connection.getAddress(),
                         connection.getAddressPresentation(),
                         connection.getCallerDisplayName(),
@@ -871,17 +824,6 @@ public abstract class ConnectionService extends Service {
         }
     }
 
-    private void addParticipantWithConference(String callId, String participant) {
-        Log.d(this, "ConnectionService addParticipantWithConference(%s, %s)", participant, callId);
-        Conference conference = findConferenceForAction(callId, "addParticipantWithConference");
-        Connection connection = findConnectionForAction(callId, "addParticipantWithConnection");
-        if (connection != getNullConnection()) {
-            onAddParticipant(connection, participant);
-        } else if (conference != getNullConference()) {
-            conference.onAddParticipant(participant);
-        }
-    }
-
     private void mergeConference(String callId) {
         Log.d(this, "mergeConference(%s)", callId);
         Conference conference = findConferenceForAction(callId, "mergeConference");
@@ -1017,7 +959,6 @@ public abstract class ConnectionService extends Service {
                     conference.getPhoneAccountHandle(),
                     conference.getState(),
                     conference.getConnectionCapabilities(),
-                    conference.getConnectionProperties(),
                     connectionIds,
                     conference.getVideoProvider() == null ?
                             null : conference.getVideoProvider().getInterface(),
@@ -1058,7 +999,6 @@ public abstract class ConnectionService extends Service {
                     phoneAccountHandle,
                     connection.getState(),
                     connection.getConnectionCapabilities(),
-                    connection.getConnectionProperties(),
                     connection.getAddress(),
                     connection.getAddressPresentation(),
                     connection.getCallerDisplayName(),
@@ -1168,19 +1108,6 @@ public abstract class ConnectionService extends Service {
      * @param connection2 A connection to merge into a conference call.
      */
     public void onConference(Connection connection1, Connection connection2) {}
-
-    /**
-     * Add participant with connection. Invoked when user has made a request to add
-     * participant with specified connection. In response, the participant should add with
-     * the connection.
-     *
-     * @param connection A connection where participant need to add.
-     * @param participant Address of participant which will be added.
-     * @return
-     *
-     * @hide
-     */
-    public void onAddParticipant(Connection connection, String participant) {}
 
     /**
      * Indicates that a remote conference has been created for existing {@link RemoteConnection}s.

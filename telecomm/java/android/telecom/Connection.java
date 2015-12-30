@@ -227,13 +227,6 @@ public abstract class Connection extends Conferenceable {
     public static final int CAPABILITY_CAN_PAUSE_VIDEO = 0x00100000;
 
     /**
-     * Add participant in an active or conference call option
-     *
-     * @hide
-     */
-    public static final int CAPABILITY_ADD_PARTICIPANT = 0x02000000;
-
-    /**
      * For a conference, indicates the conference will not have child connections.
      * <p>
      * An example of a conference with child connections is a GSM conference call, where the radio
@@ -254,61 +247,10 @@ public abstract class Connection extends Conferenceable {
      * @hide
      */
     public static final int CAPABILITY_CONFERENCE_HAS_NO_CHILDREN = 0x00200000;
-    /**
-      * Call has voice privacy capability.
-      * @hide
-      */
-    public static final int CAPABILITY_VOICE_PRIVACY = 0x00400000;
-
-    /**
-     * Local device supports voice telephony.
-     * @hide
-     */
-    public static final int CAPABILITY_SUPPORTS_DOWNGRADE_TO_VOICE_LOCAL = 0x00800000;
-
-    /**
-      * Remote device supports voice telephony.
-      * @hide
-      */
-    public static final int CAPABILITY_SUPPORTS_DOWNGRADE_TO_VOICE_REMOTE = 0x01000000;
 
     //**********************************************************************************************
-    // Next CAPABILITY value: 0x04000000
+    // Next CAPABILITY value: 0x00400000
     //**********************************************************************************************
-
-    /**
-     * Whether the call was forwarded from another party (GSM only)
-     * @hide
-     */
-    public static final int PROPERTY_WAS_FORWARDED = 0x00000001;
-
-    /**
-     * Whether the call is held remotely
-     * @hide
-     */
-    public static final int PROPERTY_HELD_REMOTELY = 0x00000002;
-
-    /**
-     * Whether the dialing state is waiting for the busy remote side
-     * @hide
-     */
-    public static final int PROPERTY_DIALING_IS_WAITING = 0x00000004;
-
-    /**
-     * Whether an additional call came in and was forwarded while the call was active
-     * @hide
-     */
-    public static final int PROPERTY_ADDITIONAL_CALL_FORWARDED = 0x00000008;
-
-    /**
-     * Whether incoming calls are barred at the remote side
-     * @hide
-     */
-    public static final int PROPERTY_REMOTE_INCOMING_CALLS_BARRED = 0x00000010;
-
-    //******************************************************************************************
-    // Next PROPERTY value: 0x00000020
-    //******************************************************************************************
 
     /**
      * Connection extra key used to store the last forwarded number associated with the current
@@ -332,13 +274,6 @@ public abstract class Connection extends Conferenceable {
      * {@link PhoneAccount} supports the capability {@link PhoneAccount#CAPABILITY_CALL_SUBJECT}.
      */
     public static final String EXTRA_CALL_SUBJECT = "android.telecom.extra.CALL_SUBJECT";
-
-    /**
-     * Call extras key to pack/unpack call history info.
-     * The value for this key should be an ArrayList of Strings.
-     * @hide
-     */
-    public static final String EXTRA_CALL_HISTORY_INFO = "EXTRA_CALL_HISTORY_INFO";
 
     // Flag controlling whether PII is emitted into the logs
     private static final boolean PII_DEBUG = Log.isLoggable(android.util.Log.DEBUG);
@@ -386,6 +321,7 @@ public abstract class Connection extends Conferenceable {
         mConnectionCapabilities |= capability;
     }
 
+
     public static String capabilitiesToString(int capabilities) {
         StringBuilder builder = new StringBuilder();
         builder.append("[Capabilities:");
@@ -428,12 +364,6 @@ public abstract class Connection extends Conferenceable {
         if (can(capabilities, CAPABILITY_SUPPORTS_VT_REMOTE_BIDIRECTIONAL)) {
             builder.append(" CAPABILITY_SUPPORTS_VT_REMOTE_BIDIRECTIONAL");
         }
-        if (can(capabilities, CAPABILITY_SUPPORTS_DOWNGRADE_TO_VOICE_LOCAL)) {
-            builder.append(" CAPABILITY_SUPPORTS_DOWNGRADE_TO_VOICE_LOCAL");
-        }
-        if (can(capabilities, CAPABILITY_SUPPORTS_DOWNGRADE_TO_VOICE_REMOTE)) {
-            builder.append(" CAPABILITY_SUPPORTS_DOWNGRADE_TO_VOICE_REMOTE");
-        }
         if (can(capabilities, CAPABILITY_HIGH_DEF_AUDIO)) {
             builder.append(" CAPABILITY_HIGH_DEF_AUDIO");
         }
@@ -462,75 +392,6 @@ public abstract class Connection extends Conferenceable {
         return builder.toString();
     }
 
-    /**
-     * Whether the given properties include the specified property.
-     *
-     * @param properties A property bit field.
-     * @param property The property to check properties for.
-     * @return Whether the specified property is present.
-     * @hide
-     */
-    public static boolean hasProperty(int properties, int property) {
-        return (properties & property) != 0;
-    }
-
-    /**
-     * Whether the properties of this {@code Connection} include the specified property.
-     *
-     * @param property The property to look for.
-     * @return Whether the specified property is present.
-     * @hide
-     */
-    public boolean hasProperty(int property) {
-        return hasProperty(mConnectionProperties, property);
-    }
-
-    /**
-     * Removes the specified property from the set of properties of this {@code Connection}.
-     *
-     * @param property The property to remove from the set.
-     * @hide
-     */
-    public void removeProperty(int property) {
-        mConnectionProperties &= ~property;
-    }
-
-    /**
-     * Adds the specified property to the set of propertes of this {@code Connection}.
-     *
-     * @param property The property to add to the set.
-     * @hide
-     */
-    public void addProperty(int property) {
-        mConnectionProperties |= property;
-    }
-
-    /**
-     * @hide
-     */
-    public static String propertiesToString(int properties) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("[Properties:");
-
-        if (hasProperty(properties, PROPERTY_WAS_FORWARDED)) {
-            builder.append(" PROPERTY_WAS_FORWARDED");
-        }
-        if (hasProperty(properties, PROPERTY_HELD_REMOTELY)) {
-            builder.append(" PROPERTY_HELD_REMOTELY");
-        }
-        if (hasProperty(properties, PROPERTY_DIALING_IS_WAITING)) {
-            builder.append(" PROPERTY_DIALING_IS_WAITING");
-        }
-        if (hasProperty(properties, PROPERTY_ADDITIONAL_CALL_FORWARDED)) {
-            builder.append(" PROPERTY_ADDITIONAL_CALL_FORWARDED");
-        }
-        if (hasProperty(properties, PROPERTY_REMOTE_INCOMING_CALLS_BARRED)) {
-            builder.append(" PROPERTY_REMOTE_INCOMING_CALLS_BARRED");
-        }
-        builder.append("]");
-        return builder.toString();
-    }
-
     /** @hide */
     public abstract static class Listener {
         public void onStateChanged(Connection c, int state) {}
@@ -544,7 +405,6 @@ public abstract class Connection extends Conferenceable {
         public void onRingbackRequested(Connection c, boolean ringback) {}
         public void onDestroyed(Connection c) {}
         public void onConnectionCapabilitiesChanged(Connection c, int capabilities) {}
-        public void onConnectionPropertiesChanged(Connection c, int properties) {}
         public void onVideoProviderChanged(
                 Connection c, VideoProvider videoProvider) {}
         public void onAudioModeIsVoipChanged(Connection c, boolean isVoip) {}
@@ -558,7 +418,6 @@ public abstract class Connection extends Conferenceable {
         public void onConferenceStarted() {}
         public void onConferenceMergeFailed(Connection c) {}
         public void onExtrasChanged(Connection c, Bundle extras) {}
-        public void onCdmaConnectionTimeReset(Connection c) {}
     }
 
     /**
@@ -1212,7 +1071,6 @@ public abstract class Connection extends Conferenceable {
     private int mCallerDisplayNamePresentation;
     private boolean mRingbackRequested = false;
     private int mConnectionCapabilities;
-    private int mConnectionProperties;
     private VideoProvider mVideoProvider;
     private boolean mAudioModeIsVoip;
     private long mConnectTimeMillis = Conference.CONNECT_TIME_NOT_SPECIFIED;
@@ -1437,14 +1295,6 @@ public abstract class Connection extends Conferenceable {
     }
 
     /**
-     * Returns the connection's properties, as a bit mask of the {@code PROPERTY_*} constants.
-     * @hide
-     */
-    public final int getConnectionProperties() {
-        return mConnectionProperties;
-    }
-
-    /**
      * Sets the value of the {@link #getAddress()} property.
      *
      * @param address The new address.
@@ -1641,22 +1491,6 @@ public abstract class Connection extends Conferenceable {
     }
 
     /**
-     * Sets the connection's properties as a bit mask of the {@code PROPERTY_*} constants.
-     *
-     * @param connectionProperties The new connection properties.
-     * @hide
-     */
-    public final void setConnectionProperties(int connectionProperties) {
-        checkImmutable();
-        if (mConnectionProperties != connectionProperties) {
-            mConnectionProperties = connectionProperties;
-            for (Listener l : mListeners) {
-                l.onConnectionPropertiesChanged(this, mConnectionProperties);
-            }
-        }
-    }
-
-    /**
      * Tears down the Connection object.
      */
     public final void destroy() {
@@ -1745,16 +1579,6 @@ public abstract class Connection extends Conferenceable {
             }
         }
         fireOnConferenceableConnectionsChanged();
-    }
-
-    /**
-       *@hide
-       * Resets the cdma connection time.
-       */
-    public final void resetCdmaConnectionTime() {
-        for (Listener l : mListeners) {
-            l.onCdmaConnectionTimeReset(this);
-        }
     }
 
     /**

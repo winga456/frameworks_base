@@ -51,8 +51,6 @@ public abstract class Conference extends Conferenceable {
         public void onDestroyed(Conference conference) {}
         public void onConnectionCapabilitiesChanged(
                 Conference conference, int connectionCapabilities) {}
-        public void onConnectionPropertiesChanged(
-                Conference conference, int connectionProperties) {}
         public void onVideoStateChanged(Conference c, int videoState) { }
         public void onVideoProviderChanged(Conference c, Connection.VideoProvider videoProvider) {}
         public void onStatusHintsChanged(Conference conference, StatusHints statusHints) {}
@@ -72,7 +70,6 @@ public abstract class Conference extends Conferenceable {
     private int mState = Connection.STATE_NEW;
     private DisconnectCause mDisconnectCause;
     private int mConnectionCapabilities;
-    private int mConnectionProperties;
     private String mDisconnectMessage;
     private long mConnectTimeMillis = CONNECT_TIME_NOT_SPECIFIED;
     private StatusHints mStatusHints;
@@ -163,10 +160,7 @@ public abstract class Conference extends Conferenceable {
      * @hide
      */
     public void removeCapability(int capability) {
-        int newCapabilities = mConnectionCapabilities;
-        newCapabilities &= ~capability;
-
-        setConnectionCapabilities(newCapabilities);
+        mConnectionCapabilities &= ~capability;
     }
 
     /**
@@ -176,36 +170,7 @@ public abstract class Conference extends Conferenceable {
      * @hide
      */
     public void addCapability(int capability) {
-        int newCapabilities = mConnectionCapabilities;
-        newCapabilities |= capability;
-
-        setConnectionCapabilities(newCapabilities);
-    }
-
-    /**
-     * Returns a bit mask of this conference's properties. See the {@code PROPERTY_*} constants
-     * in the {@link Connection} class.
-     * @hide
-     */
-    public final int getConnectionProperties() {
-        return mConnectionProperties;
-    }
-
-
-    /**
-     * Sets this conference's properties as a bit mask of the {@code PROPERTY_*} constants
-     * in the {@link Connection} class.
-     *
-     * @param connectionProperties The new connection properties.
-     * @hide
-     */
-    public final void setConnectionProperties(int connectionProperties) {
-        if (mConnectionProperties != connectionProperties) {
-            mConnectionProperties = connectionProperties;
-            for (Listener l : mListeners) {
-                l.onConnectionPropertiesChanged(this, mConnectionProperties);
-            }
-        }
+        mConnectionCapabilities |= capability;
     }
 
     /**
@@ -255,14 +220,6 @@ public abstract class Conference extends Conferenceable {
      * @param connection The connection to separate.
      */
     public void onSeparate(Connection connection) {}
-
-    /**
-     * Invoked when the conference adds a participant to the conference call.
-     *
-     * @param participant The participant to be added with conference call.
-     * @hide
-     */
-    public void onAddParticipant(String participant) {}
 
     /**
      * Invoked when the specified {@link Connection} should merged with the conference call.
@@ -602,7 +559,6 @@ public abstract class Conference extends Conferenceable {
 
     private void setState(int newState) {
         if (newState != Connection.STATE_ACTIVE &&
-                newState != Connection.STATE_DIALING &&
                 newState != Connection.STATE_HOLDING &&
                 newState != Connection.STATE_DISCONNECTED) {
             Log.w(this, "Unsupported state transition for Conference call.",
@@ -629,11 +585,9 @@ public abstract class Conference extends Conferenceable {
     @Override
     public String toString() {
         return String.format(Locale.US,
-                "[State: %s, Capabilites: %s, Properties: %s, " +
-                "VideoState: %s, VideoProvider: %s, ThisObject %s]",
+                "[State: %s,Capabilites: %s, VideoState: %s, VideoProvider: %s, ThisObject %s]",
                 Connection.stateToString(mState),
                 Call.Details.capabilitiesToString(mConnectionCapabilities),
-                Call.Details.propertiesToString(mConnectionProperties),
                 getVideoState(),
                 getVideoProvider(),
                 super.toString());

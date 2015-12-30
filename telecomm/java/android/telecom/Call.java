@@ -206,32 +206,8 @@ public final class Call {
          */
         public static final int CAPABILITY_CAN_PAUSE_VIDEO = 0x00100000;
 
-        /**
-         * Call has voice privacy capability.
-         * @hide
-         */
-        public static final int CAPABILITY_VOICE_PRIVACY = 0x00400000;
-
-        /**
-         * Local device supports downgrading a video call to a voice-only call.
-         * @hide
-         */
-        public static final int CAPABILITY_SUPPORTS_DOWNGRADE_TO_VOICE_LOCAL = 0x00800000;
-
-        /**
-         * Remote device supports downgrading a video call to a voice-only call.
-         * @hide
-         */
-        public static final int CAPABILITY_SUPPORTS_DOWNGRADE_TO_VOICE_REMOTE = 0x01000000;
-
-        /**
-         * Add participant in an active or conference call option
-         * @hide
-         */
-        public static final int CAPABILITY_ADD_PARTICIPANT = 0x02000000;
-
         //******************************************************************************************
-        // Next CAPABILITY value: 0x04000000
+        // Next CAPABILITY value: 0x00004000
         //******************************************************************************************
 
         /**
@@ -260,38 +236,8 @@ public final class Call {
          */
         public static final int PROPERTY_HIGH_DEF_AUDIO = 0x00000010;
 
-        /**
-         * Whether the call was forwarded from another party (GSM only)
-         * @hide
-         */
-        public static final int PROPERTY_WAS_FORWARDED = 0x00000020;
-
-        /**
-         * Whether the call is held remotely
-         * @hide
-         */
-        public static final int PROPERTY_HELD_REMOTELY = 0x00000040;
-
-        /**
-         * Whether the dialing state is waiting for the busy remote side
-         * @hide
-         */
-        public static final int PROPERTY_DIALING_IS_WAITING = 0x00000080;
-
-        /**
-         * Whether an additional call came in and was forwarded while the call was active
-         * @hide
-         */
-        public static final int PROPERTY_ADDITIONAL_CALL_FORWARDED = 0x00000100;
-
-        /**
-         * Whether incoming calls are barred at the remote side
-         * @hide
-         */
-        public static final int PROPERTY_REMOTE_INCOMING_CALLS_BARRED = 0x00000200;
-
         //******************************************************************************************
-        // Next PROPERTY value: 0x00000400
+        // Next PROPERTY value: 0x00000020
         //******************************************************************************************
 
         private final Uri mHandle;
@@ -302,7 +248,6 @@ public final class Call {
         private final int mCallCapabilities;
         private final int mCallProperties;
         private final DisconnectCause mDisconnectCause;
-        private final long mCreateTimeMillis;
         private final long mConnectTimeMillis;
         private final GatewayInfo mGatewayInfo;
         private final int mVideoState;
@@ -376,12 +321,6 @@ public final class Call {
             if (can(capabilities, CAPABILITY_SUPPORTS_VT_REMOTE_TX)) {
                 builder.append(" CAPABILITY_SUPPORTS_VT_REMOTE_TX");
             }
-            if (can(capabilities, CAPABILITY_SUPPORTS_DOWNGRADE_TO_VOICE_LOCAL)) {
-                builder.append(" CAPABILITY_SUPPORTS_DOWNGRADE_TO_VOICE_LOCAL");
-            }
-            if (can(capabilities, CAPABILITY_SUPPORTS_DOWNGRADE_TO_VOICE_REMOTE)) {
-                builder.append(" CAPABILITY_SUPPORTS_DOWNGRADE_TO_VOICE_REMOTE");
-            }
             if (can(capabilities, CAPABILITY_SUPPORTS_VT_REMOTE_BIDIRECTIONAL)) {
                 builder.append(" CAPABILITY_SUPPORTS_VT_REMOTE_BIDIRECTIONAL");
             }
@@ -393,12 +332,6 @@ public final class Call {
             }
             if (can(capabilities, CAPABILITY_CAN_PAUSE_VIDEO)) {
                 builder.append(" CAPABILITY_CAN_PAUSE_VIDEO");
-            }
-            if (can(capabilities, CAPABILITY_VOICE_PRIVACY)) {
-                builder.append(" CAPABILITY_VOICE_PRIVACY");
-            }
-            if (can(capabilities, CAPABILITY_ADD_PARTICIPANT)) {
-                builder.append(" CAPABILITY_ADD_PARTICIPANT");
             }
             builder.append("]");
             return builder.toString();
@@ -449,22 +382,6 @@ public final class Call {
             if (hasProperty(properties, PROPERTY_EMERGENCY_CALLBACK_MODE)) {
                 builder.append(" PROPERTY_EMERGENCY_CALLBACK_MODE");
             }
-            if (hasProperty(properties, PROPERTY_WAS_FORWARDED)) {
-                builder.append(" PROPERTY_WAS_FORWARDED");
-            }
-            if (hasProperty(properties, PROPERTY_HELD_REMOTELY)) {
-                builder.append(" PROPERTY_HELD_REMOTELY");
-            }
-            if (hasProperty(properties, PROPERTY_DIALING_IS_WAITING)) {
-                builder.append(" PROPERTY_DIALING_IS_WAITING");
-            }
-            if (hasProperty(properties, PROPERTY_ADDITIONAL_CALL_FORWARDED)) {
-                builder.append(" PROPERTY_ADDITIONAL_CALL_FORWARDED");
-            }
-            if (hasProperty(properties, PROPERTY_REMOTE_INCOMING_CALLS_BARRED)) {
-                builder.append(" PROPERTY_REMOTE_INCOMING_CALLS_BARRED");
-            }
-
             builder.append("]");
             return builder.toString();
         }
@@ -542,14 +459,6 @@ public final class Call {
         }
 
         /**
-         * @return the time the Call object was created
-         * {@hide}
-         */
-        public long getCreateTimeMillis() {
-            return mCreateTimeMillis;
-        }
-
-        /**
          * @return Information about any calling gateway the {@code Call} may be using.
          */
         public GatewayInfo getGatewayInfo() {
@@ -599,7 +508,6 @@ public final class Call {
                         Objects.equals(mCallCapabilities, d.mCallCapabilities) &&
                         Objects.equals(mCallProperties, d.mCallProperties) &&
                         Objects.equals(mDisconnectCause, d.mDisconnectCause) &&
-                        Objects.equals(mCreateTimeMillis, d.mCreateTimeMillis) &&
                         Objects.equals(mConnectTimeMillis, d.mConnectTimeMillis) &&
                         Objects.equals(mGatewayInfo, d.mGatewayInfo) &&
                         Objects.equals(mVideoState, d.mVideoState) &&
@@ -621,7 +529,6 @@ public final class Call {
                     Objects.hashCode(mCallCapabilities) +
                     Objects.hashCode(mCallProperties) +
                     Objects.hashCode(mDisconnectCause) +
-                    Objects.hashCode(mCreateTimeMillis) +
                     Objects.hashCode(mConnectTimeMillis) +
                     Objects.hashCode(mGatewayInfo) +
                     Objects.hashCode(mVideoState) +
@@ -640,7 +547,6 @@ public final class Call {
                 int capabilities,
                 int properties,
                 DisconnectCause disconnectCause,
-                long createTimeMillis,
                 long connectTimeMillis,
                 GatewayInfo gatewayInfo,
                 int videoState,
@@ -655,7 +561,6 @@ public final class Call {
             mCallCapabilities = capabilities;
             mCallProperties = properties;
             mDisconnectCause = disconnectCause;
-            mCreateTimeMillis = createTimeMillis;
             mConnectTimeMillis = connectTimeMillis;
             mGatewayInfo = gatewayInfo;
             mVideoState = videoState;
@@ -1107,14 +1012,6 @@ public final class Call {
     }
 
     /** {@hide} */
-    Call(Phone phone, String telecomCallId, InCallAdapter inCallAdapter, int state) {
-        mPhone = phone;
-        mTelecomCallId = telecomCallId;
-        mInCallAdapter = inCallAdapter;
-        mState = state;
-    }
-
-    /** {@hide} */
     final String internalGetCallId() {
         return mTelecomCallId;
     }
@@ -1131,7 +1028,6 @@ public final class Call {
                 parcelableCall.getCapabilities(),
                 parcelableCall.getProperties(),
                 parcelableCall.getDisconnectCause(),
-                parcelableCall.getCreateTimeMillis(),
                 parcelableCall.getConnectTimeMillis(),
                 parcelableCall.getGatewayInfo(),
                 parcelableCall.getVideoState(),
@@ -1235,11 +1131,6 @@ public final class Call {
             fireStateChanged(mState);
             fireCallDestroyed();
         }
-    }
-
-    /** {@hide} */
-    final void onMergeFailed() {
-        fireStateChanged(mState);
     }
 
     private void fireStateChanged(final int newState) {

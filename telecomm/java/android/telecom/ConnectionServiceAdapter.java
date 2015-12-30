@@ -196,15 +196,6 @@ final class ConnectionServiceAdapter implements DeathRecipient {
         }
     }
 
-    void setConnectionProperties(String callId, int properties) {
-        for (IConnectionServiceAdapter adapter : mAdapters) {
-            try {
-                adapter.setConnectionProperties(callId, properties);
-            } catch (RemoteException ignored) {
-            }
-        }
-    }
-
     /**
      * Indicates whether or not the specified call is currently conferenced into the specified
      * conference call.
@@ -234,18 +225,6 @@ final class ConnectionServiceAdapter implements DeathRecipient {
                 Log.d(this, "merge failed for call %s", callId);
                 adapter.setConferenceMergeFailed(callId);
             } catch (RemoteException ignored) {
-            }
-        }
-    }
-
-    /**
-        * Resets the cdma connection time.
-        */
-    void resetCdmaConnectionTime(String callId) {
-        for (IConnectionServiceAdapter adapter : mAdapters) {
-            try {
-                adapter.resetCdmaConnectionTime(callId);
-            } catch (RemoteException e) {
             }
         }
     }
