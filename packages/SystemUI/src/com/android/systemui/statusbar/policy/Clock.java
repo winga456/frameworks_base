@@ -291,7 +291,7 @@ public class Clock implements DemoMode {
             }
             if (mClockDateStyle == CLOCK_DATE_STYLE_LOWERCASE) {
                 // When Date style is small, convert date to lowercase
-                dateResult = dateString.toString().toLowerCase() + result;
+                dateResult = dateString.toString().toLowerCase();
             } else if (mClockDateStyle == CLOCK_DATE_STYLE_UPPERCASE) {
                 dateResult = dateString.toString().toUpperCase();
             } else {
