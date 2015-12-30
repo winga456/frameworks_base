@@ -1,5 +1,6 @@
 /*
 * Copyright (C) 2013 SlimRoms Project
+* Copyright (C) 2015 The VRToxin Project
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -55,11 +56,12 @@ public class ActionConstants {
     public static final String ACTION_MEDIA_PLAY_PAUSE     = "**media_play_pause**";
     public static final String ACTION_WAKE_DEVICE          = "**wake_device**";
     public static final String ACTION_SMART_PULLDOWN       = "**smart_pulldown**";
-    public static final String ACTION_RESTARTUI          = "**restartui**";
+    public static final String ACTION_RESTARTUI            = "**restartui**";
     public static final String ACTION_APP_CIRCLE_BAR       = "**appcirclebar**";
     public static final String ACTION_APP_SIDEBAR          = "**appsidebar**";
     public static final String ACTION_GESTURE_ANYWHERE     = "**gesture_anywhere**";
     public static final String ACTION_HWKEYS               = "**hwkeys**";
+    public static final String ACTION_NOW_ON_TAP           = "**now_on_tap**";
 
     // no action
     public static final String ACTION_NULL            = "**null**";

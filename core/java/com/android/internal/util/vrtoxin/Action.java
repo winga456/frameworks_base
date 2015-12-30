@@ -29,6 +29,7 @@ import android.media.AudioManager;
 import android.media.session.MediaSessionLegacyHelper;
 import android.media.ToneGenerator;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.RemoteException;
 import android.os.ServiceManager;
@@ -159,6 +160,14 @@ public class Action {
                     intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
                 }
                 startActivity(context, intent, barService, isKeyguardShowing);
+                return;
+            } else if (action.equals(ActionConstants.ACTION_NOW_ON_TAP)) {
+                if (barService != null) {
+                    try {
+                        barService.startAssist(new Bundle());
+                       } catch (RemoteException e) {
+                       }
+                   }
                 return;
             } else if (action.equals(ActionConstants.ACTION_SMART_PULLDOWN)) {
                 if (isKeyguardShowing && isKeyguardSecure) {
