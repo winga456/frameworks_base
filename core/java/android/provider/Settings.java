@@ -5260,6 +5260,13 @@ public final class Settings {
         public static final String LOCK_SCREEN_MAX_NOTIFICATIONS = "lock_screen_max_notifications";
 
         /**
+         * Change fonts for the system lockscreen clock widget
+         *
+         * @hide
+         */
+        public static final String LOCK_CLOCK_FONTS = "lock_clock_fonts";
+
+        /**
          * Icon of the battery on the status bar
          * 0 - Battery portrait
          * 1 - Battery landscape
