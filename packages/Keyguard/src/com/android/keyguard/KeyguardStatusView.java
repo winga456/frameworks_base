@@ -290,7 +290,6 @@ public class KeyguardStatusView extends GridLayout implements
     public void onWeatherChanged(WeatherController.WeatherInfo info) {
         if (info.temp == null || info.condition == null) {
             mWeatherCity.setText(null);
-            mWeatherWind.setText(null);
             mWeatherConditionDrawable = null;
             mWeatherCurrentTemp.setText(null);
             mWeatherConditionText.setText(null);
@@ -358,7 +357,6 @@ public class KeyguardStatusView extends GridLayout implements
             noWeatherInfo.setVisibility(View.VISIBLE);
             weatherPanel.setVisibility(View.GONE);
             mWeatherConditionText.setVisibility(View.GONE);
-            mWeatherTimestamp.setVisibility(View.GONE);
         } else {
             noWeatherInfo.setVisibility(View.GONE);
             weatherPanel.setVisibility(View.VISIBLE);
