@@ -31,6 +31,7 @@ public class PowerMenuConstants {
     public static final String ACTION_APP_CIRCLE_BAR       = "**appcirclebar**";
     public static final String ACTION_APP_SIDEBAR          = "**appsidebar**";
     public static final String ACTION_GESTURE_ANYWHERE     = "**gesture_anywhere**";
+    public static final String ACTION_FLOATING_WINDOWS     = "**floating_windows**";
     public static final String ACTION_RESTARTUI            = "**restartui**";
     public static final String ACTION_SCREENSHOT           = "**screenshot**";
     public static final String ACTION_SOUND                = "**sound**";

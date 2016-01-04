@@ -60,6 +60,7 @@ public class ActionConstants {
     public static final String ACTION_APP_CIRCLE_BAR       = "**appcirclebar**";
     public static final String ACTION_APP_SIDEBAR          = "**appsidebar**";
     public static final String ACTION_GESTURE_ANYWHERE     = "**gesture_anywhere**";
+    public static final String ACTION_FLOATING_WINDOWS     = "**floating_windows**";
     public static final String ACTION_HWKEYS               = "**hwkeys**";
     public static final String ACTION_NOW_ON_TAP           = "**now_on_tap**";
 
