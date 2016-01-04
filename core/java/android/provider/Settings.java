@@ -5681,6 +5681,18 @@ public final class Settings {
         public static final String RECENTS_FULL_SCREEN_DATE = "recents_full_screen_date";
 
         /**
+         * Full screen recents date text color
+         * @hide
+         */
+        public static final String RECENTS_FULL_SCREEN_CLOCK_COLOR = "recents_full_screen_clock_color";
+
+        /**
+         * Full screen recents date text color
+         * @hide
+         */
+        public static final String RECENTS_FULL_SCREEN_DATE_COLOR = "recents_full_screen_date_color";
+
+        /**
          * Whether to display set of animations when prompting the power menu
          *
          * @hide

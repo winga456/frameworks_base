@@ -475,6 +475,8 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
         updateMemTextColor();
         updateMemBarBgColor();
         updateMemBarColor();
+        updateClockColor();
+        updateDateColor();
 
         boolean showClearAllRecents = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.SHOW_CLEAR_ALL_RECENTS, 1) == 1;
@@ -653,12 +655,13 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
         });
         mMemText = (TextView) ((View)getParent()).findViewById(R.id.recents_memory_text);
         mMemBar = (ProgressBar) ((View)getParent()).findViewById(R.id.recents_memory_bar);
+        mClock = (TextClock) ((View)getParent()).findViewById(R.id.recents_clock);
+        mDate = (TextView) ((View)getParent()).findViewById(R.id.recents_date);
         updateMemTextColor();
         updateMemBarBgColor();
         updateMemBarColor();
-
-        mClock = (TextClock) ((View)getParent()).findViewById(R.id.recents_clock);
-        mDate = (TextView) ((View)getParent()).findViewById(R.id.recents_date);
+        updateClockColor();
+        updateDateColor();
         updateTimeVisibility();
     }
 
@@ -719,6 +722,7 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
         if (fullscreenEnabled) {
             if (showClock) {
                 mClock.setVisibility(View.VISIBLE);
+                updateClockColor();
             } else {
                 mClock.setVisibility(View.GONE);
             }
@@ -728,12 +732,33 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
                 String currentDateString =  dateFormat.format(dateStamp);
                 mDate.setText(currentDateString);
                 mDate.setVisibility(View.VISIBLE);
+                updateDateColor();
             } else {
                 mDate.setVisibility(View.GONE);
             }
         } else {
             mClock.setVisibility(View.GONE);
             mDate.setVisibility(View.GONE);
+        }
+    }
+
+    private void updateClockColor() {
+        ContentResolver resolver = mContext.getContentResolver();
+        int color = Settings.System.getInt(resolver,
+                Settings.System.RECENTS_FULL_SCREEN_CLOCK_COLOR, 0xffffffff);
+
+        if (mClock != null) {
+            mClock.setTextColor(color);
+        }
+    }
+
+    private void updateDateColor() {
+        ContentResolver resolver = mContext.getContentResolver();
+        int color = Settings.System.getInt(resolver,
+                Settings.System.RECENTS_FULL_SCREEN_DATE_COLOR, 0xffffffff);
+
+        if (mDate != null) {
+            mDate.setTextColor(color);
         }
     }
 
