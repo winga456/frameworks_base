@@ -111,7 +111,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
     private static final String TAG = "GlobalActions";
 
-    public static final String ACTION_TOGGLE_GLOBAL_ACTIONS = "android.intent.action.TOGGLE_GLOBAL_ACTIONS";
+    private static final boolean SHOW_SILENT_TOGGLE = true;
 
     private final Context mContext;
     private final WindowManagerFuncs mWindowManagerFuncs;
@@ -170,7 +170,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         filter.addAction(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(TelephonyIntents.ACTION_EMERGENCY_CALLBACK_MODE_CHANGED);
-        filter.addAction(ACTION_TOGGLE_GLOBAL_ACTIONS);
         context.registerReceiver(mBroadcastReceiver, filter);
 
         ConnectivityManager cm = (ConnectivityManager)
@@ -187,8 +186,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         Vibrator vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
         mHasVibrator = vibrator != null && vibrator.hasVibrator();
 
-        // TODO check zen mode?
-        mShowSilentToggle = !mContext.getResources().getBoolean(
+        mShowSilentToggle = SHOW_SILENT_TOGGLE && !mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_useFixedVolume);
     }
 
@@ -281,22 +279,12 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
      * @return A new dialog.
      */
     private GlobalActionsDialog createDialog() {
-        // Simple toggle style if there's no vibrator, otherwise use a tri-state
-        if (!mHasVibrator) {
-            mSilentModeAction = new SilentModeToggleAction();
-        } else {
-            mSilentModeAction = new SilentModeTriStateAction(mContext, mAudioManager, mHandler);
-        }
         ArrayList<ActionConfig> powerMenuConfig =
                 PowerMenuHelper.getPowerMenuConfig(mContext);
 
         mItems = new ArrayList<Action>();
+
         for (final ActionConfig config : powerMenuConfig) {
-
-            // On-The-Go, if enabled
-            boolean showOnTheGo = Settings.System.getBoolean(mContext.getContentResolver(),
-                    Settings.System.POWER_MENU_ONTHEGO_ENABLED, false);
-
             if (config.getClickAction().equals(PowerMenuConstants.ACTION_POWER_OFF)) {
                 mItems.add(getPowerAction());
             } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_REBOOT)) {
@@ -335,9 +323,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_SCREENSHOT)) {
                 mItems.add(getScreenshotAction());
             } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_ONTHEGO)) {
-                if (showOnTheGo) {
-                    mItems.add(getOnTheGoAction());
-                }
+                mItems.add(getOnTheGoAction());
             } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_SOUND) && mShowSilentToggle) {
                 if (!mHasVibrator) {
                     mSilentModeAction = new SilentModeToggleAction();
@@ -373,7 +359,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                     }
         });
         dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG);
-
         dialog.setOnDismissListener(this);
 
         return dialog;
@@ -526,61 +511,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             }
         };
         onAirplaneModeChanged();
-    }
-
-    private Action getBugReportAction() {
-        return new SinglePressAction(com.android.internal.R.drawable.ic_lock_bugreport,
-                R.string.bugreport_title) {
-
-            public void onPress() {
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setTitle(com.android.internal.R.string.bugreport_title);
-                builder.setMessage(com.android.internal.R.string.bugreport_message);
-                builder.setNegativeButton(com.android.internal.R.string.cancel, null);
-                builder.setPositiveButton(com.android.internal.R.string.report,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // don't actually trigger the bugreport if we are running stability
-                                // tests via monkey
-                                if (ActivityManager.isUserAMonkey()) {
-                                    return;
-                                }
-                                // Add a little delay before executing, to give the
-                                // dialog a chance to go away before it takes a
-                                // screenshot.
-                                mHandler.postDelayed(new Runnable() {
-                                    @Override public void run() {
-                                        try {
-                                            ActivityManagerNative.getDefault()
-                                                    .requestBugReport();
-                                        } catch (RemoteException e) {
-                                        }
-                                    }
-                                }, 500);
-                            }
-                        });
-                AlertDialog dialog = builder.create();
-                dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG);
-                dialog.show();
-            }
-
-            public boolean showDuringKeyguard() {
-                return true;
-            }
-
-            public boolean showBeforeProvisioning() {
-                return false;
-            }
-
-            @Override
-            public String getStatus() {
-                return mContext.getString(
-                        com.android.internal.R.string.bugreport_status,
-                        Build.VERSION.RELEASE,
-                        Build.ID);
-            }
-        };
     }
 
     private Action getSettingsAction() {
@@ -1021,6 +951,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
     private void prepareDialog() {
         if (mSilentModeAction != null) {
+            refreshSilentMode();
             if (mShowSilentToggle) {
                 IntentFilter filter = new IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION);
                 mContext.registerReceiver(mRingerModeReceiver, filter);
@@ -1068,6 +999,15 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         mDialog.setTitle(R.string.global_actions);
     }
 
+    private void refreshSilentMode() {
+        if (!mHasVibrator) {
+            final boolean silentModeOn =
+                    mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_NORMAL;
+            ((ToggleAction)mSilentModeAction).updateState(
+                    silentModeOn ? ToggleAction.State.On : ToggleAction.State.Off);
+        }
+    }
+
     /** {@inheritDoc} */
     public void onDismiss(DialogInterface dialog) {
         if (mShowSilentToggle) {
@@ -1091,6 +1031,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
     /** {@inheritDoc} */
     public void onClick(DialogInterface dialog, int which) {
+        if (!(mAdapter.getItem(which) instanceof SilentModeTriStateAction)) {
+            dialog.dismiss();
+        }
         mAdapter.getItem(which).onPress();
     }
 
@@ -1259,6 +1202,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 Context context, View convertView, ViewGroup parent, LayoutInflater inflater) {
             View v = inflater.inflate(R.layout.global_actions_item, parent, false);
 
+            final int iconPadding =
+                    context.getResources().getDimensionPixelSize(R.dimen.global_actions_icon_padding);
+
             ImageView icon = (ImageView) v.findViewById(R.id.icon);
             TextView messageView = (TextView) v.findViewById(R.id.message);
 
@@ -1274,6 +1220,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 statusView.setVisibility(View.GONE);
             }
             if (mIcon != null) {
+                icon.setPadding(iconPadding, iconPadding, iconPadding, iconPadding);
                 icon.setImageDrawable(mIcon);
                 icon.setColorFilter(mIconNormalColor, Mode.MULTIPLY);
                 icon.setScaleType(ScaleType.CENTER_CROP);
@@ -1428,7 +1375,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
     }
 
-    private final class SilentModeToggleAction extends ToggleAction {
+    private class SilentModeToggleAction extends ToggleAction {
         public SilentModeToggleAction() {
             super(R.drawable.ic_audio_vol_mute,
                     R.drawable.ic_audio_vol,
@@ -1439,7 +1386,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
         void onToggle(boolean on) {
             if (on) {
-                mAudioManager.setRingerModeInternal(AudioManager.RINGER_MODE_SILENT);
+                mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
             } else {
                 mAudioManager.setRingerModeInternal(AudioManager.RINGER_MODE_NORMAL);
             }
@@ -1454,10 +1401,10 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
     }
 
-    private final class SilentModeTriStateAction implements Action, View.OnClickListener {
+    private static class SilentModeTriStateAction implements Action, View.OnClickListener {
 
-        private final int[] ITEM_IDS = { R.id.option1, R.id.option2, R.id.option3, R.id.option4, R.id.option5 };
-        private final int[] IMAGE_VIEW_IDS = { R.id.option1_icon, R.id.option2_icon, R.id.option3_icon, R.id.option4_icon, R.id.option5_icon };
+        private final int[] ITEM_IDS = { R.id.option1, R.id.option2, R.id.option3 };
+        private final int[] IMAGE_VIEW_IDS = { R.id.option1_icon, R.id.option2_icon, R.id.option3_icon };
 
         private final AudioManager mAudioManager;
         private final Handler mHandler;
@@ -1475,17 +1422,8 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
 
         private int indexToRingerMode(int index) {
-            if (index == 2) {
-                return AudioManager.RINGER_MODE_SILENT;
-            }
-            if (index == 3) {
-                if (mHasVibrator) {
-                    return AudioManager.RINGER_MODE_VIBRATE;
-                } else {
-                    return AudioManager.RINGER_MODE_NORMAL;
-                }
-            }
-            return AudioManager.RINGER_MODE_NORMAL;
+            // They just happen to coincide
+            return index;
         }
 
         @Override
@@ -1497,32 +1435,11 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 LayoutInflater inflater) {
             View v = inflater.inflate(R.layout.global_actions_silent_mode, parent, false);
 
-            int ringerMode = mAudioManager.getRingerModeInternal();
-            int zenMode = Global.getInt(mContext.getContentResolver(), Global.ZEN_MODE, Global.ZEN_MODE_OFF);
-            int selectedIndex = 0;
-            if (zenMode != Global.ZEN_MODE_OFF) {
-                if (zenMode == Global.ZEN_MODE_NO_INTERRUPTIONS) {
-                    selectedIndex = 0;
-                } else if (zenMode == Global.ZEN_MODE_IMPORTANT_INTERRUPTIONS) {
-                    selectedIndex = 1;
-                }
-            } else if (ringerMode == AudioManager.RINGER_MODE_SILENT) {
-                selectedIndex = 2;
-            } else if (ringerMode == AudioManager.RINGER_MODE_VIBRATE) {
-                selectedIndex = 3;
-            } else if (ringerMode == AudioManager.RINGER_MODE_NORMAL) {
-                selectedIndex = 4;
-            }
-
-            for (int i = 0; i < ITEM_IDS.length; i++) {
+            int selectedIndex = ringerModeToIndex(mAudioManager.getRingerMode());
+            for (int i = 0; i < 3; i++) {
                 View itemView = v.findViewById(ITEM_IDS[i]);
-                View iv = v.findViewById(IMAGE_VIEW_IDS[i]);
-                // TODO dont hardcode 3 here
-                if (!mHasVibrator && i == 3) {
-                    itemView.setVisibility(View.GONE);
-                    continue;
-                }
-                iv.setSelected(selectedIndex == i);
+                ImageView iv = (ImageView) v.findViewById(IMAGE_VIEW_IDS[i]);
+                itemView.setSelected(selectedIndex == i);
                 if (selectedIndex == i) {
                     ((ImageView)iv).setColorFilter(mIconEnabledSelectedColor, Mode.MULTIPLY);
                 } else {
@@ -1558,20 +1475,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             if (!(v.getTag() instanceof Integer)) return;
 
             int index = (Integer) v.getTag();
-            if (index == 0 || index == 1) {
-                int zenMode = index == 0
-                            ? Global.ZEN_MODE_NO_INTERRUPTIONS
-                            : Global.ZEN_MODE_IMPORTANT_INTERRUPTIONS;
-                Global.putInt(mContext.getContentResolver(), Global.ZEN_MODE, zenMode);
-            } else {
-                Global.putInt(mContext.getContentResolver(), Global.ZEN_MODE, Global.ZEN_MODE_OFF);
-            }
-            // must be after zen mode!
-            if (index == 2 || index == 3 || index == 4) {
-                int ringerMode = indexToRingerMode(index);
-                mAudioManager.setRingerModeInternal(ringerMode);
-            }
-            mAdapter.notifyDataSetChanged();
+            mAudioManager.setRingerMode(indexToRingerMode(index));
             mHandler.sendEmptyMessageDelayed(MESSAGE_DISMISS, DIALOG_DISMISS_DELAY);
         }
     }
@@ -1689,6 +1593,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 }
                 break;
             case MESSAGE_REFRESH:
+                refreshSilentMode();
                 mAdapter.notifyDataSetChanged();
                 break;
             case MESSAGE_SHOW:
