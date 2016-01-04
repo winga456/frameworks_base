@@ -84,11 +84,17 @@
     <!-- status message in phone options dialog for when pie is off -->
     <string name="global_actions_gesture_anywhere_mode_off_status">Gesture Anywhere is OFF</string>
 
+    <!-- status message in phone options dialog for when floating windows are on -->
+    <string name="global_actions_floating_windows_mode_on_status">Floating Windows are ON</string>
+    <!-- status message in phone options dialog for when floating windows are off -->
+    <string name="global_actions_floating_windows_mode_off_status">Floating Windows are OFF</string>
+
     <string name="global_actions_toggle_pie_mode">Pie Control</string>
     <string name="global_actions_toggle_nav_bar">Navigation Bar</string>
     <string name="global_actions_toggle_appcirclebar_mode">AppCircleBar</string>
     <string name="global_actions_toggle_appsidebar_mode">AppSideBar</string>
     <string name="global_actions_toggle_gesture_anywhere_mode">Gesture Anywhere</string>
+    <string name="global_actions_toggle_floating_windows_mode">Floating Windows</string>
     <string name="global_action_restart">Restart SystemUI</string>
 
     <!-- Slimseekbar -->

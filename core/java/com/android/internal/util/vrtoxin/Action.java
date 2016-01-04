@@ -412,6 +412,19 @@ public class Action {
                         Settings.System.GESTURE_ANYWHERE_ENABLED,
                         gestureAnywhereState ? 0 : 1, UserHandle.USER_CURRENT);
                 return;
+            } else if (action.equals(ActionConstants.ACTION_FLOATING_WINDOWS)) {
+                boolean floatingWindowsState = isFloatingWindowsEnabled(context);
+                if (floatingWindowsState && !isNavBarEnabled(context) && isNavBarDefault(context)) {
+                    Toast.makeText(context,
+                            com.android.internal.R.string.disable_pie_navigation_error,
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Settings.System.putIntForUser(
+                        context.getContentResolver(),
+                        Settings.System.FLOATING_WINDOW_MODE,
+                        floatingWindowsState ? 0 : 1, UserHandle.USER_CURRENT);
+                return;
             } else if (action.equals(ActionConstants.ACTION_HWKEYS)) {
                 boolean hWKeysState = isHWKeysEnabled(context);
                 if (hWKeysState && !isNavBarEnabled(context) && isNavBarDefault(context)) {
@@ -472,6 +485,12 @@ public class Action {
     public static boolean isGestureAnywhereEnabled(Context context) {
         return Settings.System.getIntForUser(context.getContentResolver(),
                 Settings.System.GESTURE_ANYWHERE_ENABLED,
+                0, UserHandle.USER_CURRENT) == 1;
+    }
+
+    public static boolean isFloatingWindowsEnabled(Context context) {
+        return Settings.System.getIntForUser(context.getContentResolver(),
+                Settings.System.FLOATING_WINDOW_MODE,
                 0, UserHandle.USER_CURRENT) == 1;
     }
 

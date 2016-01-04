@@ -131,6 +131,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private ToggleAction mAppCircleBarModeOn;
     private ToggleAction mAppSideBarModeOn;
     private ToggleAction mGestureAnywhereModeOn;
+    private ToggleAction mFloatingWindowsModeOn;
 
     private MyAdapter mAdapter;
 
@@ -143,6 +144,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private ToggleAction.State mAppCircleBarState = ToggleAction.State.Off;
     private ToggleAction.State mAppSideBarState = ToggleAction.State.Off;
     private ToggleAction.State mGestureAnywhereState = ToggleAction.State.Off;
+    private ToggleAction.State mFloatingWindowsState = ToggleAction.State.Off;
     private boolean mIsWaitingForEcmExit = false;
     private boolean mHasTelephony;
     private boolean mHasVibrator;
@@ -328,6 +330,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_GESTURE_ANYWHERE)) {
                 constructGestureAnywhereToggle();
                 mItems.add(mGestureAnywhereModeOn);
+            } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_FLOATING_WINDOWS)) {
+                constructFloatingWindowsToggle();
+                mItems.add(mFloatingWindowsModeOn);
             } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_RESTARTUI)) {
                 mItems.add(getRestartAction());
             } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_SCREENRECORD)) {
@@ -820,6 +825,30 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         onGestureAnywhereModeChanged();
     }
 
+    private void constructFloatingWindowsToggle() {
+        mFloatingWindowsModeOn = new ToggleAction(
+                R.drawable.ic_lock_floating,
+                R.drawable.ic_lock_floating,
+                R.string.global_actions_toggle_floating_windows_mode,
+                R.string.global_actions_floating_windows_mode_on_status,
+                R.string.global_actions_floating_windows_mode_off_status) {
+
+            void onToggle(boolean on) {
+                com.android.internal.util.vrtoxin.Action.processAction(
+                    mContext, PowerMenuConstants.ACTION_FLOATING_WINDOWS, false);
+            }
+
+            public boolean showDuringKeyguard() {
+                return true;
+            }
+
+            public boolean showBeforeProvisioning() {
+                return false;
+            }
+        };
+        onFloatingWindowsModeChanged();
+    }
+
     private Action getRestartAction() {
         return new SinglePressAction(com.android.internal.R.drawable.ic_lock_restart,
                 R.string.global_action_restart) {
@@ -1057,6 +1086,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
         if (mGestureAnywhereModeOn != null) {
             mGestureAnywhereModeOn.updateState(mGestureAnywhereState);
+        }
+        if (mFloatingWindowsModeOn != null) {
+            mFloatingWindowsModeOn.updateState(mFloatingWindowsState);
         }
 
         // Start observing setting changes during
@@ -1620,6 +1652,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.GESTURE_ANYWHERE_ENABLED), false, this,
                     UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.FLOATING_WINDOW_MODE), false, this,
+                    UserHandle.USER_ALL);
         }
 
         @Override
@@ -1640,6 +1675,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             } else if (uri.equals(Settings.System.getUriFor(
                 Settings.System.GESTURE_ANYWHERE_ENABLED))) {
                 onGestureAnywhereModeChanged();
+            } else if (uri.equals(Settings.System.getUriFor(
+                Settings.System.FLOATING_WINDOW_MODE))) {
+                onFloatingWindowsModeChanged();
             }
             mAdapter.notifyDataSetChanged();
         }
@@ -1776,6 +1814,17 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         mGestureAnywhereState = gestureAnywhereModeOn ? ToggleAction.State.On : ToggleAction.State.Off;
         if (mGestureAnywhereModeOn != null) {
             mGestureAnywhereModeOn.updateState(mGestureAnywhereState);
+        }
+    }
+
+    private void onFloatingWindowsModeChanged() {
+        boolean floatingWindowsModeOn = Settings.System.getIntForUser(
+                mContext.getContentResolver(),
+                Settings.System.FLOATING_WINDOW_MODE,
+                0, UserHandle.USER_CURRENT) == 1;
+        mFloatingWindowsState = floatingWindowsModeOn ? ToggleAction.State.On : ToggleAction.State.Off;
+        if (mFloatingWindowsModeOn != null) {
+            mFloatingWindowsModeOn.updateState(mFloatingWindowsState);
         }
     }
 

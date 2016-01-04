@@ -125,6 +125,12 @@
   <java-symbol type="string" name="global_actions_gesture_anywhere_mode_off_status" />
   <java-symbol type="drawable" name="ic_lock_gestures" />
 
+  <!-- Floating Windows controls -->
+  <java-symbol type="string" name="global_actions_toggle_floating_windows_mode" />
+  <java-symbol type="string" name="global_actions_floating_windows_mode_on_status" />
+  <java-symbol type="string" name="global_actions_floating_windows_mode_off_status" />
+  <java-symbol type="drawable" name="ic_lock_floating" />
+
   <!-- Restart SystemUI -->
   <java-symbol type="string" name="global_action_restart" />
   <java-symbol type="drawable" name="ic_lock_restart" />
