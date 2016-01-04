@@ -62,6 +62,7 @@ public class KeyguardStatusView extends GridLayout implements
     private TextClock mDateView;
     private TextClock mClockView;
     private TextView mOwnerInfo;
+    private int mLCFontSize = 88;
 
     //On the first boot, keygard will start to receiver TIME_TICK intent.
     //And onScreenTurnedOff will not get called if power off when keyguard is not started.
@@ -195,7 +196,7 @@ public class KeyguardStatusView extends GridLayout implements
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        mClockView.setTextSize(size);
+        mClockView.setTextSize(mLCFontSize);
         mClockView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
         mDateView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 getResources().getDimensionPixelSize(R.dimen.widget_label_font_size));
@@ -488,11 +489,11 @@ public class KeyguardStatusView extends GridLayout implements
     }
 
     private void updateClockSize() {
-        int size = Settings.System.getInt(mContext.getContentResolver(),
+        mLCFontSize = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.LOCK_CLOCK_FONT_SIZE, 88);
 
         if (mClockView != null) {
-            mClockView.setTextSize(size);
+            mClockView.setTextSize(mLCFontSize);
         }
     }
 
