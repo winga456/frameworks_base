@@ -45,6 +45,7 @@ import com.android.systemui.vrtoxin.QuickAccess.buttons.AmbientButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.BluetoothButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.ColorInversionButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.DataButton;
+import com.android.systemui.vrtoxin.QuickAccess.buttons.FloatingButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.GestureAnywhereButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.HotspotButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.HWKeysButton;
@@ -56,6 +57,7 @@ import com.android.systemui.vrtoxin.QuickAccess.buttons.QabButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.RestartUIButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.RotationLockButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.ScreenOffButton;
+import com.android.systemui.vrtoxin.QuickAccess.buttons.SlimFloatsButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.SlimPieButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.ThemeButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.TorchButton;
@@ -182,6 +184,10 @@ public class QuickAccessBar extends LinearLayout {
             button = new TorchButton(mContext, this,
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_torch),
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_torch_off));
+        } else if (action.equals(QSBarConstants.BUTTON_FLOATING_WINDOWS)) {
+            button = new TorchButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_floating_on),
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_floating_off));
         } else if (action.equals(QSBarConstants.BUTTON_GESTUREANYWHERE)) {
             button = new GestureAnywhereButton(mContext, this,
                     mContext.getResources().getDrawable(R.drawable.ic_qs_gestures_on),
@@ -226,6 +232,10 @@ public class QuickAccessBar extends LinearLayout {
             button = new ScreenOffButton(mContext, this,
                     mContext.getResources().getDrawable(R.drawable.ic_sysbar_power),
                     mContext.getResources().getDrawable(R.drawable.ic_sysbar_power));
+        } else if (action.equals(QSBarConstants.BUTTON_SLIM_FLOATS)) {
+            button = new SlimFloatsButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_floating_on),
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_floating_off));
         } else if (action.equals(QSBarConstants.BUTTON_SLIMPIE)) {
             button = new SlimPieButton(mContext, this,
                     mContext.getResources().getDrawable(R.drawable.ic_qs_pie_global_on),

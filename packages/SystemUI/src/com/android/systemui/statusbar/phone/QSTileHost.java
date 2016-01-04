@@ -51,6 +51,7 @@ import com.android.systemui.qs.tiles.CompassTile;
 import com.android.systemui.qs.tiles.DndTile;
 import com.android.systemui.qs.tiles.ExpandedDesktopTile;
 import com.android.systemui.qs.tiles.FlashlightTile;
+import com.android.systemui.qs.tiles.FloatingWindowsTile;
 import com.android.systemui.qs.tiles.HeadsUpTile;
 import com.android.systemui.qs.tiles.HotspotTile;
 import com.android.systemui.qs.tiles.HWKeysTile;
@@ -65,6 +66,7 @@ import com.android.systemui.qs.tiles.RotationLockTile;
 import com.android.systemui.qs.tiles.ScreenOffTile;
 import com.android.systemui.qs.tiles.ScreenshotTile;
 import com.android.systemui.qs.tiles.ScreenTimeoutTile;
+import com.android.systemui.qs.tiles.SlimFloatsTile;
 import com.android.systemui.qs.tiles.SlimPieTile;
 import com.android.systemui.qs.tiles.VolumeTile;
 import com.android.systemui.qs.tiles.UsbTetherTile;
@@ -346,6 +348,10 @@ public class QSTileHost implements QSTile.Host {
 				return new STweaksTile(this);
             case QSConstants.TILE_SLIMPIE:
 				return new SlimPieTile(this);
+            case QSConstants.TILE_FLOATING_WINDOWS:
+				return new FloatingWindowsTile(this);
+            case QSConstants.TILE_SLIM_FLOATS:
+				return new SlimFloatsTile(this);
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
         }

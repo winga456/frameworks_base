@@ -31,7 +31,6 @@ import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
-
 import com.android.internal.logging.MetricsLogger;
 import com.android.systemui.R;
 import com.android.systemui.recents.Constants;
@@ -63,6 +62,7 @@ public class TaskStackView extends FrameLayout implements TaskStack.TaskStackCal
         public void onTaskViewClicked(TaskStackView stackView, TaskView tv, TaskStack stack, Task t,
                                       boolean lockToTask);
         public void onTaskViewAppInfoClicked(Task t);
+        public void onTaskFloatClicked(Task t);
         public void onTaskViewDismissed(Task t);
         public void onAllTaskViewsDismissed(ArrayList<Task> removedTasks);
         public void onTaskStackFilterTriggered();
@@ -1385,6 +1385,13 @@ public class TaskStackView extends FrameLayout implements TaskStack.TaskStackCal
 
             // Keep track of app-info invocations
             MetricsLogger.count(getContext(), "overview_app_info", 1);
+        }
+    }
+
+    @Override
+    public void onTaskFloatClicked(TaskView tv) {
+        if (mCb != null) {
+            mCb.onTaskFloatClicked(tv.getTask());
         }
     }
 

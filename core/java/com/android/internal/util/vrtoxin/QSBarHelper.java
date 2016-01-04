@@ -109,6 +109,9 @@ public class QSBarHelper {
         } else if (clickAction.equals(QSBarConstants.BUTTON_FLASHLIGHT)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_button_torch", null, null);
+        } else if (clickAction.equals(QSBarConstants.BUTTON_FLOATING_WINDOWS)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_floating_on", null, null);
         } else if (clickAction.equals(QSBarConstants.BUTTON_GESTUREANYWHERE)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_gestures_on", null, null);
@@ -142,6 +145,9 @@ public class QSBarHelper {
         } else if (clickAction.equals(QSBarConstants.BUTTON_SCREENOFF)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_power", null, null);
+        } else if (clickAction.equals(QSBarConstants.BUTTON_SLIM_FLOATS)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_floating_on", null, null);
         } else if (clickAction.equals(QSBarConstants.BUTTON_SLIMPIE)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_pie_global_on", null, null);
