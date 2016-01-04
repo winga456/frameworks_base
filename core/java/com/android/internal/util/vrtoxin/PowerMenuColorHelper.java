@@ -16,9 +16,8 @@
 
 package com.android.internal.util.vrtoxin;
 
-import android.app.Notification;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.content.res.ColorStateList;
 import android.provider.Settings;
 
 import com.android.internal.R;
@@ -26,6 +25,17 @@ import com.android.internal.R;
 public class PowerMenuColorHelper {
 
     private static int DEFAULT_COLOR = 0xff000000;
+
+    public static ColorStateList getBackgroundColorList(Context context) {
+        return ColorStateList.valueOf(getBackgroundColor(context));
+    }
+
+    public static int getBackgroundColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.POWER_MENU_BG_COLOR,
+                context.getResources().getColor(
+                R.color.global_actions_bg_color));
+    }
 
     public static int getIconNormalColor(Context context) {
         return Settings.System.getInt(context.getContentResolver(),

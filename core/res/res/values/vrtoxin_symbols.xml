@@ -89,6 +89,7 @@
   <java-symbol type="color" name="global_actions_icon_color_enabled_selected" />
   <java-symbol type="color" name="global_actions_ripple_color" />
   <java-symbol type="color" name="global_actions_text_color" />
+  <java-symbol type="color" name="global_actions_bg_color" />
 
   <!-- Power Menu - Pie controls -->
   <java-symbol type="string" name="global_actions_toggle_pie_mode" />

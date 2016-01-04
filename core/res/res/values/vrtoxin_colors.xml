@@ -25,6 +25,7 @@
     <color name="global_actions_icon_color_enabled_selected">#ff1976D2</color>
     <color name="global_actions_ripple_color">@color/ripple_material_dark</color>
     <color name="global_actions_text_color">@color/global_actions_color_normal</color>
+    <color name="global_actions_bg_color">@color/global_actions_color_normal</color>
 
     <!-- Text color of the notification action -->
     <color name="notification_mtrl_action_textcolor">@color/secondary_text_material_light</color>

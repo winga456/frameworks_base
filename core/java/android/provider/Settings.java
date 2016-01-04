@@ -3229,6 +3229,12 @@ public final class Settings {
         public static final String POWER_MENU_TEXT_COLOR = "power_menu_text_color";
 
         /**
+         * Color of power menu dialog background
+         * @hide
+         */
+        public static final String POWER_MENU_BG_COLOR = "power_menu_bg_color";
+
+        /**
          * Show the pending notification counts as overlays on the status bar
          * @hide
          */

@@ -40,6 +40,7 @@ import android.content.res.ColorStateList;
 import android.content.ServiceConnection;
 import android.database.ContentObserver;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.DrawableWrapper;
 import android.graphics.drawable.RippleDrawable;
 import android.graphics.PorterDuff.Mode;
 import android.media.AudioManager;
@@ -147,6 +148,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private boolean mHasVibrator;
     private final boolean mShowSilentToggle;
 
+    private static ColorStateList mBackgroundColor;
     private static int mIconNormalColor;
     private static int mIconEnabledSelectedColor;
     private static int mRippleColor;
@@ -202,11 +204,13 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             mDialog = null;
             updateColors();
             mDialog = createDialog();
+            setBackgroundColor(mDialog);
             // Show delayed, so that the dismiss of the previous dialog completes
             mHandler.sendEmptyMessage(MESSAGE_SHOW);
         } else {
             updateColors();
             mDialog = createDialog();
+            setBackgroundColor(mDialog);
             handleShow();
         }
     }
@@ -223,52 +227,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
     }
 
-    private void updateColors() {
-        mIconNormalColor = PowerMenuColorHelper.getIconNormalColor(mContext);
-        mIconEnabledSelectedColor = PowerMenuColorHelper.getIconEnabledSelectedColor(mContext);
-        mRippleColor = PowerMenuColorHelper.getRippleColor(mContext);
-        mTextColor = PowerMenuColorHelper.getTextColor(mContext);
-        mSecondaryTextColor = (179 << 24) | (mTextColor & 0x00ffffff);
-    }
-
-    private static void setButtonRippleColor(Context context, View v) {
-        RippleDrawable rd = (RippleDrawable) context.getDrawable(
-                R.drawable.global_actions_button_bg);
-
-        int states[][] = new int[][] {
-            new int[] {
-                com.android.internal.R.attr.state_enabled
-            }
-        };
-        int colors[] = new int[] {
-            mRippleColor
-        };
-        ColorStateList color = new ColorStateList(states, colors);
-
-        rd.setColor(color);
-        v.setBackground(rd);
-    }
-
-    private static void setSilentModeItemRippleColor(Context context, View v) {
-        RippleDrawable rd = (RippleDrawable) context.getDrawable(
-                R.drawable.global_actions_silent_mode_item_bg);
-
-        int states[][] = new int[][] {
-            new int[] {
-                com.android.internal.R.attr.state_enabled
-            }
-        };
-        int colors[] = new int[] {
-            mRippleColor
-        };
-        ColorStateList color = new ColorStateList(states, colors);
-
-        rd.setColor(color);
-        v.setBackground(rd);
-    }
-
     private void handleShow() {
         awakenIfNecessary();
+        mDialog = createDialog();
         prepareDialog();
 
         WindowManager.LayoutParams attrs = mDialog.getWindow().getAttributes();
@@ -416,6 +377,56 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         dialog.setOnDismissListener(this);
 
         return dialog;
+    }
+
+    private void updateColors() {
+        mBackgroundColor = PowerMenuColorHelper.getBackgroundColorList(mContext);
+        mIconNormalColor = PowerMenuColorHelper.getIconNormalColor(mContext);
+        mIconEnabledSelectedColor = PowerMenuColorHelper.getIconEnabledSelectedColor(mContext);
+        mRippleColor = PowerMenuColorHelper.getRippleColor(mContext);
+        mTextColor = PowerMenuColorHelper.getTextColor(mContext);
+        mSecondaryTextColor = (179 << 24) | (mTextColor & 0x00ffffff);
+    }
+
+    private static void setBackgroundColor(Dialog d) {
+        ((DrawableWrapper) d.getWindow().getDecorView().getBackground())
+                .setTintList(mBackgroundColor);
+    }
+
+    private static void setButtonRippleColor(Context context, View v) {
+        RippleDrawable rd = (RippleDrawable) context.getDrawable(
+                R.drawable.global_actions_button_bg);
+
+        int states[][] = new int[][] {
+            new int[] {
+                com.android.internal.R.attr.state_enabled
+            }
+        };
+        int colors[] = new int[] {
+            mRippleColor
+        };
+        ColorStateList color = new ColorStateList(states, colors);
+
+        rd.setColor(color);
+        v.setBackground(rd);
+    }
+
+    private static void setSilentModeItemRippleColor(Context context, View v) {
+        RippleDrawable rd = (RippleDrawable) context.getDrawable(
+                R.drawable.global_actions_silent_mode_item_bg);
+
+        int states[][] = new int[][] {
+            new int[] {
+                com.android.internal.R.attr.state_enabled
+            }
+        };
+        int colors[] = new int[] {
+            mRippleColor
+        };
+        ColorStateList color = new ColorStateList(states, colors);
+
+        rd.setColor(color);
+        v.setBackground(rd);
     }
 
     private Action getPowerAction() {
