@@ -2800,7 +2800,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
         final boolean showOnLockScreen = Settings.System.getInt(
                 mContext.getContentResolver(),
-                Settings.System.STATUS_BAR_CARRIER_LABEL_SHOW_ON_LOCK_SCREEN, 1) == 1;
+                Settings.System.STATUS_BAR_CARRIER_LABEL_SHOW_ON_LOCK_SCREEN, 0) == 1;
         if (mKeyguardStatusBar != null) {
             mKeyguardStatusBar.setCarrierLabelVisibility(showOnLockScreen);
         }

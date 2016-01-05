@@ -255,17 +255,16 @@ public class CarrierText extends TextView {
         StatusMode status = getStatusForIccState(simState);
         switch (status) {
             case Normal:
-                carrierText = text;
+                carrierText = mCustomLabel;
                 break;
 
             case SimNotReady:
                 // Null is reserved for denoting missing, in this case we have nothing to display.
-                carrierText = ""; // nothing to display yet.
+                carrierText = mCustomLabel; // nothing to display yet.
                 break;
 
             case NetworkLocked:
-                carrierText = makeCarrierStringOnEmergencyCapable(
-                        mContext.getText(R.string.keyguard_network_locked_message), text);
+                carrierText = mCustomLabel;
                 break;
 
             case SimMissing:
@@ -273,24 +272,19 @@ public class CarrierText extends TextView {
                 break;
 
             case SimPermDisabled:
-                carrierText = getContext().getText(
-                        R.string.keyguard_permanent_disabled_sim_message_short);
+                carrierText = mCustomLabel;
                 break;
 
             case SimMissingLocked:
-                carrierText = null;
+                carrierText = mCustomLabel;
                 break;
 
             case SimLocked:
-                carrierText = makeCarrierStringOnEmergencyCapable(
-                        getContext().getText(R.string.keyguard_sim_locked_message),
-                        text);
+                carrierText = mCustomLabel;
                 break;
 
             case SimPukLocked:
-                carrierText = makeCarrierStringOnEmergencyCapable(
-                        getContext().getText(R.string.keyguard_sim_puk_locked_message),
-                        text);
+                carrierText = mCustomLabel;
                 break;
         }
 
