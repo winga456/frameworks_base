@@ -61,8 +61,9 @@ public class KeyguardStatusView extends GridLayout implements
     private TextView mAlarmStatusView;
     private TextClock mDateView;
     private TextClock mClockView;
-    private TextView mOwnerInfo;
     private int mLCFontSize = 88;
+    private TextView mOwnerInfo;
+    private int mOwnerSize = 14;
 
     //On the first boot, keygard will start to receiver TIME_TICK intent.
     //And onScreenTurnedOff will not get called if power off when keyguard is not started.
@@ -90,6 +91,7 @@ public class KeyguardStatusView extends GridLayout implements
             updateClockColor();
             updateClockDateColor();
             updateOwnerInfoColor();
+            updateOwnerSize();
             updateAlarmStatusColor();
             updateClockSize();
         }
@@ -103,6 +105,7 @@ public class KeyguardStatusView extends GridLayout implements
                 updateClockColor();
                 updateClockDateColor();
                 updateOwnerInfoColor();
+                updateOwnerSize();
                 updateAlarmStatusColor();
                 updateClockSize();
             }
@@ -116,6 +119,7 @@ public class KeyguardStatusView extends GridLayout implements
             updateClockColor();
             updateClockDateColor();
             updateOwnerInfoColor();
+            updateOwnerSize();
             updateAlarmStatusColor();
             updateClockSize();
         }
@@ -133,6 +137,7 @@ public class KeyguardStatusView extends GridLayout implements
             updateClockColor();
             updateClockDateColor();
             updateOwnerInfoColor();
+            updateOwnerSize();
             updateAlarmStatusColor();
             updateClockSize();
         }
@@ -154,6 +159,7 @@ public class KeyguardStatusView extends GridLayout implements
         updateClockColor();
         updateClockDateColor();
         updateOwnerInfoColor();
+        updateOwnerSize();
         updateAlarmStatusColor();
         updateClockSize();
     }
@@ -185,6 +191,7 @@ public class KeyguardStatusView extends GridLayout implements
         updateClockColor();
         updateClockDateColor();
         updateOwnerInfoColor();
+        updateOwnerSize();
         updateAlarmStatusColor();
         updateClockSize();
 
@@ -200,8 +207,7 @@ public class KeyguardStatusView extends GridLayout implements
         mClockView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
         mDateView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 getResources().getDimensionPixelSize(R.dimen.widget_label_font_size));
-        mOwnerInfo.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                getResources().getDimensionPixelSize(R.dimen.widget_label_font_size));
+        mOwnerInfo.setTextSize(mOwnerSize);
     }
 
     private int getLockClockFont() {
@@ -215,6 +221,8 @@ public class KeyguardStatusView extends GridLayout implements
 
         mClockView.setFormat12Hour(Patterns.clockView12);
         mClockView.setFormat24Hour(Patterns.clockView24);
+        getLockClockFont();
+        updateClockSize();
     }
 
     private void refresh() {
@@ -494,6 +502,15 @@ public class KeyguardStatusView extends GridLayout implements
 
         if (mClockView != null) {
             mClockView.setTextSize(mLCFontSize);
+        }
+    }
+
+    private void updateOwnerSize() {
+        mOwnerSize = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.OWNER_INFO_FONT_SIZE, 14);
+
+        if (mOwnerInfo != null) {
+            mOwnerInfo.setTextSize(mOwnerSize);
         }
     }
 
