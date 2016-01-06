@@ -4150,6 +4150,12 @@ public final class Settings {
         public static final String STATUS_BAR_CARRIER_FONT_STYLE = "status_bar_carrier_font_style";
 
         /**
+         * Custom carrier label placement
+         * @hide
+         */
+        public static final String STATUS_BAR_CARRIER_SPOT = "status_bar_carrier_spot";
+
+        /**
          * Whether to show the IME switcher in the status bar
          * @hide
          */

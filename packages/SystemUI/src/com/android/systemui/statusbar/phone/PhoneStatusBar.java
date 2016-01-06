@@ -408,6 +408,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     // Carrier Label
     private CarrierText mStatusBarCarrierLabel;
     private int mCarrierLabelFontStyle;
+    private int mCarrierLabelSpot;
 
     private boolean mKeyguardFadingAway;
     private boolean mKeyguardShowingMedia;
@@ -544,6 +545,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_CARRIER_FONT_STYLE),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CARRIER_SPOT),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.APP_SIDEBAR_POSITION),
@@ -743,6 +747,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.STATUS_BAR_CARRIER_LABEL_COLOR))) {
                 updateCarrierLabelColor();
             } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CARRIER_SPOT))) {
+                updateCarrierLabelSpot();
+            } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_WEATHER_TEMP_STYLE))
                     || uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_WEATHER_COLOR))
@@ -929,6 +936,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     resolver, Settings.System.STATUS_BAR_CARRIER_FONT_STYLE, 0,
                     UserHandle.USER_CURRENT);
             changeCarrierFontStyle(mCarrierLabelFontStyle);
+
+            mCarrierLabelSpot = Settings.System.getIntForUser(
+                    resolver, Settings.System.STATUS_BAR_CARRIER_SPOT, 0,
+                    UserHandle.USER_CURRENT);
             updateSettings();
         }
     }
@@ -1619,8 +1630,16 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 mKeyguardBottomArea.getLockIcon());
         mKeyguardBottomArea.setKeyguardIndicationController(mKeyguardIndicationController);
 
-        mStatusBarCarrierLabel = (CarrierText) mStatusBarView.findViewById(
+        mCarrierLabelSpot = Settings.System.getIntForUser(
+                mContext.getContentResolver(), Settings.System.STATUS_BAR_CARRIER_SPOT, 0,
+                UserHandle.USER_CURRENT);
+        if (mCarrierLabelSpot == 0) {
+            mStatusBarCarrierLabel = (CarrierText) mStatusBarView.findViewById(
+                        R.id.left_status_bar_carrier_text);
+        } else {
+            mStatusBarCarrierLabel = (CarrierText) mStatusBarView.findViewById(
                         R.id.status_bar_carrier_text);
+        }
 
         mBatterySaverWarningColor = Settings.System.getIntForUser(
                 mContext.getContentResolver(),
@@ -2774,6 +2793,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         setVRToxinLogoVisibility();
         UpdateNotifPanelClearAllIconColor();
         setCarrierLabelFontStyle();
+        updateCarrierLabelSpot();
     }
 
     private void updateShowGreeting() {
@@ -2912,6 +2932,27 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mWeatherTempView.setVisibility(View.GONE);
             mWeatherTempView = (TextView) mStatusBarView.findViewById(R.id.left_weather_temp);
             setWeatherTempVisibility();
+        }
+    }
+
+    private void updateCarrierLabelSpot() {
+        ContentResolver resolver = mContext.getContentResolver();
+
+        mCarrierLabelSpot = Settings.System.getIntForUser(
+                resolver, Settings.System.STATUS_BAR_CARRIER_SPOT, 0,
+                UserHandle.USER_CURRENT);
+
+        if (mCarrierLabelSpot == 0) {
+            mStatusBarCarrierLabel.setVisibility(View.GONE);
+            mStatusBarCarrierLabel = (CarrierText) mStatusBarView.findViewById(
+                        R.id.left_status_bar_carrier_text);
+            setCarrierLabelVisibility();
+        }
+        if (mCarrierLabelSpot == 1) {
+            mStatusBarCarrierLabel.setVisibility(View.GONE);
+            mStatusBarCarrierLabel = (CarrierText) mStatusBarView.findViewById(
+                        R.id.status_bar_carrier_text);
+            setCarrierLabelVisibility();
         }
     }
 
