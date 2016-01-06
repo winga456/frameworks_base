@@ -94,7 +94,6 @@
                     android:ellipsize="end"
                     android:textAppearance="@style/TextAppearance.StatusBar.CarrierLabel"
                     android:textColor="#ffffff"
-                    android:singleLine="true"
                     />
 
                 <TextView

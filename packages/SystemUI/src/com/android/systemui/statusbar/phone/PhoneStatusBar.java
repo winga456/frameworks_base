@@ -304,7 +304,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         ONLY_CORE_APPS = onlyCoreApps;
     }
 
-    // Weather temperature
+    // Status Bar Font Styles
     public static final int FONT_NORMAL = 0;
     public static final int FONT_ITALIC = 1;
     public static final int FONT_BOLD = 2;
@@ -404,7 +404,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     // Keyguard is going away soon.
     private boolean mKeyguardGoingAway;
     // Keyguard is actually fading away now.
+
+    // Carrier Label
     private CarrierText mStatusBarCarrierLabel;
+    private int mCarrierLabelFontStyle;
 
     private boolean mKeyguardFadingAway;
     private boolean mKeyguardShowingMedia;
@@ -538,6 +541,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_CARRIER_LABEL_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CARRIER_FONT_STYLE),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.APP_SIDEBAR_POSITION),
@@ -722,6 +728,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 || uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_CARRIER_LABEL_NUMBER_OF_NOTIFICATION_ICONS))) {
                 setCarrierLabelVisibility();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CARRIER_FONT_STYLE))) {
+                setCarrierLabelFontStyle();
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.LOCK_SCREEN_TEXT_COLOR))
                 || uri.equals(Settings.System.getUriFor(
@@ -915,6 +924,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                         Settings.System.NAVBAR_LEFT_IN_LANDSCAPE, 0) == 1;
                 mNavigationBarView.setLeftInLandscape(navLeftInLandscape);
             }
+
+            mCarrierLabelFontStyle = Settings.System.getIntForUser(
+                    resolver, Settings.System.STATUS_BAR_CARRIER_FONT_STYLE, 0,
+                    UserHandle.USER_CURRENT);
+            changeCarrierFontStyle(mCarrierLabelFontStyle);
             updateSettings();
         }
     }
@@ -1024,6 +1038,56 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         if (mStatusBarView == null) return;
         ContentResolver resolver = mContext.getContentResolver();
         mVRToxinLogo.setColorFilter(color, Mode.SRC_IN);
+    }
+
+    public void changeCarrierFontStyle(int font) {
+        if (mStatusBarCarrierLabel == null) return;
+        ContentResolver resolver = mContext.getContentResolver();
+        switch (font) {
+            case FONT_NORMAL:
+            default:
+                mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+                break;
+            case FONT_ITALIC:
+                mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
+                break;
+            case FONT_BOLD:
+                mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+                break;
+            case FONT_BOLD_ITALIC:
+                mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
+                break;
+            case FONT_LIGHT:
+                mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
+                break;
+            case FONT_LIGHT_ITALIC:
+                mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-light", Typeface.ITALIC));
+                break;
+            case FONT_THIN:
+                mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
+                break;
+            case FONT_THIN_ITALIC:
+                mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-thin", Typeface.ITALIC));
+                break;
+            case FONT_CONDENSED:
+                mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
+                break;
+            case FONT_CONDENSED_ITALIC:
+                mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
+                break;
+            case FONT_CONDENSED_BOLD:
+                mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
+                break;
+            case FONT_CONDENSED_BOLD_ITALIC:
+                mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
+                break;
+            case FONT_MEDIUM:
+                mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+                break;
+            case FONT_MEDIUM_ITALIC:
+                mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-medium", Typeface.ITALIC));
+                break;
+        }
     }
 
     private boolean isPieEnabled() {
@@ -2709,6 +2773,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         setKeyguardTextAndIconColors();
         setVRToxinLogoVisibility();
         UpdateNotifPanelClearAllIconColor();
+        setCarrierLabelFontStyle();
     }
 
     private void updateShowGreeting() {
@@ -2804,6 +2869,14 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         if (mKeyguardStatusBar != null) {
             mKeyguardStatusBar.setCarrierLabelVisibility(showOnLockScreen);
         }
+    }
+
+    private void setCarrierLabelFontStyle() {
+        ContentResolver resolver = mContext.getContentResolver();
+
+        mCarrierLabelFontStyle = Settings.System.getIntForUser(
+                resolver, Settings.System.STATUS_BAR_CARRIER_FONT_STYLE, 0,
+                UserHandle.USER_CURRENT);
     }
 
     private void updateCarrierLabelColor() {
