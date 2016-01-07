@@ -168,6 +168,7 @@ public class VisualizerView extends View implements Palette.PaletteAsyncListener
     private void updateViewVisibility() {
         setVisibility(mKeyguardMonitor != null && mKeyguardMonitor.isShowing()
                 && mVisualizerEnabled ? View.VISIBLE : View.GONE);
+        checkStateChanged();
     }
 
     @Override
@@ -348,8 +349,8 @@ public class VisualizerView extends View implements Palette.PaletteAsyncListener
     }
 
     private void checkStateChanged() {
-        if (mVisible && mPlaying && !mDozing && !mPowerSaveMode && mVisualizerEnabled
-                && !mOccluded) {
+        if (getVisibility() == View.VISIBLE && mVisible && mPlaying && !mDozing && !mPowerSaveMode
+                && mVisualizerEnabled && !mOccluded) {
             if (!mDisplaying) {
                 mDisplaying = true;
                 AsyncTask.execute(mLinkVisualizer);
