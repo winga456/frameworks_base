@@ -4975,6 +4975,12 @@ public final class Settings {
         public static final String STATUS_BAR_DATE_STYLE = "status_bar_date_style";
 
         /**
+         * Expanded Header Clock Style
+         * @hide
+         */
+        public static final String STATUS_BAR_HEADER_FONT_STYLE = "status_bar_header_font_style";
+
+        /**
          * Display second in the Clock
          * @hide
          */
