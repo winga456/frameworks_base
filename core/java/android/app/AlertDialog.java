@@ -25,6 +25,7 @@ import android.annotation.StringRes;
 import android.annotation.StyleRes;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -261,6 +262,10 @@ public class AlertDialog extends Dialog implements DialogInterface {
         mAlert.setTitle(title);
     }
 
+    public void setTitleTextColor(int color) {
+        mAlert.setTitleTextColor(color);
+    }
+
     /**
      * @see Builder#setCustomTitle(View)
      */
@@ -270,6 +275,10 @@ public class AlertDialog extends Dialog implements DialogInterface {
 
     public void setMessage(CharSequence message) {
         mAlert.setMessage(message);
+    }
+
+    public void setMessageTextColor(int color) {
+        mAlert.setMessageTextColor(color);
     }
 
     /**
@@ -523,6 +532,11 @@ public class AlertDialog extends Dialog implements DialogInterface {
             return this;
         }
 
+        public Builder setTitleTextColor(int color) {
+            P.mTitleTextColor = color;
+            return this;
+        }
+
         /**
          * Set the title using the custom view {@code customTitleView}.
          * <p>
@@ -561,6 +575,11 @@ public class AlertDialog extends Dialog implements DialogInterface {
          */
         public Builder setMessage(CharSequence message) {
             P.mMessage = message;
+            return this;
+        }
+
+        public Builder setMessageTextColor(int color) {
+            P.mMessageTextColor = color;
             return this;
         }
 
@@ -966,6 +985,16 @@ public class AlertDialog extends Dialog implements DialogInterface {
             P.mOnClickListener = listener;
             P.mCheckedItem = checkedItem;
             P.mIsSingleChoice = true;
+            return this;
+        }
+
+        public Builder setListItemTextColor(int color) {
+            P.mListItemTextColor = color;
+            return this;
+        }
+
+        public Builder setListItemIconColors(ColorStateList colors) {
+            P.mListItemIconColors = colors;
             return this;
         }
 
