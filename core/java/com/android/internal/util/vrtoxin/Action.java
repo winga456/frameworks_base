@@ -368,6 +368,9 @@ public class Action {
                 } catch (RemoteException e) {
                 }
                 return;
+            } else if (action.equals(ActionConstants.ACTION_ONTHEGO)) {
+                OnTheGoActions.processAction(context, OnTheGoActions.ACTION_ONTHEGO_TOGGLE);
+                return;
             } else if (action.equals(ActionConstants.ACTION_RESTARTUI)) {
                 if (isKeyguardShowing && isKeyguardSecure) {
                     return;

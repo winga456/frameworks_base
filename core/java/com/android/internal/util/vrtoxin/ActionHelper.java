@@ -378,6 +378,9 @@ public class ActionHelper {
         } else if (clickAction.equals(ActionConstants.ACTION_HWKEYS)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_buttons_on", null, null);
+        } else if (clickAction.equals(ActionConstants.ACTION_ONTHEGO)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_lock_onthego", null, null);
         } else {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_sysbar_null", null, null);
