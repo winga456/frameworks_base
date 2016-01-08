@@ -220,7 +220,6 @@ public final class ShutdownThread extends Thread {
                                 }
                             })
                             .setListItemTextColor(PowerMenuColorHelper.getTextColor(context))
-                            .setListItemIconColors(PowerMenuColorHelper.getIconColors(context, 3))
                             .setPositiveButton(com.android.internal.R.string.yes, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     if (mQuickReboot) {
@@ -274,7 +273,7 @@ public final class ShutdownThread extends Thread {
                         .create();
             }
             sConfirmDialog.setTitleTextColor(PowerMenuColorHelper.getTextColor(context));
-            sConfirmDialog.setMessageTextColor(PowerMenuColorHelper.getSecondaryTextColor(context));
+            sConfirmDialog.setMessageTextColor(PowerMenuColorHelper.getTextColor(context));
             closer.dialog = sConfirmDialog;
             sConfirmDialog.setOnDismissListener(closer);
             WindowManager.LayoutParams attrs = sConfirmDialog.getWindow().getAttributes();
@@ -436,7 +435,7 @@ public final class ShutdownThread extends Thread {
             pd.setIndeterminate(true);
         }
         pd.setTitleTextColor(PowerMenuColorHelper.getTextColor(context));
-        pd.setMessageTextColor(PowerMenuColorHelper.getSecondaryTextColor(context));
+        pd.setMessageTextColor(PowerMenuColorHelper.getTextColor(context));
         pd.setCancelable(false);
         pd.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG);
 

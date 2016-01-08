@@ -993,11 +993,6 @@ public class AlertDialog extends Dialog implements DialogInterface {
             return this;
         }
 
-        public Builder setListItemIconColors(ColorStateList colors) {
-            P.mListItemIconColors = colors;
-            return this;
-        }
-
         /**
          * Sets a listener to be invoked when an item in the list is selected.
          *

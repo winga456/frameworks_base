@@ -938,7 +938,7 @@ public class AlertController {
         public CharSequence mMessage;
         public int mMessageTextColor = 0;
         public int mListItemTextColor = 0;
-        public ColorStateList mListItemIconColors = null;
+        public int mListItemIconColors = 0;
         public CharSequence mPositiveButtonText;
         public DialogInterface.OnClickListener mPositiveButtonListener;
         public CharSequence mNegativeButtonText;
@@ -1077,14 +1077,6 @@ public class AlertController {
                                 if (mListItemTextColor != 0) {
                                     ((TextView) view).setTextColor(mListItemTextColor);
                                 }
-                                if (mListItemIconColors != null) {
-                                    for (int i = 0; i < 3; i++) {
-                                        if (((CheckedTextView) view).getCompoundDrawablesRelative()[i] != null) {
-                                            ((CheckedTextView) view).getCompoundDrawablesRelative()[i]
-                                                    .setTintList(mListItemIconColors);
-                                        }
-                                    }
-                                }
                             }
                             return view;
                         }
@@ -1108,14 +1100,6 @@ public class AlertController {
                                     cursor.getInt(mIsCheckedIndex) == 1);
                             if (mListItemTextColor != 0) {
                                 text.setTextColor(mListItemTextColor);
-                            }
-                            if (mListItemIconColors != null) {
-                                for (int i = 0; i < 3; i++) {
-                                    if (text.getCompoundDrawablesRelative()[i] != null) {
-                                        text.getCompoundDrawablesRelative()[i].setTintList(mListItemIconColors);
-                                    }
-                                }
-                                text.setCompoundDrawableTintList(mListItemIconColors);
                             }
                         }
 
@@ -1148,14 +1132,6 @@ public class AlertController {
                             View view = super.getView(position, convertView, parent);
                             if (mListItemTextColor != 0) {
                                 ((TextView) view).setTextColor(mListItemTextColor);
-                            }
-                            if (mListItemIconColors != null) {
-                                for (int i = 0; i < 3; i++) {
-                                    if (((CheckedTextView) view).getCompoundDrawablesRelative()[i] != null) {
-                                        ((CheckedTextView) view).getCompoundDrawablesRelative()[i]
-                                                .setTintList(mListItemIconColors);
-                                    }
-                                }
                             }
                             return view;
                         }

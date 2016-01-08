@@ -148,10 +148,11 @@ public class QSPanel extends ViewGroup {
      */
     private boolean showBrightnessSlider() {
         boolean brightnessIconEnabled = Settings.System.getIntForUser(
-            mContext.getContentResolver(), Settings.System.BRIGHTNESS_ICON
+            mContext.getContentResolver(), Settings.System.BRIGHTNESS_ICON,
+            1, UserHandle.USER_CURRENT) == 1;
         ToggleSlider brightnessSlider = (ToggleSlider) findViewById(R.id.brightness_slider);
         if (mBrightnessSliderEnabled) {
-            if (mBrightnessIcon) {
+            if (brightnessIconEnabled) {
                 mBrightnessIcon.setVisibility(View.VISIBLE);
             } else {
                 mBrightnessIcon.setVisibility(View.GONE);
