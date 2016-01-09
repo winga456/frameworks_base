@@ -79,11 +79,6 @@ import android.os.UserHandle;
 import android.os.UserManager;
 import android.os.Vibrator;
 import android.provider.Settings;
-import android.renderscript.Allocation;
-import android.renderscript.Allocation.MipmapControl;
-import android.renderscript.Element;
-import android.renderscript.RenderScript;
-import android.renderscript.ScriptIntrinsicBlur;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.NotificationListenerService.RankingMap;
 import android.service.notification.StatusBarNotification;
@@ -484,9 +479,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     };
 
-    private int mBlurRadius;
-    private Bitmap mBlurredImage = null;
-
     class SettingsObserver extends UserContentObserver {
         SettingsObserver(Handler handler) {
             super(handler);
@@ -675,9 +667,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.SHAKE_TO_CLEAN_NOTIFICATIONS),
-                    false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_BLUR_RADIUS),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.DT2L_TARGET_VIBRATE_CONFIG),
@@ -920,9 +909,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mClockLocation = Settings.System.getInt(
                     resolver, Settings.System.STATUS_BAR_CLOCK, Clock.STYLE_CLOCK_RIGHT);
             updateClockView();
-
-            mBlurRadius = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.LOCKSCREEN_BLUR_RADIUS, 14);
 
             if (mNavigationBarView != null) {
                 boolean navLeftInLandscape = Settings.System.getInt(resolver,
@@ -2634,15 +2620,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         final boolean hasArtwork = artworkBitmap != null;
 
-        // apply blurred image
-        if (artworkBitmap == null) {
-            artworkBitmap = mBlurredImage;
-            // might still be null
-        }
-
         boolean keyguardVisible = (mState != StatusBarState.SHADE);
 
-        if (!mKeyguardFadingAway && keyguardVisible && backdropBitmap != null && mScreenOn) {
+        if (!mKeyguardFadingAway && keyguardVisible && artworkBitmap != null && mScreenOn) {
             // if there's album art, ensure visualizer is visible
             mVisualizerView.setVisible(true);
             mVisualizerView.setPlaying(mMediaController != null
@@ -2651,13 +2631,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                             == PlaybackState.STATE_PLAYING);
         }
 
-        if (backdropBitmap == null && mMediaMetadata == null) {
-            backdropBitmap = mKeyguardWallpaper;
+        if (artworkBitmap == null && mMediaMetadata == null) {
+            artworkBitmap = mKeyguardWallpaper;
         }
 
         if (keyguardVisible) {
             // always use current backdrop to color eq
-            mVisualizerView.setBitmap(backdropBitmap);
+            mVisualizerView.setBitmap(artworkBitmap);
         }
 
         if ((hasArtwork || DEBUG_MEDIA_FAKE_ARTWORK)
@@ -4295,7 +4275,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private void addStatusBarWindow() {
         makeStatusBarView();
         mStatusBarWindowManager = new StatusBarWindowManager(mContext, mKeyguardMonitor);
-        mStatusBarWindowManager.setShowingMedia(mKeyguardShowingMedia);
         mStatusBarWindowManager.add(mStatusBarWindow, getStatusBarHeight());
     }
 
@@ -4524,10 +4503,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         setControllerUsers();
         mAssistManager.onUserSwitched(newUserId);
         mVRSettingsObserver.update();
-
-        WallpaperManager wm = (WallpaperManager) mContext.getSystemService(
-                Context.WALLPAPER_SERVICE);
-        mKeyguardWallpaper = wm.getKeyguardBitmap();
 
     }
 
@@ -5697,44 +5672,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 || mFingerprintUnlockController.getMode()
                         == FingerprintUnlockController.MODE_WAKE_AND_UNLOCK_PULSING;
         updateDozingState();
-    }
-
-    public void setBackgroundBitmap(Bitmap bmp) {
-        if (bmp != null) {
-            if (mBlurRadius != 0) {
-                mBlurredImage = blurBitmap(bmp, mBlurRadius);
-            } else {
-                mBlurredImage = bmp;
-            }
-        } else {
-            mBlurredImage = null;
-        }
-
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                updateMediaMetaData(true);
-            }
-        });
-    }
-
-    private Bitmap blurBitmap(Bitmap bmp, int radius) {
-        Bitmap out = Bitmap.createBitmap(bmp);
-        RenderScript rs = RenderScript.create(mContext);
-
-        Allocation input = Allocation.createFromBitmap(
-                rs, bmp, MipmapControl.MIPMAP_NONE, Allocation.USAGE_SCRIPT);
-        Allocation output = Allocation.createTyped(rs, input.getType());
-
-        ScriptIntrinsicBlur script = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
-        script.setInput(input);
-        script.setRadius(radius);
-        script.forEach(output);
-
-        output.copyTo(out);
-
-        rs.destroy();
-        return out;
     }
 
     public VisualizerView getVisualizer() {
