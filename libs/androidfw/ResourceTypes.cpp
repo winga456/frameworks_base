@@ -2866,6 +2866,18 @@ String8 ResTable_config::toString() const {
             case ResTable_config::UI_MODE_NIGHT_BLACKOUT:
                 res.append("blackout");
                 break;
+            case ResTable_config::UI_MODE_NIGHT_CUSTOM_1:
+                res.append("custom-1"); /* set correct folder name after theme resources are implemented */
+                break;
+            case ResTable_config::UI_MODE_NIGHT_CUSTOM_2:
+                res.append("custom-2"); /* set correct folder name after theme resources are implemented */
+                break;
+            case ResTable_config::UI_MODE_NIGHT_CUSTOM_3:
+                res.append("custom-3"); /* set correct folder name after theme resources are implemented */
+                break;
+            case ResTable_config::UI_MODE_NIGHT_CUSTOM_4:
+                res.append("custom-4"); /* set correct folder name after theme resources are implemented */
+                break;
             default:
                 res.appendFormat("uiModeNight=%d",
                         dtohs(uiMode&MASK_UI_MODE_NIGHT));

@@ -239,6 +239,26 @@ static bool parseUiModeNight(const char* name, ResTable_config* out) {
               (out->uiMode&~ResTable_config::MASK_UI_MODE_NIGHT)
               | ResTable_config::UI_MODE_NIGHT_BLACKOUT;
         return true;
+    } else if (strcmp(name, "custom-1") == 0) { /* set correct folder name after theme resources are implemented */
+      if (out) out->uiMode =
+              (out->uiMode&~ResTable_config::MASK_UI_MODE_NIGHT)
+              | ResTable_config::UI_MODE_NIGHT_CUSTOM_1;
+        return true;
+    } else if (strcmp(name, "custom-2") == 0) { /* set correct folder name after theme resources are implemented */
+      if (out) out->uiMode =
+              (out->uiMode&~ResTable_config::MASK_UI_MODE_NIGHT)
+              | ResTable_config::UI_MODE_NIGHT_CUSTOM_2;
+        return true;
+    } else if (strcmp(name, "custom-3") == 0) { /* set correct folder name after theme resources are implemented */
+      if (out) out->uiMode =
+              (out->uiMode&~ResTable_config::MASK_UI_MODE_NIGHT)
+              | ResTable_config::UI_MODE_NIGHT_CUSTOM_3;
+        return true;
+    } else if (strcmp(name, "custom-4") == 0) { /* set correct folder name after theme resources are implemented */
+      if (out) out->uiMode =
+              (out->uiMode&~ResTable_config::MASK_UI_MODE_NIGHT)
+              | ResTable_config::UI_MODE_NIGHT_CUSTOM_4;
+        return true;
     }
 
     return false;
