@@ -391,6 +391,10 @@ final class UiModeManagerService extends SystemService
                 case UiModeManager.MODE_NIGHT_NO:
                 case UiModeManager.MODE_NIGHT_YES:
                 case UiModeManager.MODE_NIGHT_BLACKOUT:
+                case UiModeManager.MODE_NIGHT_CUSTOM_1:
+                case UiModeManager.MODE_NIGHT_CUSTOM_2:
+                case UiModeManager.MODE_NIGHT_CUSTOM_3:
+                case UiModeManager.MODE_NIGHT_CUSTOM_4:
                 case UiModeManager.MODE_NIGHT_AUTO:
                     break;
                 default:
@@ -618,6 +622,10 @@ final class UiModeManagerService extends SystemService
                         Settings.System.POWER_MENU_ICON_ENABLED_SELECTED_COLOR, 0xff1976D2);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.STATUS_BAR_EXPANDED_HEADER_BG_COLOR, 0xff000000);
+//            } else if (mNightMode == UiModeManager.MODE_NIGHT_CUSTOM_1) { *enable this after theme resources are implemented
+//            } else if (mNightMode == UiModeManager.MODE_NIGHT_CUSTOM_2) { *enable this after theme resources are implemented
+//            } else if (mNightMode == UiModeManager.MODE_NIGHT_CUSTOM_3) { *enable this after theme resources are implemented
+//            } else if (mNightMode == UiModeManager.MODE_NIGHT_CUSTOM_4) { *enable this after theme resources are implemented
             }
         }
     }

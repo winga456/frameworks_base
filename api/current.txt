@@ -5425,6 +5425,10 @@ package android.app {
     field public static final int MODE_NIGHT_NO = 1; // 0x1
     field public static final int MODE_NIGHT_YES = 2; // 0x2
     field public static final int MODE_NIGHT_BLACKOUT = 3; // 0x3
+    field public static final int MODE_NIGHT_CUSTOM_1 = 4; // 0x4
+    field public static final int MODE_NIGHT_CUSTOM_2 = 5; // 0x5
+    field public static final int MODE_NIGHT_CUSTOM_3 = 6; // 0x6
+    field public static final int MODE_NIGHT_CUSTOM_4 = 7; // 0x7
   }
 
   public final class VoiceInteractor {
@@ -9720,6 +9724,11 @@ package android.content.res {
     field public static final int UI_MODE_NIGHT_UNDEFINED = 0; // 0x0
     field public static final int UI_MODE_NIGHT_YES = 32; // 0x20
     field public static final int UI_MODE_NIGHT_BLACKOUT = 64; // 0x40
+    field public static final int UI_MODE_NIGHT_CUSTOM_1 = 80; // 0x50
+    field public static final int UI_MODE_NIGHT_CUSTOM_2 = 96; // 0x60
+    field public static final int UI_MODE_NIGHT_CUSTOM_3 = 112; // 0x70
+    field public static final int UI_MODE_NIGHT_CUSTOM_4 = 128; // 0x80
+
     field public static final int UI_MODE_TYPE_APPLIANCE = 5; // 0x5
     field public static final int UI_MODE_TYPE_CAR = 3; // 0x3
     field public static final int UI_MODE_TYPE_DESK = 2; // 0x2
