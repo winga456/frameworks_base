@@ -277,6 +277,11 @@
   <java-symbol type="style" name="PowerMenuRightAnimation" />
   <java-symbol type="style" name="PowerMenuRotateAnimation" />
   <java-symbol type="style" name="PowerMenuGrowAnimation" />
+  <java-symbol type="style" name="PowerMenuXylonAnimation" />
+  <java-symbol type="style" name="PowerMenuTranslucentAnimation" />
+  <java-symbol type="style" name="PowerMenuTnAnimation" />
+  <java-symbol type="style" name="PowerMenuflyAnimation" />
+  <java-symbol type="style" name="PowerMenuCardAnimation" />
 
   <!-- Floating Window -->
   <java-symbol type="drawable" name="ic_floating_window_close" />
