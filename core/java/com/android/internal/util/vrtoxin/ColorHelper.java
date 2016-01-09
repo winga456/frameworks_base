@@ -30,6 +30,8 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
 import android.util.TypedValue;
 
+import java.util.Random;
+
 public class ColorHelper {
 
     public static Bitmap getColoredBitmap(Drawable d, int color) {
@@ -116,6 +118,38 @@ public class ColorHelper {
                     Math.max((int) (b * factor), 0));
         }
         return newColor;
+    }
+
+    public static String convertToColorHexString(int color, boolean useAlpha) {
+        String alpha = Integer.toHexString(Color.alpha(color));
+        String red = Integer.toHexString(Color.red(color));
+        String green = Integer.toHexString(Color.green(color));
+        String blue = Integer.toHexString(Color.blue(color));
+
+        if (useAlpha) {
+            if (alpha.length() == 1) {
+                alpha = "0" + alpha;
+            }
+        }
+
+        if (red.length() == 1) {
+            red = "0" + red;
+        }
+
+        if (green.length() == 1) {
+            green = "0" + green;
+        }
+
+        if (blue.length() == 1) {
+            blue = "0" + blue;
+        }
+
+        return "#" + (useAlpha ? alpha : "") + red + green + blue;
+    }
+
+    public static int getRandomColor() {
+        Random rand = new Random();
+        return rand.nextInt(0xFFFFFF);
     }
 
     public static ColorMatrixColorFilter getColorFilter(int color) {
