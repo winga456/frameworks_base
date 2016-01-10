@@ -511,7 +511,7 @@ public final class Configuration implements Parcelable, Comparable<Configuration
      * value that corresponds to the
      * <a href="{@docRoot}guide/topics/resources/providing-resources.html#NightQualifier">night</a>
      * resource qualifier. */
-    public static final int UI_MODE_NIGHT_CUSTOM_1 = 0x40;
+    public static final int UI_MODE_NIGHT_RANDOM = 0x40;
     /** Constant for {@link #uiMode}: a {@link #UI_MODE_NIGHT_MASK}
      * value that corresponds to the
      * <a href="{@docRoot}guide/topics/resources/providing-resources.html#NightQualifier">night</a>
@@ -791,7 +791,7 @@ public final class Configuration implements Parcelable, Comparable<Configuration
             case UI_MODE_NIGHT_NO: /* not-night is not interesting to print */ break;
             case UI_MODE_NIGHT_YES: sb.append(" night"); break;
             case UI_MODE_NIGHT_BLACKOUT: sb.append(" blackout"); break;
-            case UI_MODE_NIGHT_CUSTOM_1: sb.append(" custom-1"); break; /* set correct folder name after theme resources are implemented */
+            case UI_MODE_NIGHT_RANDOM: sb.append(" random"); break;
             case UI_MODE_NIGHT_CUSTOM_2: sb.append(" custom-2"); break; /* set correct folder name after theme resources are implemented */
             case UI_MODE_NIGHT_CUSTOM_3: sb.append(" custom-3"); break; /* set correct folder name after theme resources are implemented */
             case UI_MODE_NIGHT_CUSTOM_4: sb.append(" custom-4"); break; /* set correct folder name after theme resources are implemented */
@@ -1549,8 +1549,8 @@ public final class Configuration implements Parcelable, Comparable<Configuration
             case Configuration.UI_MODE_NIGHT_BLACKOUT:
                 parts.add("blackout");
                 break;
-            case Configuration.UI_MODE_NIGHT_CUSTOM_1:
-                parts.add("custom-1"); /* set correct folder name after theme resources are implemented */
+            case Configuration.UI_MODE_NIGHT_RANDOM:
+                parts.add("random");
                 break;
             case Configuration.UI_MODE_NIGHT_CUSTOM_2:
                 parts.add("custom-2"); /* set correct folder name after theme resources are implemented */

@@ -2866,8 +2866,8 @@ String8 ResTable_config::toString() const {
             case ResTable_config::UI_MODE_NIGHT_BLACKOUT:
                 res.append("blackout");
                 break;
-            case ResTable_config::UI_MODE_NIGHT_CUSTOM_1:
-                res.append("custom-1"); /* set correct folder name after theme resources are implemented */
+            case ResTable_config::UI_MODE_NIGHT_RANDOM:
+                res.append("random");
                 break;
             case ResTable_config::UI_MODE_NIGHT_CUSTOM_2:
                 res.append("custom-2"); /* set correct folder name after theme resources are implemented */

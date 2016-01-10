@@ -734,7 +734,7 @@
              1 - MODE_NIGHT_NO
              2 - MODE_NIGHT_YES
              3 - MODE_NIGHT_BLACKOUT
-             3 - MODE_NIGHT_CUSTOM_1
+             4 - MODE_NIGHT_RANDOM
              3 - MODE_NIGHT_CUSTOM_2
              3 - MODE_NIGHT_CUSTOM_3
              3 - MODE_NIGHT_CUSTOM_4

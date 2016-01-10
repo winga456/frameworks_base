@@ -116,7 +116,7 @@ public class UiModeManager {
     /** Constant for {@link #setNightMode(int)} and {@link #getNightMode()}:
      * always run in night mode.
      */
-    public static final int MODE_NIGHT_CUSTOM_1 = Configuration.UI_MODE_NIGHT_CUSTOM_1 >> 4;
+    public static final int MODE_NIGHT_RANDOM = Configuration.UI_MODE_NIGHT_RANDOM >> 4;
 
     /** Constant for {@link #setNightMode(int)} and {@link #getNightMode()}:
      * always run in night mode.

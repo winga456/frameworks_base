@@ -391,7 +391,7 @@ final class UiModeManagerService extends SystemService
                 case UiModeManager.MODE_NIGHT_NO:
                 case UiModeManager.MODE_NIGHT_YES:
                 case UiModeManager.MODE_NIGHT_BLACKOUT:
-                case UiModeManager.MODE_NIGHT_CUSTOM_1:
+                case UiModeManager.MODE_NIGHT_RANDOM:
                 case UiModeManager.MODE_NIGHT_CUSTOM_2:
                 case UiModeManager.MODE_NIGHT_CUSTOM_3:
                 case UiModeManager.MODE_NIGHT_CUSTOM_4:
@@ -622,7 +622,41 @@ final class UiModeManagerService extends SystemService
                         Settings.System.POWER_MENU_ICON_ENABLED_SELECTED_COLOR, 0xff1976D2);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.STATUS_BAR_EXPANDED_HEADER_BG_COLOR, 0xff000000);
-//            } else if (mNightMode == UiModeManager.MODE_NIGHT_CUSTOM_1) { *enable this after theme resources are implemented
+            } else if (mNightMode == UiModeManager.MODE_NIGHT_RANDOM) {
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.NOTIFICATION_BG_COLOR, 0xff0f2e4c);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.NOTIFICATION_GUTS_BG_COLOR, 0xff0f2e4c);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.NOTIFICATION_ICON_COLOR, 0xfffff400);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.NOTIFICATION_TEXT_COLOR, 0xfffff400);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.QS_BACKGROUND_COLOR, 0xff0f2e4c);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.QS_ICON_COLOR, 0xfffff400);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.QS_TEXT_COLOR, 0xff00ff00);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.QS_BRIGHTNESS_SLIDER_BG_COLOR, 0xffff0000);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.QS_BRIGHTNESS_SLIDER_COLOR, 0xff00ff00);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.QS_BRIGHTNESS_SLIDER_ICON_COLOR, 0xffff0000);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.POWER_MENU_BG_COLOR, 0xff0f2e4c);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.POWER_MENU_TEXT_COLOR, 0xfffff400);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.POWER_MENU_ICON_NORMAL_COLOR, 0xfffff400);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.POWER_MENU_ICON_ENABLED_SELECTED_COLOR, 0xff00bbff);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.STATUS_BAR_EXPANDED_HEADER_TEXT_COLOR, 0xfffff400);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.STATUS_BAR_EXPANDED_HEADER_ICON_COLOR, 0xfffff400);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.STATUS_BAR_EXPANDED_HEADER_BG_COLOR, 0xff0f2e4c);
 //            } else if (mNightMode == UiModeManager.MODE_NIGHT_CUSTOM_2) { *enable this after theme resources are implemented
 //            } else if (mNightMode == UiModeManager.MODE_NIGHT_CUSTOM_3) { *enable this after theme resources are implemented
 //            } else if (mNightMode == UiModeManager.MODE_NIGHT_CUSTOM_4) { *enable this after theme resources are implemented
