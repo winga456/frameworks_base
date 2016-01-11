@@ -16,7 +16,6 @@
 
 package com.android.server;
 
-import android.os.Looper;
 import com.android.internal.widget.LockPatternUtils;
 import com.android.internal.widget.LockPatternUtils.StrongAuthTracker;
 
@@ -47,12 +46,6 @@ public class LockSettingsStrongAuth {
 
     private final ArrayList<IStrongAuthTracker> mStrongAuthTrackers = new ArrayList<>();
     private final SparseIntArray mStrongAuthForUser = new SparseIntArray();
-
-    private final Handler mHandler;
-
-    public LockSettingsStrongAuth() {
-        mHandler = new Handler(Looper.getMainLooper(), mHandlerCallback);
-    }
 
     private void handleAddStrongAuthTracker(IStrongAuthTracker tracker) {
         for (int i = 0; i < mStrongAuthTrackers.size(); i++) {
@@ -152,9 +145,9 @@ public class LockSettingsStrongAuth {
         requireStrongAuth(STRONG_AUTH_NOT_REQUIRED, userId);
     }
 
-    private final Handler.Callback mHandlerCallback = new Handler.Callback() {
+    private final Handler mHandler = new Handler() {
         @Override
-        public boolean handleMessage(Message msg) {
+        public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_REGISTER_TRACKER:
                     handleAddStrongAuthTracker((IStrongAuthTracker) msg.obj);
@@ -169,7 +162,6 @@ public class LockSettingsStrongAuth {
                     handleRemoveUser(msg.arg1);
                     break;
             }
-            return true;
         }
     };
 }
