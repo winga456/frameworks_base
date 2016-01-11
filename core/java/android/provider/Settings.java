@@ -5717,6 +5717,12 @@ public final class Settings {
         public static final String RECENTS_FULL_SCREEN_DATE = "recents_full_screen_date";
 
         /**
+         * Font style of memory bar text, clock and date in full screen recents
+         * @hide
+         */
+        public static final String RECENTS_FONT_STYLE = "recents_font_style";
+
+        /**
          * Full screen recents date text color
          * @hide
          */
