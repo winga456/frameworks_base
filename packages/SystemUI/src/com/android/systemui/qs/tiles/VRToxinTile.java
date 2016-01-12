@@ -56,8 +56,8 @@ public class VRToxinTile extends QSTile<QSTile.BooleanState> {
     protected void handleClick() {
         MetricsLogger.action(mContext, getMetricsCategory(), !mState.value);
         Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setClassName("com.android.vrtoxin",
-            "com.android.vrtoxin.VRToxinActivity");
+        intent.setClassName("com.android.settings",
+            "com.android.settings.Settings$MainSettingsActivity");
         mHost.startActivityDismissingKeyguard(intent);
     }
 
@@ -65,8 +65,8 @@ public class VRToxinTile extends QSTile<QSTile.BooleanState> {
     public void handleLongClick() {
         MetricsLogger.action(mContext, getMetricsCategory(), !mState.value);
         Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setClassName("com.android.settings",
-            "com.android.settings.Settings$MainSettingsActivity");
+        intent.setClassName("com.android.vrtoxin",
+            "com.android.vrtoxin.VRToxinActivity");
         mHost.startActivityDismissingKeyguard(intent);
     }
 

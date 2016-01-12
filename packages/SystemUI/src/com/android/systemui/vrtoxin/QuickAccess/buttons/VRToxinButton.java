@@ -68,4 +68,12 @@ public class VRToxinButton extends QabButton {
             mBar.startSettingsActivity(intent);
         }
     }
+
+    @Override
+    public void handleLongClick() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setClassName("com.android.vrtoxin",
+            "com.android.vrtoxin.VRToxinActivity");
+        mBar.startSettingsActivity(intent);
+    }
 }
