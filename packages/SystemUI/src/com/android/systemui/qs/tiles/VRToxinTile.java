@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 CyanideL
+ * Copyright (C) 2016 The VRToxin Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,18 +56,19 @@ public class VRToxinTile extends QSTile<QSTile.BooleanState> {
     protected void handleClick() {
         MetricsLogger.action(mContext, getMetricsCategory(), !mState.value);
         Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setClassName("com.android.vrtoxin",
+            "com.android.vrtoxin.VRToxinActivity");
+        mHost.startActivityDismissingKeyguard(intent);
+    }
+
+    @Override
+    public void handleLongClick() {
+        MetricsLogger.action(mContext, getMetricsCategory(), !mState.value);
+        Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.setClassName("com.android.settings",
             "com.android.settings.Settings$MainSettingsActivity");
         mHost.startActivityDismissingKeyguard(intent);
     }
-
-    /*@Override
-    public void handleLongClick() {
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setClassName("com.android.settings",
-            "com.android.settings.Settings$CyanideCentralActivity");
-        mHost.startSettingsActivity(intent);
-    }*/
 
     @Override
     protected void handleUpdateState(BooleanState state, Object arg) {
