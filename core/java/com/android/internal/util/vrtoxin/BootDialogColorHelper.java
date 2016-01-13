@@ -39,12 +39,12 @@ public class BootDialogColorHelper {
     public static int getBackgroundColor(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
                 Settings.System.BOOT_DIALOG_BACKGROUND_COLOR,
-                BLACK);
+                WHITE);
     }
 
     public static int getTextColor(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
-                Settings.System.BOOT_DIALOG_TEXT_COLOR, WHITE);
+                Settings.System.BOOT_DIALOG_TEXT_COLOR, BLACK);
     }
 
     public static int getSecondaryTextColor(Context context) {
