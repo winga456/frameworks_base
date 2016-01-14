@@ -69,10 +69,10 @@ public class QSConstants {
     public static final String TILE_SYSTEMUI_RESTART = "reboot_systemui";
     public static final String TILE_FLOATING_WINDOWS = "floating_windows";
     public static final String TILE_SLIM_FLOATS = "slim_floats";
-    public static final String TILE_KERNEL_ADIUTOR = "kernel_adiutor";
     public static final String TILE_STWEAKS = "stweaks";
     public static final String TILE_LED = "led";
     public static final String TILE_THEMES = "themes";
+    public static final String TILE_KERNEL_ADIUTOR = "kernel_adiutor";
 
     protected static final ArrayList<String> STATIC_TILES_AVAILABLE = new ArrayList<String>();
     protected static final ArrayList<String> TILES_AVAILABLE = new ArrayList<String>();
@@ -120,6 +120,7 @@ public class QSConstants {
         STATIC_TILES_AVAILABLE.add(TILE_SLIMPIE);
         STATIC_TILES_AVAILABLE.add(TILE_FLOATING_WINDOWS);
         STATIC_TILES_AVAILABLE.add(TILE_SLIM_FLOATS);
+        STATIC_TILES_AVAILABLE.add(TILE_KERNEL_ADIUTOR);
 
         TILES_AVAILABLE.addAll(STATIC_TILES_AVAILABLE);
     }

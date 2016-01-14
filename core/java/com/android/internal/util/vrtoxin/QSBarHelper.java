@@ -160,6 +160,9 @@ public class QSBarHelper {
         } else if (clickAction.equals(QSBarConstants.BUTTON_WIFI)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_button_wifi", null, null);
+        } else if (clickAction.equals(QSBarConstants.BUTTON_KERNEL_ADIUTOR)) {
+            resId = systemUiResources.getIdentifier(
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_kernel", null, null);
         }
 
         if (resId > 0) {

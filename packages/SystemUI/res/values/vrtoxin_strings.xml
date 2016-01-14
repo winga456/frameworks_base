@@ -84,6 +84,7 @@
     <string name="quick_settings_navbar">NavBar</string>
     <string name="quick_settings_navbar_off">NavBar Disabled</string>
     <string name="quick_settings_stweaks">STweaks</string>
+    <string name="quick_settings_kernel_adiutor">Kernel Adiutor</string>
 
     <!-- Expanded desktop tile -->
     <string name="quick_settings_expanded_desktop_label">Expanded desktop</string>

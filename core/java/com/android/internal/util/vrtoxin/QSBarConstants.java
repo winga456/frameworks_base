@@ -42,6 +42,7 @@ public class QSBarConstants {
     public static final String BUTTON_WIFI             = "wifi";
     public static final String BUTTON_SLIM_FLOATS      = "slim_floats";
     public static final String BUTTON_FLOATING_WINDOWS = "floating_windows";
+    public static final String BUTTON_KERNEL_ADIUTOR   = "kernel_adiutor";
 
     public static final String BUTTON_DELIMITER  = "|";
     public static final String ICON_EMPTY        = "empty";

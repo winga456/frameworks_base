@@ -49,6 +49,7 @@ import com.android.systemui.vrtoxin.QuickAccess.buttons.FloatingButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.GestureAnywhereButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.HotspotButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.HWKeysButton;
+import com.android.systemui.vrtoxin.QuickAccess.buttons.KernelAdiutorButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.LocationButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.NavBarButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.NfcButton;
@@ -252,6 +253,10 @@ public class QuickAccessBar extends LinearLayout {
             button = new WifiButton(mContext, this,
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_wifi),
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_wifi_off));
+        } else if (action.equals(QSBarConstants.BUTTON_KERNEL_ADIUTOR)) {
+            button = new KernelAdiutorButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_kernel),
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_kernel));
         }
 
         int dimens = mContext.getResources().getDimensionPixelSize(R.dimen.qab_button_size);
