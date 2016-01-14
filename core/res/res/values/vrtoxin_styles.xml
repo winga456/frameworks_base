@@ -63,4 +63,8 @@
         <item name="windowEnterAnimation">@anim/grow_fade_in</item>
         <item name="windowExitAnimation">@anim/shrink_fade_out</item>
     </style>
+    <style name="PowerMenuTurnAnimation">
+        <item name="windowEnterAnimation">@anim/tn_toast_enter</item>
+        <item name="windowExitAnimation">@anim/tn_toast_exit</item>
+    </style>
 </resources>
