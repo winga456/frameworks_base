@@ -172,6 +172,7 @@ public class StatusBarIconController {
         mBatteryMeterViewKeyguard = (BatteryMeterView) keyguardStatusBar.findViewById(R.id.battery);
         mBatteryLevelKeyguard = ((TextView) keyguardStatusBar.findViewById(R.id.battery_level));
         mClock = (TextView) statusBar.findViewById(R.id.clock);
+        mClockView = (TextView) statusBar.findViewById(R.id.center_clock);
         mLinearOutSlowIn = AnimationUtils.loadInterpolator(mContext,
                 android.R.interpolator.linear_out_slow_in);
         mFastOutSlowIn = AnimationUtils.loadInterpolator(mContext,
@@ -313,9 +314,7 @@ public class StatusBarIconController {
             hideNotificationIconArea(true);
         } else {
             animateHide(mSystemIconArea, false);
-            if (mClockLocation == Clock.STYLE_CLOCK_CENTER) {
-                animateHide(mClockView, false);
-            }
+            animateHide(mClockView, false);
             animateHide(mNotificationIconArea, false);
         }
         animateShow(mGreetingLayout, true, true);
@@ -323,18 +322,14 @@ public class StatusBarIconController {
 
     public void hideGreeting() {
         animateShow(mSystemIconArea, true);
-        if (mClockLocation == Clock.STYLE_CLOCK_CENTER) {
-            animateShow(mClockView, true);
-        }
+        animateShow(mClockView, true);
         animateShow(mNotificationIconArea, true);
         animateHide(mGreetingLayout, true, true);
     }
 
     public void hideSystemIconArea(boolean animate) {
         animateHide(mSystemIconArea, animate);
-        if (mClockLocation == Clock.STYLE_CLOCK_CENTER) {
-            animateHide(mClockView, animate);
-        }
+        animateHide(mClockView, animate);
     }
 
     public void showSystemIconArea(boolean animate) {
@@ -342,9 +337,7 @@ public class StatusBarIconController {
             showGreeting(false);
         } else {
             animateShow(mSystemIconArea, animate);
-            if (mClockLocation == Clock.STYLE_CLOCK_CENTER) {
-                animateShow(mClockView, animate);
-            }
+            animateShow(mClockView, animate);
         }
     }
 
