@@ -27,18 +27,18 @@ import android.provider.Settings;
 import com.android.systemui.R;
 import com.android.systemui.vrtoxin.QuickAccess.QuickAccessBar;
 
-public class KernelAdiutorButton extends QabButton {
+public class STweaksButton extends QabButton {
 
-    private final ContentObserver mKernelAdiutorObserver;
+    private final ContentObserver mSTweaksObserver;
     private final ContentResolver mResolver;
 
     private boolean mEnabled;
 
-    public KernelAdiutorButton(Context context, QuickAccessBar bar, Drawable iconEnabled,
+    public STweaksButton(Context context, QuickAccessBar bar, Drawable iconEnabled,
             Drawable iconDisabled) {
         super(context, bar, iconEnabled, iconDisabled);
 
-        mKernelAdiutorObserver = new ContentObserver(new Handler()) {
+        mSTweaksObserver = new ContentObserver(new Handler()) {
             @Override
             public void onChange(boolean selfChange) {
                 mEnabled = true;
@@ -55,7 +55,7 @@ public class KernelAdiutorButton extends QabButton {
         if (listening) {
             mEnabled = true;
         } else {
-            mResolver.unregisterContentObserver(mKernelAdiutorObserver);
+            mResolver.unregisterContentObserver(mSTweaksObserver);
         }
     }
 
@@ -63,8 +63,8 @@ public class KernelAdiutorButton extends QabButton {
     public void handleClick() {
         if (mEnabled) {
             Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.setClassName("com.grarak.kerneladiutor",
-                "com.grarak.kerneladiutor.MainActivity");
+            intent.setClassName("com.gokhanmoral.stweaks.app",
+            "com.gokhanmoral.stweaks.app.MainActivity");
             mBar.startSettingsActivity(intent);
         }
     }

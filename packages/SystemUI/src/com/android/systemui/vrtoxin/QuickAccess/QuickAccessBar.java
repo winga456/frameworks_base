@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2015 DarkKat
+ * Copyright (C) 2015 The VRToxin Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,6 +61,7 @@ import com.android.systemui.vrtoxin.QuickAccess.buttons.RotationLockButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.ScreenOffButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.SlimFloatsButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.SlimPieButton;
+import com.android.systemui.vrtoxin.QuickAccess.buttons.STweaksButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.ThemeButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.TorchButton;
 import com.android.systemui.vrtoxin.QuickAccess.buttons.VRToxinButton;
@@ -257,6 +259,10 @@ public class QuickAccessBar extends LinearLayout {
             button = new KernelAdiutorButton(mContext, this,
                     mContext.getResources().getDrawable(R.drawable.ic_qs_kernel),
                     mContext.getResources().getDrawable(R.drawable.ic_qs_kernel));
+        } else if (action.equals(QSBarConstants.BUTTON_STWEAKS)) {
+            button = new KernelAdiutorButton(mContext, this,
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_stweaks),
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_stweaks));
         }
 
         int dimens = mContext.getResources().getDimensionPixelSize(R.dimen.qab_button_size);
