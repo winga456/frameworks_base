@@ -49,7 +49,7 @@
     <integer name="config_recentExitDur">450</integer>
 
     <!-- Sets whether IME switcher on statusbar should be shown or not. -->
-    <bool name="config_show_IMESwitcher">false</bool>
+    <bool name="config_show_IMESwitcher">true</bool>
 
     <!-- Boolean to enable stk functionality on Samsung phones -->
     <bool name="config_samsung_stk">false</bool>
