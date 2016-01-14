@@ -81,10 +81,14 @@ public class StatusBarIconController {
     public static final int FONT_THIN_ITALIC = 7;
     public static final int FONT_CONDENSED = 8;
     public static final int FONT_CONDENSED_ITALIC = 9;
-    public static final int FONT_CONDENSED_BOLD = 10;
-    public static final int FONT_CONDENSED_BOLD_ITALIC = 11;
-    public static final int FONT_MEDIUM = 12;
-    public static final int FONT_MEDIUM_ITALIC = 13;
+    public static final int FONT_CONDENSED_LIGHT = 10;
+    public static final int FONT_CONDENSED_LIGHT_ITALIC = 11;
+    public static final int FONT_CONDENSED_BOLD = 12;
+    public static final int FONT_CONDENSED_BOLD_ITALIC = 13;
+    public static final int FONT_MEDIUM = 14;
+    public static final int FONT_MEDIUM_ITALIC = 15;
+    public static final int FONT_BLACK = 16;
+    public static final int FONT_BLACK_ITALIC = 17;
 
     private static final int GREETING_ALWAYS = 0;
     private static final int GREETING_HIDDEN = 2;
@@ -866,6 +870,12 @@ public class StatusBarIconController {
             case FONT_CONDENSED_ITALIC:
                 mGreetingView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
                 break;
+            case FONT_CONDENSED_LIGHT:
+                mGreetingView.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
+                break;
+            case FONT_CONDENSED_LIGHT_ITALIC:
+                mGreetingView.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
+                break;
             case FONT_CONDENSED_BOLD:
                 mGreetingView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
                 break;
@@ -877,6 +887,12 @@ public class StatusBarIconController {
                 break;
             case FONT_MEDIUM_ITALIC:
                 mGreetingView.setTypeface(Typeface.create("sans-serif-medium", Typeface.ITALIC));
+                break;
+            case FONT_BLACK:
+                mGreetingView.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
+                break;
+            case FONT_BLACK_ITALIC:
+                mGreetingView.setTypeface(Typeface.create("sans-serif-black", Typeface.ITALIC));
                 break;
         }
     }
