@@ -688,6 +688,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_SHOW_TICKER),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CENTER_CLOCK_HIDE),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CENTER_CLOCK_NUMBER_OF_NOTIFICATION_ICONS),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -875,6 +881,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                         mContext.getResources().getBoolean(R.bool.enable_ticker)
                         ? 1 : 0, UserHandle.USER_CURRENT) == 1;
                 initTickerView();
+             } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CENTER_CLOCK_HIDE))
+                    || uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CENTER_CLOCK_NUMBER_OF_NOTIFICATION_ICONS))) {
+                setCenterClockVisibility();
             }
             update();
         }
@@ -980,6 +991,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         if (mClockView != null) {
             if (mClockLocation == Clock.STYLE_CLOCK_CENTER && mState == StatusBarState.KEYGUARD) {
                 mClockView.setVisibility(View.GONE);
+            }
+            if (mClockLocation == Clock.STYLE_CLOCK_CENTER) {
+                setCenterClockVisibility();
             }
             setClockAndDateStatus();
             mClockController.updateClockView(mClockView);
@@ -2448,6 +2462,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         setCarrierLabelVisibility();
         setWeatherTempVisibility();
         setVRToxinLogoVisibility();
+        setCenterClockVisibility();
     }
 
     @Override
@@ -2829,6 +2844,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         UpdateNotifPanelClearAllIconColor();
         setCarrierLabelFontStyle();
         updateCarrierLabelSpot();
+        setCenterClockVisibility();
     }
 
     private void updateShowGreeting() {
@@ -3026,6 +3042,31 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         if (mKeyguardBottomArea != null) {
             mKeyguardBottomArea.updateTextColor(textColor);
             mKeyguardBottomArea.updateIconColor(iconColor);
+        }
+    }
+
+    public void setCenterClockVisibility() {
+        final ContentResolver resolver = mContext.getContentResolver();
+
+        final boolean centerClock = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_CLOCK, 0) == 2;
+
+        final boolean forceHide = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_CENTER_CLOCK_HIDE, 1) == 1;
+        final int maxAllowedIcons = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_CENTER_CLOCK_NUMBER_OF_NOTIFICATION_ICONS, 4);
+        boolean forceHideByNumberOfIcons = false;
+        int currentVisibleNotificationIcons = 0;
+
+        if (mNotificationIcons != null) {
+            currentVisibleNotificationIcons = mNotificationIcons.getChildCount();
+        }
+        if (forceHide && currentVisibleNotificationIcons >= maxAllowedIcons) {
+            forceHideByNumberOfIcons = true;
+        }
+        if (mClockView != null && centerClock) {
+            mClockView.setVisibility(centerClock && !forceHideByNumberOfIcons
+                    ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -4261,6 +4302,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                         mTickingDoneListener));
             mClockView.setVisibility(View.VISIBLE);
             mClockView.startAnimation(loadAnim(com.android.internal.R.anim.push_down_in, null));
+            setCenterClockVisibility();
         }
 
         public void tickerHalting() {
