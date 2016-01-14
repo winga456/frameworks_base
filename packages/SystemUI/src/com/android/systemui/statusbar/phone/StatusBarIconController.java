@@ -47,6 +47,7 @@ import com.android.internal.statusbar.StatusBarIcon;
 import com.android.internal.util.NotificationColorUtil;
 import com.android.internal.util.vrtoxin.ColorHelper;
 import com.android.internal.util.vrtoxin.DeviceUtils;
+import com.android.internal.util.vrtoxin.FontHelper;
 import com.android.internal.util.vrtoxin.StatusBarColorHelper;
 import com.android.keyguard.CarrierText;
 import com.android.systemui.BatteryMeterView;
@@ -70,25 +71,6 @@ public class StatusBarIconController {
     public static final long DEFAULT_TINT_ANIMATION_DURATION = 120;
 
     public static final String ICON_BLACKLIST = "icon_blacklist";
-
-    public static final int FONT_NORMAL = 0;
-    public static final int FONT_ITALIC = 1;
-    public static final int FONT_BOLD = 2;
-    public static final int FONT_BOLD_ITALIC = 3;
-    public static final int FONT_LIGHT = 4;
-    public static final int FONT_LIGHT_ITALIC = 5;
-    public static final int FONT_THIN = 6;
-    public static final int FONT_THIN_ITALIC = 7;
-    public static final int FONT_CONDENSED = 8;
-    public static final int FONT_CONDENSED_ITALIC = 9;
-    public static final int FONT_CONDENSED_LIGHT = 10;
-    public static final int FONT_CONDENSED_LIGHT_ITALIC = 11;
-    public static final int FONT_CONDENSED_BOLD = 12;
-    public static final int FONT_CONDENSED_BOLD_ITALIC = 13;
-    public static final int FONT_MEDIUM = 14;
-    public static final int FONT_MEDIUM_ITALIC = 15;
-    public static final int FONT_BLACK = 16;
-    public static final int FONT_BLACK_ITALIC = 17;
 
     private static final int GREETING_ALWAYS = 0;
     private static final int GREETING_HIDDEN = 2;
@@ -832,66 +814,66 @@ public class StatusBarIconController {
 
     private void updateGreetingFontStyle() {
         final int mGreetingFontStyle = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.STATUS_BAR_GREETING_FONT_STYLE, FONT_NORMAL);
+                Settings.System.STATUS_BAR_GREETING_FONT_STYLE, FontHelper.FONT_NORMAL);
 
         getFontStyle(mGreetingFontStyle);
     }
 
     public void getFontStyle(int font) {
         switch (font) {
-            case FONT_NORMAL:
+            case FontHelper.FONT_NORMAL:
             default:
                 mGreetingView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
                 break;
-            case FONT_ITALIC:
+            case FontHelper.FONT_ITALIC:
                 mGreetingView.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
                 break;
-            case FONT_BOLD:
+            case FontHelper.FONT_BOLD:
                 mGreetingView.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
                 break;
-            case FONT_BOLD_ITALIC:
+            case FontHelper.FONT_BOLD_ITALIC:
                 mGreetingView.setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
                 break;
-            case FONT_LIGHT:
+            case FontHelper.FONT_LIGHT:
                 mGreetingView.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
                 break;
-            case FONT_LIGHT_ITALIC:
+            case FontHelper.FONT_LIGHT_ITALIC:
                 mGreetingView.setTypeface(Typeface.create("sans-serif-light", Typeface.ITALIC));
                 break;
-            case FONT_THIN:
+            case FontHelper.FONT_THIN:
                 mGreetingView.setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
                 break;
-            case FONT_THIN_ITALIC:
+            case FontHelper.FONT_THIN_ITALIC:
                 mGreetingView.setTypeface(Typeface.create("sans-serif-thin", Typeface.ITALIC));
                 break;
-            case FONT_CONDENSED:
+            case FontHelper.FONT_CONDENSED:
                 mGreetingView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
                 break;
-            case FONT_CONDENSED_ITALIC:
+            case FontHelper.FONT_CONDENSED_ITALIC:
                 mGreetingView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
                 break;
-            case FONT_CONDENSED_LIGHT:
+            case FontHelper.FONT_CONDENSED_LIGHT:
                 mGreetingView.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
                 break;
-            case FONT_CONDENSED_LIGHT_ITALIC:
+            case FontHelper.FONT_CONDENSED_LIGHT_ITALIC:
                 mGreetingView.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
                 break;
-            case FONT_CONDENSED_BOLD:
+            case FontHelper.FONT_CONDENSED_BOLD:
                 mGreetingView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
                 break;
-            case FONT_CONDENSED_BOLD_ITALIC:
+            case FontHelper.FONT_CONDENSED_BOLD_ITALIC:
                 mGreetingView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
                 break;
-            case FONT_MEDIUM:
+            case FontHelper.FONT_MEDIUM:
                 mGreetingView.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
                 break;
-            case FONT_MEDIUM_ITALIC:
+            case FontHelper.FONT_MEDIUM_ITALIC:
                 mGreetingView.setTypeface(Typeface.create("sans-serif-medium", Typeface.ITALIC));
                 break;
-            case FONT_BLACK:
+            case FontHelper.FONT_BLACK:
                 mGreetingView.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
                 break;
-            case FONT_BLACK_ITALIC:
+            case FontHelper.FONT_BLACK_ITALIC:
                 mGreetingView.setTypeface(Typeface.create("sans-serif-black", Typeface.ITALIC));
                 break;
         }

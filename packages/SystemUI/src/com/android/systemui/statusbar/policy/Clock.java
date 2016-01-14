@@ -40,6 +40,8 @@ import com.android.systemui.DemoMode;
 import com.android.systemui.R;
 import com.android.systemui.vrtoxin.UserContentObserver;
 
+import com.android.internal.util.vrtoxin.FontHelper;
+
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.Calendar;
@@ -76,25 +78,6 @@ public class Clock implements DemoMode {
     public static final int CLOCK_DATE_STYLE_LOWERCASE = 1;
     public static final int CLOCK_DATE_STYLE_UPPERCASE = 2;
 
-    public static final int FONT_NORMAL = 0;
-    public static final int FONT_ITALIC = 1;
-    public static final int FONT_BOLD = 2;
-    public static final int FONT_BOLD_ITALIC = 3;
-    public static final int FONT_LIGHT = 4;
-    public static final int FONT_LIGHT_ITALIC = 5;
-    public static final int FONT_THIN = 6;
-    public static final int FONT_THIN_ITALIC = 7;
-    public static final int FONT_CONDENSED = 8;
-    public static final int FONT_CONDENSED_ITALIC = 9;
-    public static final int FONT_CONDENSED_LIGHT = 10;
-    public static final int FONT_CONDENSED_LIGHT_ITALIC = 11;
-    public static final int FONT_CONDENSED_BOLD = 12;
-    public static final int FONT_CONDENSED_BOLD_ITALIC = 13;
-    public static final int FONT_MEDIUM = 14;
-    public static final int FONT_MEDIUM_ITALIC = 15;
-    public static final int FONT_BLACK = 16;
-    public static final int FONT_BLACK_ITALIC = 17;
-
     private static final char MAGIC1 = '\uEF00';
     private static final char MAGIC2 = '\uEF01';
 
@@ -111,7 +94,7 @@ public class Clock implements DemoMode {
     private int mAmPmStyle = AM_PM_STYLE_GONE;
     private int mClockDateDisplay = CLOCK_DATE_DISPLAY_GONE;
     private int mClockDateStyle = CLOCK_DATE_STYLE_REGULAR;
-    private int mClockFontStyle = FONT_NORMAL;
+    private int mClockFontStyle = FontHelper.FONT_NORMAL;
     private int mClockFontSize = 14;
     private boolean mDemoMode;
     private boolean mAttached;
@@ -423,7 +406,7 @@ public class Clock implements DemoMode {
                 Settings.System.CLOCK_USE_SECOND, 0,
                 UserHandle.USER_CURRENT) == 1;
         mClockFontStyle = Settings.System.getIntForUser(resolver,
-                Settings.System.STATUSBAR_CLOCK_FONT_STYLE, FONT_NORMAL,
+                Settings.System.STATUSBAR_CLOCK_FONT_STYLE, FontHelper.FONT_NORMAL,
                 UserHandle.USER_CURRENT);
         mClockFontSize = Settings.System.getIntForUser(resolver,
                 Settings.System.STATUSBAR_CLOCK_FONT_SIZE, 12,
@@ -464,59 +447,59 @@ public class Clock implements DemoMode {
 
     public void getFontStyle(int font) {
         switch (font) {
-            case FONT_NORMAL:
+            case FontHelper.FONT_NORMAL:
             default:
                 mClockView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
                 break;
-            case FONT_ITALIC:
+            case FontHelper.FONT_ITALIC:
                 mClockView.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
                 break;
-            case FONT_BOLD:
+            case FontHelper.FONT_BOLD:
                 mClockView.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
                 break;
-            case FONT_BOLD_ITALIC:
+            case FontHelper.FONT_BOLD_ITALIC:
                 mClockView.setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
                 break;
-            case FONT_LIGHT:
+            case FontHelper.FONT_LIGHT:
                 mClockView.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
                 break;
-            case FONT_LIGHT_ITALIC:
+            case FontHelper.FONT_LIGHT_ITALIC:
                 mClockView.setTypeface(Typeface.create("sans-serif-light", Typeface.ITALIC));
                 break;
-            case FONT_THIN:
+            case FontHelper.FONT_THIN:
                 mClockView.setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
                 break;
-            case FONT_THIN_ITALIC:
+            case FontHelper.FONT_THIN_ITALIC:
                 mClockView.setTypeface(Typeface.create("sans-serif-thin", Typeface.ITALIC));
                 break;
-            case FONT_CONDENSED:
+            case FontHelper.FONT_CONDENSED:
                 mClockView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
                 break;
-            case FONT_CONDENSED_ITALIC:
+            case FontHelper.FONT_CONDENSED_ITALIC:
                 mClockView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
                 break;
-            case FONT_CONDENSED_LIGHT:
+            case FontHelper.FONT_CONDENSED_LIGHT:
                 mClockView.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
                 break;
-            case FONT_CONDENSED_LIGHT_ITALIC:
+            case FontHelper.FONT_CONDENSED_LIGHT_ITALIC:
                 mClockView.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
                 break;
-            case FONT_CONDENSED_BOLD:
+            case FontHelper.FONT_CONDENSED_BOLD:
                 mClockView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
                 break;
-            case FONT_CONDENSED_BOLD_ITALIC:
+            case FontHelper.FONT_CONDENSED_BOLD_ITALIC:
                 mClockView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
                 break;
-            case FONT_MEDIUM:
+            case FontHelper.FONT_MEDIUM:
                 mClockView.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
                 break;
-            case FONT_MEDIUM_ITALIC:
+            case FontHelper.FONT_MEDIUM_ITALIC:
                 mClockView.setTypeface(Typeface.create("sans-serif-medium", Typeface.ITALIC));
                 break;
-            case FONT_BLACK:
+            case FontHelper.FONT_BLACK:
                 mClockView.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
                 break;
-            case FONT_BLACK_ITALIC:
+            case FontHelper.FONT_BLACK_ITALIC:
                 mClockView.setTypeface(Typeface.create("sans-serif-black", Typeface.ITALIC));
                 break;
         }

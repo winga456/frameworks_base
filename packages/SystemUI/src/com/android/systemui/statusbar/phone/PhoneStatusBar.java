@@ -126,6 +126,7 @@ import com.android.internal.util.vrtoxin.DeviceUtils;
 import com.android.internal.util.vrtoxin.ActionConfig;
 import com.android.internal.util.vrtoxin.ActionConstants;
 import com.android.internal.util.vrtoxin.ActionHelper;
+import com.android.internal.util.vrtoxin.FontHelper;
 import com.android.internal.util.vrtoxin.WeatherControllerImpl;
 import com.android.internal.util.vrtoxin.GreetingTextHelper;
 
@@ -302,26 +303,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         ONLY_CORE_APPS = onlyCoreApps;
     }
 
-    // Status Bar Font Styles
-    public static final int FONT_NORMAL = 0;
-    public static final int FONT_ITALIC = 1;
-    public static final int FONT_BOLD = 2;
-    public static final int FONT_BOLD_ITALIC = 3;
-    public static final int FONT_LIGHT = 4;
-    public static final int FONT_LIGHT_ITALIC = 5;
-    public static final int FONT_THIN = 6;
-    public static final int FONT_THIN_ITALIC = 7;
-    public static final int FONT_CONDENSED = 8;
-    public static final int FONT_CONDENSED_ITALIC = 9;
-    public static final int FONT_CONDENSED_LIGHT = 10;
-    public static final int FONT_CONDENSED_LIGHT_ITALIC = 11;
-    public static final int FONT_CONDENSED_BOLD = 12;
-    public static final int FONT_CONDENSED_BOLD_ITALIC = 13;
-    public static final int FONT_MEDIUM = 14;
-    public static final int FONT_MEDIUM_ITALIC = 15;
-    public static final int FONT_BLACK = 16;
-    public static final int FONT_BLACK_ITALIC = 17;
-
     PhoneStatusBarPolicy mIconPolicy;
 
     // These are no longer handled by the policy, because we need custom strategies for them
@@ -379,7 +360,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private int mWeatherTempStyle;
     private int mWeatherTempColor;
     private int mWeatherTempSize;
-    private int mWeatherTempFontStyle = FONT_NORMAL;
+    private int mWeatherTempFontStyle = FontHelper.FONT_NORMAL;
 
     // Clock
     TextView mClockView;
@@ -935,7 +916,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.STATUS_BAR_WEATHER_SIZE, 14, mCurrentUserId);
 
             mWeatherTempFontStyle = Settings.System.getIntForUser(resolver,
-                    Settings.System.STATUS_BAR_WEATHER_FONT_STYLE, FONT_NORMAL, mCurrentUserId);
+                    Settings.System.STATUS_BAR_WEATHER_FONT_STYLE, FontHelper.FONT_NORMAL, mCurrentUserId);
 
             final int oldWeatherState = mWeatherTempState;
             mWeatherTempState = Settings.System.getIntForUser(
@@ -1025,59 +1006,59 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mWeatherTempView.setTextColor(color);
         mWeatherTempView.setTextSize(size);
         switch (font) {
-            case FONT_NORMAL:
+            case FontHelper.FONT_NORMAL:
             default:
                 mWeatherTempView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
                 break;
-            case FONT_ITALIC:
+            case FontHelper.FONT_ITALIC:
                 mWeatherTempView.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
                 break;
-            case FONT_BOLD:
+            case FontHelper.FONT_BOLD:
                 mWeatherTempView.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
                 break;
-            case FONT_BOLD_ITALIC:
+            case FontHelper.FONT_BOLD_ITALIC:
                 mWeatherTempView.setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
                 break;
-            case FONT_LIGHT:
+            case FontHelper.FONT_LIGHT:
                 mWeatherTempView.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
                 break;
-            case FONT_LIGHT_ITALIC:
+            case FontHelper.FONT_LIGHT_ITALIC:
                 mWeatherTempView.setTypeface(Typeface.create("sans-serif-light", Typeface.ITALIC));
                 break;
-            case FONT_THIN:
+            case FontHelper.FONT_THIN:
                 mWeatherTempView.setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
                 break;
-            case FONT_THIN_ITALIC:
+            case FontHelper.FONT_THIN_ITALIC:
                 mWeatherTempView.setTypeface(Typeface.create("sans-serif-thin", Typeface.ITALIC));
                 break;
-            case FONT_CONDENSED:
+            case FontHelper.FONT_CONDENSED:
                 mWeatherTempView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
                 break;
-            case FONT_CONDENSED_ITALIC:
+            case FontHelper.FONT_CONDENSED_ITALIC:
                 mWeatherTempView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
                 break;
-            case FONT_CONDENSED_LIGHT:
+            case FontHelper.FONT_CONDENSED_LIGHT:
                 mWeatherTempView.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
                 break;
-            case FONT_CONDENSED_LIGHT_ITALIC:
+            case FontHelper.FONT_CONDENSED_LIGHT_ITALIC:
                 mWeatherTempView.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
                 break;
-            case FONT_CONDENSED_BOLD:
+            case FontHelper.FONT_CONDENSED_BOLD:
                 mWeatherTempView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
                 break;
-            case FONT_CONDENSED_BOLD_ITALIC:
+            case FontHelper.FONT_CONDENSED_BOLD_ITALIC:
                 mWeatherTempView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
                 break;
-            case FONT_MEDIUM:
+            case FontHelper.FONT_MEDIUM:
                 mWeatherTempView.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
                 break;
-            case FONT_MEDIUM_ITALIC:
+            case FontHelper.FONT_MEDIUM_ITALIC:
                 mWeatherTempView.setTypeface(Typeface.create("sans-serif-medium", Typeface.ITALIC));
                 break;
-            case FONT_BLACK:
+            case FontHelper.FONT_BLACK:
                 mWeatherTempView.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
                 break;
-            case FONT_BLACK_ITALIC:
+            case FontHelper.FONT_BLACK_ITALIC:
                 mWeatherTempView.setTypeface(Typeface.create("sans-serif-black", Typeface.ITALIC));
                 break;
         }
@@ -1094,59 +1075,59 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         if (mStatusBarCarrierLabel == null) return;
         ContentResolver resolver = mContext.getContentResolver();
         switch (font) {
-            case FONT_NORMAL:
+            case FontHelper.FONT_NORMAL:
             default:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
                 break;
-            case FONT_ITALIC:
+            case FontHelper.FONT_ITALIC:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
                 break;
-            case FONT_BOLD:
+            case FontHelper.FONT_BOLD:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
                 break;
-            case FONT_BOLD_ITALIC:
+            case FontHelper.FONT_BOLD_ITALIC:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
                 break;
-            case FONT_LIGHT:
+            case FontHelper.FONT_LIGHT:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
                 break;
-            case FONT_LIGHT_ITALIC:
+            case FontHelper.FONT_LIGHT_ITALIC:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-light", Typeface.ITALIC));
                 break;
-            case FONT_THIN:
+            case FontHelper.FONT_THIN:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
                 break;
-            case FONT_THIN_ITALIC:
+            case FontHelper.FONT_THIN_ITALIC:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-thin", Typeface.ITALIC));
                 break;
-            case FONT_CONDENSED:
+            case FontHelper.FONT_CONDENSED:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
                 break;
-            case FONT_CONDENSED_ITALIC:
+            case FontHelper.FONT_CONDENSED_ITALIC:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
                 break;
-            case FONT_CONDENSED_LIGHT:
+            case FontHelper.FONT_CONDENSED_LIGHT:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
                 break;
-            case FONT_CONDENSED_LIGHT_ITALIC:
+            case FontHelper.FONT_CONDENSED_LIGHT_ITALIC:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
                 break;
-            case FONT_CONDENSED_BOLD:
+            case FontHelper.FONT_CONDENSED_BOLD:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
                 break;
-            case FONT_CONDENSED_BOLD_ITALIC:
+            case FontHelper.FONT_CONDENSED_BOLD_ITALIC:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
                 break;
-            case FONT_MEDIUM:
+            case FontHelper.FONT_MEDIUM:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
                 break;
-            case FONT_MEDIUM_ITALIC:
+            case FontHelper.FONT_MEDIUM_ITALIC:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-medium", Typeface.ITALIC));
                 break;
-            case FONT_BLACK:
+            case FontHelper.FONT_BLACK:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
                 break;
-            case FONT_BLACK_ITALIC:
+            case FontHelper.FONT_BLACK_ITALIC:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-black", Typeface.ITALIC));
                 break;
         }
@@ -1807,7 +1788,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mWeatherTempColor = Settings.System.getIntForUser(mContext.getContentResolver(),
                     Settings.System.STATUS_BAR_WEATHER_COLOR, 0xFFFFFFFF, mCurrentUserId);
         mWeatherTempFontStyle = Settings.System.getIntForUser(mContext.getContentResolver(),
-                    Settings.System.STATUS_BAR_WEATHER_FONT_STYLE, FONT_NORMAL, mCurrentUserId);
+                    Settings.System.STATUS_BAR_WEATHER_FONT_STYLE, FontHelper.FONT_NORMAL, mCurrentUserId);
         mWeatherTempSize = Settings.System.getIntForUser(mContext.getContentResolver(),
                     Settings.System.STATUS_BAR_WEATHER_SIZE, 14, mCurrentUserId);
         mWeatherTempState = Settings.System.getIntForUser(
