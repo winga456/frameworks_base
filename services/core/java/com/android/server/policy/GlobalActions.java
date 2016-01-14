@@ -265,34 +265,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             attrs.windowAnimations = R.style.PowerMenuTopAnimation;
             attrs.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
         }
-        if (powermenuAnimations == 7) {
-            attrs.windowAnimations = R.style.PowerMenuXylonAnimation;
-            attrs.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
-        }
-        if (powermenuAnimations == 8) {
-            attrs.windowAnimations = R.style.PowerMenuTranslucentAnimation;
-            attrs.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
-        }
-        if (powermenuAnimations == 9) {
-            attrs.windowAnimations = R.style.PowerMenuTnAnimation;
-            attrs.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
-        }
-        if (powermenuAnimations == 10) {
-            attrs.windowAnimations = R.style.PowerMenuflyAnimation;
-            attrs.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
-        }
-        if (powermenuAnimations == 11) {
-            attrs.windowAnimations = R.style.PowerMenuCardAnimation;
-            attrs.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
-        }
-        if (powermenuAnimations == 12) {
-            attrs.windowAnimations = R.style.PowerMenuTranslucentAnimation;
-            attrs.gravity = Gravity.TOP|Gravity.CENTER_HORIZONTAL;
-        }
-        if (powermenuAnimations == 13) {
-            attrs.windowAnimations = R.style.PowerMenuTranslucentAnimation;
-            attrs.gravity = Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL;
-        }
 
         mDialog.getWindow().setAttributes(attrs);
         mDialog.show();
