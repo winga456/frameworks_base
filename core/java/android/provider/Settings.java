@@ -5927,6 +5927,12 @@ public final class Settings {
         public static final String STATUS_BAR_GREETING_FONT_STYLE = "status_bar_greeting_font_style";
 
         /**
+         *  Font size for status bar greeting text
+         * @hide
+         */
+        public static final String STATUS_BAR_GREETING_FONT_SIZE = "status_bar_greeting_font_size";
+
+        /**
          * Alternative recent apps integration using OmniSwitch
          * @hide
          */

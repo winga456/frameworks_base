@@ -20,13 +20,16 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.database.ContentObserver;
 import android.graphics.Color;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.UserHandle;
 import android.os.SystemClock;
 import android.os.UserHandle;
 import android.provider.Settings;
@@ -154,6 +157,8 @@ public class StatusBarIconController {
     private boolean mIsGreetingVisible = false;
     private int mColorToChange;
 
+    private int mGreetingFontSize = 14;
+
     private final Handler mHandler;
     private boolean mTransitionDeferring;
     private long mTransitionDeferringStartTime;
@@ -197,7 +202,11 @@ public class StatusBarIconController {
         mHandler = new Handler();
         updateResources();
 
+        SettingsObserver settingsObserver = new SettingsObserver(mHandler);
+        settingsObserver.observe();
+
         setUpCustomColors();
+        updateGreetingFontSize();
     }
 
     private void setUpCustomColors() {
@@ -319,6 +328,24 @@ public class StatusBarIconController {
         }
 
         applyNotificationIconsTint();
+    }
+
+    class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.STATUS_BAR_GREETING_FONT_SIZE),
+                    false, this, UserHandle.USER_CURRENT);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            updateGreetingFontSize();
+        }
     }
 
     public void showGreeting(boolean isPreview) {
@@ -784,6 +811,16 @@ public class StatusBarIconController {
 
     public int getCurrentVisibleNotificationIcons() {
         return mNotificationIcons.getChildCount();
+    }
+
+    private void updateGreetingFontSize() {
+        ContentResolver resolver = mContext.getContentResolver();
+
+        mGreetingFontSize = Settings.System.getIntForUser(resolver,
+                Settings.System.STATUS_BAR_GREETING_FONT_SIZE, 14,
+                UserHandle.USER_CURRENT);
+
+        mGreetingView.setTextSize(mGreetingFontSize);
     }
 
     private void updateGreetingFontStyle() {

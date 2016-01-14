@@ -116,4 +116,8 @@
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
+    <style name="TextAppearance.StatusBar.GreetingLabel" parent="@*android:style/TextAppearance.StatusBar.Icon">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
 </resources>
