@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.PorterDuff.Mode;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -67,6 +68,21 @@ public class StatusBarIconController {
 
     public static final String ICON_BLACKLIST = "icon_blacklist";
 
+    public static final int FONT_NORMAL = 0;
+    public static final int FONT_ITALIC = 1;
+    public static final int FONT_BOLD = 2;
+    public static final int FONT_BOLD_ITALIC = 3;
+    public static final int FONT_LIGHT = 4;
+    public static final int FONT_LIGHT_ITALIC = 5;
+    public static final int FONT_THIN = 6;
+    public static final int FONT_THIN_ITALIC = 7;
+    public static final int FONT_CONDENSED = 8;
+    public static final int FONT_CONDENSED_ITALIC = 9;
+    public static final int FONT_CONDENSED_BOLD = 10;
+    public static final int FONT_CONDENSED_BOLD_ITALIC = 11;
+    public static final int FONT_MEDIUM = 12;
+    public static final int FONT_MEDIUM_ITALIC = 13;
+
     private static final int GREETING_ALWAYS = 0;
     private static final int GREETING_HIDDEN = 2;
 
@@ -88,6 +104,7 @@ public class StatusBarIconController {
     private SignalClusterView mSignalClusterKeyguard;
     private LinearLayout mGreetingLayout;
     private TextView mGreetingView;
+    private int mGreetingFontStyle;
     private IconMerger mNotificationIcons;
     private View mNotificationIconArea;
     private ImageView mMoreIcon;
@@ -309,6 +326,7 @@ public class StatusBarIconController {
             return;
         }
         mIsGreetingVisible = true;
+        updateGreetingFontStyle();
         if (isPreview) {
             hideSystemIconArea(true);
             hideNotificationIconArea(true);
@@ -652,10 +670,12 @@ public class StatusBarIconController {
     }
     public void updateShowGreeting(int show) {
         mShowGreeting = show;
+        updateGreetingFontStyle();
     }
 
     public void updateGreetingText(String text) {
         mGreetingView.setText(text);
+        updateGreetingFontStyle();
     }
 
     public void updateGreetingTimeout(int timeout) {
@@ -764,5 +784,60 @@ public class StatusBarIconController {
 
     public int getCurrentVisibleNotificationIcons() {
         return mNotificationIcons.getChildCount();
+    }
+
+    private void updateGreetingFontStyle() {
+        final int mGreetingFontStyle = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_GREETING_FONT_STYLE, FONT_NORMAL);
+
+        getFontStyle(mGreetingFontStyle);
+    }
+
+    public void getFontStyle(int font) {
+        switch (font) {
+            case FONT_NORMAL:
+            default:
+                mGreetingView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+                break;
+            case FONT_ITALIC:
+                mGreetingView.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
+                break;
+            case FONT_BOLD:
+                mGreetingView.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+                break;
+            case FONT_BOLD_ITALIC:
+                mGreetingView.setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
+                break;
+            case FONT_LIGHT:
+                mGreetingView.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
+                break;
+            case FONT_LIGHT_ITALIC:
+                mGreetingView.setTypeface(Typeface.create("sans-serif-light", Typeface.ITALIC));
+                break;
+            case FONT_THIN:
+                mGreetingView.setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
+                break;
+            case FONT_THIN_ITALIC:
+                mGreetingView.setTypeface(Typeface.create("sans-serif-thin", Typeface.ITALIC));
+                break;
+            case FONT_CONDENSED:
+                mGreetingView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
+                break;
+            case FONT_CONDENSED_ITALIC:
+                mGreetingView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
+                break;
+            case FONT_CONDENSED_BOLD:
+                mGreetingView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
+                break;
+            case FONT_CONDENSED_BOLD_ITALIC:
+                mGreetingView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
+                break;
+            case FONT_MEDIUM:
+                mGreetingView.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+                break;
+            case FONT_MEDIUM_ITALIC:
+                mGreetingView.setTypeface(Typeface.create("sans-serif-medium", Typeface.ITALIC));
+                break;
+        }
     }
 }

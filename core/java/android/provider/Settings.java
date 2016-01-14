@@ -5921,6 +5921,12 @@ public final class Settings {
         public static final String STATUS_BAR_GREETING_COLOR_DARK_MODE = "status_bar_greeting_color_dark_mode";
 
         /**
+         *  Font style for status bar greeting text
+         * @hide
+         */
+        public static final String STATUS_BAR_GREETING_FONT_STYLE = "status_bar_greeting_font_style";
+
+        /**
          * Alternative recent apps integration using OmniSwitch
          * @hide
          */
