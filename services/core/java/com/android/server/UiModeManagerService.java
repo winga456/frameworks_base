@@ -612,7 +612,7 @@ final class UiModeManagerService extends SystemService
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.BOOT_DIALOG_TEXT_COLOR, 0xffffffff);
                 Settings.System.putInt(mContext.getContentResolver(),
-                        Settings.System.BOOT_DIALOG_BACKGROUND_COLOR, 0xff263238);
+                        Settings.System.BOOT_DIALOG_BACKGROUND_COLOR, 0xff1b1f23);
             } else if (mNightMode == UiModeManager.MODE_NIGHT_BLACKOUT) {
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.NOTIFICATION_BG_COLOR, 0xff000000);
