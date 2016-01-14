@@ -18,13 +18,18 @@ package com.android.systemui.statusbar;
 
 import android.app.Notification;
 import android.content.Context;
+import android.content.ContentResolver;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.DrawableContainer;
 import android.graphics.drawable.Icon;
+import android.graphics.drawable.InsetDrawable;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.UserHandle;
@@ -37,6 +42,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.ImageView;
 
 import com.android.internal.statusbar.StatusBarIcon;
+import com.android.internal.util.vrtoxin.ImageHelper;
 import com.android.systemui.R;
 
 import java.text.NumberFormat;
@@ -55,6 +61,7 @@ public class StatusBarIconView extends AnimatedImageView {
     private Notification mNotification;
     private final boolean mBlocked;
     private boolean mShowNotificationCount;
+    private int mIconColor;
     private GlobalSettingsObserver mObserver;
 
     public StatusBarIconView(Context context, String slot, Notification notification) {
@@ -94,8 +101,7 @@ public class StatusBarIconView extends AnimatedImageView {
 
     public void setNotification(Notification notification) {
         mNotification = notification;
-        mShowNotificationCount = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.STATUS_BAR_NOTIF_COUNT, 0, UserHandle.USER_CURRENT) == 1;
+        updateIcons();
         setContentDescription(notification);
     }
 
@@ -151,6 +157,7 @@ public class StatusBarIconView extends AnimatedImageView {
         final boolean numberEquals = mIcon != null
                 && mIcon.number == icon.number;
         mIcon = icon.clone();
+        updateIcons();
         setContentDescription(icon.contentDescription);
         if (!iconEquals || force) {
             if (!updateDrawable(false /* no clear */)) return false;
@@ -195,6 +202,7 @@ public class StatusBarIconView extends AnimatedImageView {
             setImageDrawable(null);
         }
         setImageDrawable(drawable);
+
         return true;
     }
 
@@ -351,6 +359,18 @@ public class StatusBarIconView extends AnimatedImageView {
                 observe();
             }
             mIconViews.add(sbiv);
+            sbiv.setColorFilter(null);
+            Drawable icon = sbiv.getIcon(sbiv.mIcon);
+            if (icon != null) {
+                if (icon instanceof InsetDrawable) {
+                    Drawable d = ((InsetDrawable) icon).getDrawable();
+                    if (d != null) {
+                        sbiv.setColorFilter(sbiv.mIconColor, Mode.MULTIPLY);
+                    }
+                } else {
+                    sbiv.setColorFilter(sbiv.mIconColor, Mode.MULTIPLY);
+                }
+            }
         }
 
         void detach(StatusBarIconView sbiv) {
@@ -361,8 +381,12 @@ public class StatusBarIconView extends AnimatedImageView {
         }
 
         void observe() {
-            mContext.getContentResolver().registerContentObserver(
-                    Settings.System.getUriFor(Settings.System.STATUS_BAR_NOTIF_COUNT),
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_NOTIF_COUNT),
+                    false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_TICKER_ICON_COLOR),
                     false, this);
         }
 
@@ -372,13 +396,33 @@ public class StatusBarIconView extends AnimatedImageView {
 
         @Override
         public void onChange(boolean selfChange) {
-            boolean showIconCount = Settings.System.getIntForUser(mContext.getContentResolver(),
-                    Settings.System.STATUS_BAR_NOTIF_COUNT, 0, UserHandle.USER_CURRENT) == 1;
             for (StatusBarIconView sbiv : mIconViews) {
-                sbiv.mShowNotificationCount = showIconCount;
+                sbiv.updateIcons();
                 sbiv.set(sbiv.mIcon, true);
+                sbiv.setColorFilter(null);
+                Drawable icon = sbiv.getIcon(sbiv.mIcon);
+                if (icon != null) {
+                    if (icon instanceof InsetDrawable) {
+                        Drawable d = ((InsetDrawable) icon).getDrawable();
+                        if (d != null) {
+                            sbiv.setColorFilter(sbiv.mIconColor, Mode.MULTIPLY);
+                        }
+                    } else {
+                        sbiv.setColorFilter(sbiv.mIconColor, Mode.MULTIPLY);
+                    }
+                }
             }
         }
+    }
+
+    public void updateIcons() {
+        ContentResolver resolver = mContext.getContentResolver();
+
+        mShowNotificationCount = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_NOTIF_COUNT, 0) == 1;
+        mIconColor = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_TICKER_ICON_COLOR,
+                0xffffffff);
     }
 }
 
