@@ -71,10 +71,9 @@ public class BrightnessTile extends QSTile<QSTile.BooleanState> {
 
     @Override
     public void handleClick() {
-        MetricsLogger.action(mContext, getMetricsCategory());
-        mHost.collapsePanels();
-        mContext.startActivityAsUser(new Intent(
-            Intent.ACTION_SHOW_BRIGHTNESS_DIALOG), UserHandle.CURRENT_OR_SELF);
+        toggleState();
+        refreshState();
+        //qsCollapsePanel();
     }
 
     @Override
@@ -86,9 +85,10 @@ public class BrightnessTile extends QSTile<QSTile.BooleanState> {
 
     @Override
     public void handleLongClick() {
-        toggleState();
-        refreshState();
-        //qsCollapsePanel();
+        MetricsLogger.action(mContext, getMetricsCategory());
+        mHost.collapsePanels();
+        mContext.startActivityAsUser(new Intent(
+            Intent.ACTION_SHOW_BRIGHTNESS_DIALOG), UserHandle.CURRENT_OR_SELF);
     }
 
     @Override
