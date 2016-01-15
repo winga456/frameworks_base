@@ -1222,6 +1222,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 mTime.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
                 mDateCollapsed.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
                 mDateExpanded.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+                mAlarmStatus.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
                 break;
             case FontHelper.FONT_ITALIC:
                 mWeatherLine1.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
@@ -1230,6 +1231,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 mTime.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
                 mDateCollapsed.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
                 mDateExpanded.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
+                mAlarmStatus.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
                 break;
             case FontHelper.FONT_BOLD:
                 mWeatherLine1.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
@@ -1238,6 +1240,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 mTime.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
                 mDateCollapsed.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
                 mDateExpanded.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+                mAlarmStatus.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
                 break;
             case FontHelper.FONT_BOLD_ITALIC:
                 mWeatherLine1.setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
@@ -1246,6 +1249,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 mTime.setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
                 mDateCollapsed.setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
                 mDateExpanded.setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
+                mAlarmStatus.setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
                 break;
             case FontHelper.FONT_LIGHT:
                 mWeatherLine1.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
@@ -1254,6 +1258,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 mTime.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
                 mDateCollapsed.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
                 mDateExpanded.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
+                mAlarmStatus.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
                 break;
             case FontHelper.FONT_LIGHT_ITALIC:
                 mWeatherLine1.setTypeface(Typeface.create("sans-serif-light", Typeface.ITALIC));
@@ -1262,6 +1267,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 mTime.setTypeface(Typeface.create("sans-serif-light", Typeface.ITALIC));
                 mDateCollapsed.setTypeface(Typeface.create("sans-serif-light", Typeface.ITALIC));
                 mDateExpanded.setTypeface(Typeface.create("sans-serif-light", Typeface.ITALIC));
+                mAlarmStatus.setTypeface(Typeface.create("sans-serif-light", Typeface.ITALIC));
                 break;
             case FontHelper.FONT_THIN:
                 mWeatherLine1.setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
@@ -1270,6 +1276,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 mTime.setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
                 mDateCollapsed.setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
                 mDateExpanded.setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
+                mAlarmStatus.setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
                 break;
             case FontHelper.FONT_THIN_ITALIC:
                 mWeatherLine1.setTypeface(Typeface.create("sans-serif-thin", Typeface.ITALIC));
@@ -1278,6 +1285,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 mTime.setTypeface(Typeface.create("sans-serif-thin", Typeface.ITALIC));
                 mDateCollapsed.setTypeface(Typeface.create("sans-serif-thin", Typeface.ITALIC));
                 mDateExpanded.setTypeface(Typeface.create("sans-serif-thin", Typeface.ITALIC));
+                mAlarmStatus.setTypeface(Typeface.create("sans-serif-thin", Typeface.ITALIC));
                 break;
             case FontHelper.FONT_CONDENSED:
                 mWeatherLine1.setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
@@ -1286,6 +1294,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 mTime.setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
                 mDateCollapsed.setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
                 mDateExpanded.setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
+                mAlarmStatus.setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
                 break;
             case FontHelper.FONT_CONDENSED_ITALIC:
                 mWeatherLine1.setTypeface(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
@@ -1294,6 +1303,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 mTime.setTypeface(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
                 mDateCollapsed.setTypeface(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
                 mDateExpanded.setTypeface(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
+                mAlarmStatus.setTypeface(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
                 break;
             case FontHelper.FONT_CONDENSED_LIGHT:
                 mWeatherLine1.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
@@ -1302,6 +1312,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 mTime.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
                 mDateCollapsed.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
                 mDateExpanded.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
+                mAlarmStatus.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
                 break;
             case FontHelper.FONT_CONDENSED_LIGHT_ITALIC:
                 mWeatherLine1.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
@@ -1310,6 +1321,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 mTime.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
                 mDateCollapsed.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
                 mDateExpanded.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
+                mAlarmStatus.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
                 break;
             case FontHelper.FONT_CONDENSED_BOLD:
                 mWeatherLine1.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
@@ -1318,6 +1330,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 mTime.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
                 mDateCollapsed.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
                 mDateExpanded.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
+                mAlarmStatus.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
                 break;
             case FontHelper.FONT_CONDENSED_BOLD_ITALIC:
                 mWeatherLine1.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
@@ -1326,6 +1339,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 mTime.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
                 mDateCollapsed.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
                 mDateExpanded.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
+                mAlarmStatus.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
                 break;
             case FontHelper.FONT_MEDIUM:
                 mWeatherLine1.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
@@ -1334,6 +1348,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 mTime.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
                 mDateCollapsed.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
                 mDateExpanded.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+                mAlarmStatus.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
                 break;
             case FontHelper.FONT_MEDIUM_ITALIC:
                 mWeatherLine1.setTypeface(Typeface.create("sans-serif-medium", Typeface.ITALIC));
@@ -1342,6 +1357,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 mTime.setTypeface(Typeface.create("sans-serif-medium", Typeface.ITALIC));
                 mDateCollapsed.setTypeface(Typeface.create("sans-serif-medium", Typeface.ITALIC));
                 mDateExpanded.setTypeface(Typeface.create("sans-serif-medium", Typeface.ITALIC));
+                mAlarmStatus.setTypeface(Typeface.create("sans-serif-medium", Typeface.ITALIC));
                 break;
             case FontHelper.FONT_BLACK:
                 mWeatherLine1.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
@@ -1350,6 +1366,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 mTime.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
                 mDateCollapsed.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
                 mDateExpanded.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
+                mAlarmStatus.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
                 break;
             case FontHelper.FONT_BLACK_ITALIC:
                 mWeatherLine1.setTypeface(Typeface.create("sans-serif-black", Typeface.ITALIC));
@@ -1358,6 +1375,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 mTime.setTypeface(Typeface.create("sans-serif-black", Typeface.ITALIC));
                 mDateCollapsed.setTypeface(Typeface.create("sans-serif-black", Typeface.ITALIC));
                 mDateExpanded.setTypeface(Typeface.create("sans-serif-black", Typeface.ITALIC));
+                mAlarmStatus.setTypeface(Typeface.create("sans-serif-black", Typeface.ITALIC));
                 break;
         }
     }
