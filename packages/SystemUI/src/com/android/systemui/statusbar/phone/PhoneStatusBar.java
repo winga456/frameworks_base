@@ -977,6 +977,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             if (mClockLocation == Clock.STYLE_CLOCK_CENTER && mState == StatusBarState.KEYGUARD) {
                 mClockView.setVisibility(View.GONE);
             }
+            if (mClockLocation == Clock.STYLE_CLOCK_CENTER) {
+                setCenterClockVisibility();
+            }
             setClockAndDateStatus();
             mClockController.updateClockView(mClockView);
         }
@@ -3074,13 +3077,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mClockView.setVisibility(centerClock && !forceHideByNumberOfIcons
                     ? View.VISIBLE : View.GONE);
         }
-        if (forceHide && currentVisibleNotificationIcons <= maxAllowedIcons) {
-            if (mTicking == true) {
-                mClockView.setVisibility(View.GONE);
-            } else {
-                mClockView.startAnimation(loadAnim(com.android.internal.R.anim.push_down_in, null));
-            }
-        }
     }
 
     private void setVRToxinLogoVisibility() {
@@ -4313,12 +4309,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mTickerView.setVisibility(View.GONE);
             mTickerView.startAnimation(loadAnim(com.android.internal.R.anim.push_down_out,
                         mTickingDoneListener));
-            if (mClockLocation == Clock.STYLE_CLOCK_CENTER) {
-                setCenterClockVisibility();
-            } else {
-                mClockView.setVisibility(View.VISIBLE);
-                mClockView.startAnimation(loadAnim(com.android.internal.R.anim.push_down_in, null));
-            }
+            mClockView.setVisibility(View.VISIBLE);
+            mClockView.startAnimation(loadAnim(com.android.internal.R.anim.push_down_in, null));
+            setCenterClockVisibility();
         }
 
         public void tickerHalting() {
@@ -4327,12 +4320,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 mStatusBarContents.setVisibility(View.VISIBLE);
                 mStatusBarContents
                         .startAnimation(loadAnim(com.android.internal.R.anim.fade_in, null));
-                if (mClockLocation == Clock.STYLE_CLOCK_CENTER) {
-                    setCenterClockVisibility();
-                } else {
-                    mClockView.setVisibility(View.VISIBLE);
-                    mClockView.startAnimation(loadAnim(com.android.internal.R.anim.push_down_in, null));
-                }
+                mClockView.setVisibility(View.VISIBLE);
+                mClockView.startAnimation(loadAnim(com.android.internal.R.anim.fade_in, null));
             }
             mTickerView.setVisibility(View.GONE);
             // we do not animate the ticker away at this point, just get rid of it (b/6992707)
