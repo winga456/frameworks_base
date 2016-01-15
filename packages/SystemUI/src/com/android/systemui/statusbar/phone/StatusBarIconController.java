@@ -369,7 +369,6 @@ public class StatusBarIconController {
         } else {
             animateShow(mSystemIconArea, animate);
             animateShow(mClockView, animate);
-            mPhoneStatusBar.setCenterClockVisibility();
         }
     }
 
@@ -380,7 +379,6 @@ public class StatusBarIconController {
     public void showNotificationIconArea(boolean animate) {
         if (mShowGreeting == GREETING_HIDDEN || mHideGreeting || !animate) {
             animateShow(mNotificationIconArea, animate);
-            mPhoneStatusBar.setCenterClockVisibility();
         }
     }
 
@@ -430,7 +428,6 @@ public class StatusBarIconController {
                         if (isGreeting) {
                             mIsGreetingVisible = false;
                             mHideGreeting = true;
-                            mPhoneStatusBar.setCenterClockVisibility();
                         }
                     }
                 });
