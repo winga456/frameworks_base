@@ -156,7 +156,7 @@ public class QSBarHelper {
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_settings_themes_alpha", null, null);
         } else if (clickAction.equals(QSBarConstants.BUTTON_VRTOXIN)) {
             resId = systemUiResources.getIdentifier(
-                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_cyanide_on", null, null);
+                        SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_vrtoxin", null, null);
         } else if (clickAction.equals(QSBarConstants.BUTTON_WIFI)) {
             resId = systemUiResources.getIdentifier(
                         SYSTEMUI_METADATA_NAME + ":drawable/ic_qs_button_wifi", null, null);

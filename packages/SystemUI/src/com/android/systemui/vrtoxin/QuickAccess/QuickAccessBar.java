@@ -249,8 +249,8 @@ public class QuickAccessBar extends LinearLayout {
                     mContext.getResources().getDrawable(R.drawable.ic_settings_themes_alpha));
         } else if (action.equals(QSBarConstants.BUTTON_VRTOXIN)) {
             button = new VRToxinButton(mContext, this,
-                    mContext.getResources().getDrawable(R.drawable.ic_qs_cyanide_on),
-                    mContext.getResources().getDrawable(R.drawable.ic_qs_cyanide_on));
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_vrtoxin),
+                    mContext.getResources().getDrawable(R.drawable.ic_qs_vrtoxin));
         } else if (action.equals(QSBarConstants.BUTTON_WIFI)) {
             button = new WifiButton(mContext, this,
                     mContext.getResources().getDrawable(R.drawable.ic_qs_button_wifi),

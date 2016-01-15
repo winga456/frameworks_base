@@ -73,7 +73,7 @@ public class VRToxinTile extends QSTile<QSTile.BooleanState> {
     @Override
     protected void handleUpdateState(BooleanState state, Object arg) {
         state.visible = true;
-        state.icon = ResourceIcon.get(R.drawable.ic_qs_cyanide_on);
+        state.icon = ResourceIcon.get(R.drawable.ic_qs_vrtoxin);
         state.label = mContext.getString(R.string.quick_settings_vrtoxin_on);
 
 	}
