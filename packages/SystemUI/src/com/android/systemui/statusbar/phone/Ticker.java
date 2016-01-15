@@ -23,8 +23,10 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.DrawableContainer;
 import android.graphics.drawable.VectorDrawable;
+import android.graphics.Typeface;
 import android.graphics.PorterDuff.Mode;
 import android.os.Handler;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.service.notification.StatusBarNotification;
 import android.text.Layout.Alignment;
@@ -37,6 +39,7 @@ import android.widget.TextSwitcher;
 import android.widget.TextView;
 
 import com.android.internal.statusbar.StatusBarIcon;
+import com.android.internal.util.vrtoxin.FontHelper;
 import com.android.internal.util.vrtoxin.ImageHelper;
 import com.android.internal.util.NotificationColorUtil;
 import com.android.systemui.R;
@@ -56,6 +59,7 @@ public abstract class Ticker {
     private TextSwitcher mTextSwitcher;
     private float mIconScale;
     private int mTickerTextColor;
+    private int mTickerFontSize = 14;
 
     public static boolean isGraphicOrEmoji(char c) {
         int gc = Character.getType(c);
@@ -186,6 +190,7 @@ public abstract class Ticker {
         TextView text = (TextView)mTextSwitcher.getChildAt(0);
         mPaint = text.getPaint();
         updateTextColor();
+        updateTickerSize();
     }
 
 
@@ -253,8 +258,10 @@ public abstract class Ticker {
             mTextSwitcher.setAnimateFirstView(false);
             mTextSwitcher.reset();
             mTextSwitcher.setText(seg.getText());
+            updateTickerSize();
             updateTextColor();
             mTextSwitcher.setTextColor(mTickerTextColor);
+            mTextSwitcher.setTextSize(mTickerFontSize);
 
             tickerStarting();
             scheduleAdvance();
@@ -295,8 +302,10 @@ public abstract class Ticker {
             Segment seg = mSegments.get(0);
             CharSequence text = seg.getText();
             mTextSwitcher.setCurrentText(text);
+            updateTickerSize();
             updateTextColor();
             mTextSwitcher.setTextColor(mTickerTextColor);
+            mTextSwitcher.setTextSize(mTickerFontSize);
         }
     }
 
@@ -317,8 +326,10 @@ public abstract class Ticker {
                     continue;
                 }
                 mTextSwitcher.setText(text);
+                updateTickerSize();
                 updateTextColor();
                 mTextSwitcher.setTextColor(mTickerTextColor);
+                mTextSwitcher.setTextSize(mTickerFontSize);
 
                 scheduleAdvance();
                 break;
@@ -336,6 +347,13 @@ public abstract class Ticker {
     public abstract void tickerStarting();
     public abstract void tickerDone();
     public abstract void tickerHalting();
+
+    private void updateTickerSize() {
+        mTickerFontSize = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_TICKER_FONT_SIZE, 14,
+                UserHandle.USER_CURRENT);
+
+    }
 
     public void updateTextColor() {
         ContentResolver resolver = mContext.getContentResolver();

@@ -98,6 +98,15 @@ public class TextSwitcher extends ViewSwitcher {
         ((TextView)getCurrentView()).setTextColor(color);
     }
 
+    /**
+     * Sets the size of the text view that is currently showing.
+     *
+     * @param set the text size to display
+     */
+    public void setTextSize(int size) {
+        ((TextView)getCurrentView()).setTextSize(size);
+    }
+
     @Override
     public CharSequence getAccessibilityClassName() {
         return TextSwitcher.class.getName();
