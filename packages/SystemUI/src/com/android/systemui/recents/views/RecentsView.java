@@ -724,10 +724,15 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
                 Settings.System.RECENTS_FULL_SCREEN_CLOCK, 0, UserHandle.USER_CURRENT) != 0;
         boolean showDate = Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.RECENTS_FULL_SCREEN_DATE, 0, UserHandle.USER_CURRENT) != 0;
-        boolean fullscreenEnabled = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.RECENTS_FULL_SCREEN, 0, UserHandle.USER_CURRENT) != 0;
+        int immersiveRecents = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.IMMERSIVE_RECENTS, 0);
 
-        if (fullscreenEnabled) {
+        if (immersiveRecents == 0) {
+            mClock.setVisibility(View.GONE);
+            mDate.setVisibility(View.GONE);
+        }
+
+        if (immersiveRecents == 1) {
             if (showClock) {
                 mClock.setVisibility(View.VISIBLE);
                 updateClockColor();
@@ -744,9 +749,30 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
             } else {
                 mDate.setVisibility(View.GONE);
             }
-        } else {
+        }
+
+        if (immersiveRecents == 2) {
             mClock.setVisibility(View.GONE);
             mDate.setVisibility(View.GONE);
+        }
+
+        if (immersiveRecents == 3) {
+            if (showClock) {
+                mClock.setVisibility(View.VISIBLE);
+                updateClockColor();
+            } else {
+                mClock.setVisibility(View.GONE);
+            }
+            if (showDate) {
+                long dateStamp = System.currentTimeMillis();
+                DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(mContext);
+                String currentDateString =  dateFormat.format(dateStamp);
+                mDate.setText(currentDateString);
+                mDate.setVisibility(View.VISIBLE);
+                updateDateColor();
+            } else {
+                mDate.setVisibility(View.GONE);
+            }
         }
     }
 
