@@ -2350,6 +2350,10 @@ public class InputMethodManagerService extends IInputMethodManager.Stub
         return res;
     }
 
+    public boolean isImeShowing() {
+        return mInputShown;
+    }
+
     @Override
     public void showInputMethodPickerFromClient(
             IInputMethodClient client, int auxiliarySubtypeMode) {
