@@ -55,9 +55,8 @@ import android.widget.TextView;
 
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.widget.LockPatternUtils;
-import com.android.keyguard.KeyguardUpdateMonitor;
-import com.android.keyguard.KeyguardUpdateMonitorCallback;
 import com.android.keyguard.KeyguardStatusView;
+import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.systemui.vrtoxin.QuickAccess.QuickAccessBar;
 import com.android.systemui.DejankUtils;
 import com.android.systemui.EventLogConstants;
@@ -142,6 +141,7 @@ public class NotificationPanelView extends PanelView implements
     private boolean mQsExpandedWhenExpandingStarted;
     private boolean mQsFullyExpanded;
     private boolean mKeyguardShowing;
+    private boolean mKeyguardOrShadeShowing;
     private boolean mDozing;
     private boolean mDozingOnDown;
     private int mStatusBarState;
@@ -221,6 +221,8 @@ public class NotificationPanelView extends PanelView implements
     private boolean mLaunchingAffordance;
     private String mLastCameraLaunchSource = KeyguardBottomAreaView.CAMERA_LAUNCH_SOURCE_AFFORDANCE;
 
+    private boolean mStatusBarLockedOnSecureKeyguard;
+
     private Runnable mHeadsUpExistenceChangedRunnable = new Runnable() {
         @Override
         public void run() {
@@ -237,7 +239,6 @@ public class NotificationPanelView extends PanelView implements
     private LockPatternUtils mLockPatternUtils;
     private SettingsObserver mSettingsObserver;
     private int mOneFingerQuickSettingsIntercept;
-    private boolean mStatusBarLockedOnSecureKeyguard;
     private int mQsSmartPullDown;
 
     public NotificationPanelView(Context context, AttributeSet attrs) {
@@ -524,12 +525,12 @@ public class NotificationPanelView extends PanelView implements
 
     private boolean isQSEventBlocked() {
         return mLockPatternUtils.isSecure(KeyguardUpdateMonitor.getCurrentUser())
-            && mStatusBarLockedOnSecureKeyguard && mKeyguardShowing;
+            && mStatusBarLockedOnSecureKeyguard && mKeyguardOrShadeShowing;
     }
 
     public void setQsExpansionEnabled(boolean qsExpansionEnabled) {
         mQsExpansionEnabled = qsExpansionEnabled && !isQSEventBlocked();
-        mHeader.setClickable(qsExpansionEnabled);
+        mHeader.setClickable(mQsExpansionEnabled);
     }
 
     @Override
@@ -791,7 +792,7 @@ public class NotificationPanelView extends PanelView implements
             return true;
         }
         mHeadsUpTouchHelper.onTouchEvent(event);
-        if (!mHeadsUpTouchHelper.isTrackingHeadsUp() && !isQSEventBlocked() && handleQsTouch(event)) {
+        if (!mHeadsUpTouchHelper.isTrackingHeadsUp() && handleQsTouch(event)) {
             return true;
         }
         if (event.getActionMasked() == MotionEvent.ACTION_DOWN && isFullyCollapsed()) {
@@ -1077,11 +1078,14 @@ public class NotificationPanelView extends PanelView implements
             boolean goingToFullShade) {
         int oldState = mStatusBarState;
         boolean keyguardShowing = statusBarState == StatusBarState.KEYGUARD;
+        boolean keyguardOrShadeShowing = statusBarState == StatusBarState.KEYGUARD
+                || statusBarState == StatusBarState.SHADE_LOCKED;
         setKeyguardStatusViewVisibility(statusBarState, keyguardFadingAway, goingToFullShade);
         setKeyguardBottomAreaVisibility(statusBarState, goingToFullShade);
 
         mStatusBarState = statusBarState;
         mKeyguardShowing = keyguardShowing;
+        mKeyguardOrShadeShowing = keyguardOrShadeShowing;
 
         if (goingToFullShade || (oldState == StatusBarState.KEYGUARD
                 && statusBarState == StatusBarState.SHADE_LOCKED)) {
