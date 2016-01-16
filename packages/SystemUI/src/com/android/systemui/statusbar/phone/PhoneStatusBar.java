@@ -126,6 +126,7 @@ import com.android.internal.util.vrtoxin.DeviceUtils;
 import com.android.internal.util.vrtoxin.ActionConfig;
 import com.android.internal.util.vrtoxin.ActionConstants;
 import com.android.internal.util.vrtoxin.ActionHelper;
+import com.android.internal.util.vrtoxin.Blur;
 import com.android.internal.util.vrtoxin.FontHelper;
 import com.android.internal.util.vrtoxin.WeatherControllerImpl;
 import com.android.internal.util.vrtoxin.GreetingTextHelper;
@@ -478,6 +479,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     };
 
+    private int mBlurRadius;
+    private Bitmap mBlurredImage = null;
+
     class SettingsObserver extends UserContentObserver {
         SettingsObserver(Handler handler) {
             super(handler);
@@ -672,6 +676,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_SHOW_TICKER),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_BLUR_RADIUS),
                     false, this, UserHandle.USER_ALL);
             update();
         }
@@ -934,6 +941,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mCarrierLabelSpot = Settings.System.getIntForUser(
                     resolver, Settings.System.STATUS_BAR_CARRIER_SPOT, 0,
                     UserHandle.USER_CURRENT);
+
+            mBlurRadius = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.LOCKSCREEN_BLUR_RADIUS, 14);
+
             updateSettings();
         }
     }
@@ -2687,6 +2698,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 backdropBitmap = mMediaMetadata.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART);
                 // might still be null
             }
+        }
+
+        // apply blurred image
+        if (backdropBitmap == null) {
+            backdropBitmap = mBlurredImage;
+            // might still be null
         }
 
         // apply user lockscreen image
@@ -5887,6 +5904,23 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 || mFingerprintUnlockController.getMode()
                         == FingerprintUnlockController.MODE_WAKE_AND_UNLOCK_PULSING;
         updateDozingState();
+    }
+
+    public void setBackgroundBitmap(Bitmap bmp) {
+        if (bmp == null && mBlurredImage == null) return;
+
+        if (bmp != null && mBlurRadius != 0) {
+            mBlurredImage = Blur.blurBitmap(mContext, bmp, mBlurRadius);
+        } else {
+            mBlurredImage = bmp;
+        }
+
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                updateMediaMetaData(true);
+            }
+        });
     }
 
     public VisualizerView getVisualizer() {

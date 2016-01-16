@@ -31,6 +31,7 @@ import static com.android.server.wm.WindowManagerService.LayoutFields.SET_WALLPA
 
 import android.content.Context;
 import android.os.RemoteException;
+import android.provider.Settings;
 import android.util.Slog;
 import android.util.SparseArray;
 import android.util.TimeUtils;
@@ -194,7 +195,7 @@ public class WindowAnimator {
         }
     }
 
-    private boolean shouldForceHide(WindowState win) {
+    private boolean shouldForceHide(WindowState win, boolean seeThrough) {
         final WindowState imeTarget = mService.mInputMethodTarget;
         final boolean showImeOverKeyguard = imeTarget != null && imeTarget.isVisibleNow() &&
                 ((imeTarget.getAttrs().flags & FLAG_SHOW_WHEN_LOCKED) != 0
@@ -220,7 +221,7 @@ public class WindowAnimator {
 
         // Only hide windows if the keyguard is active and not animating away.
         boolean keyguardOn = mPolicy.isKeyguardShowingOrOccluded()
-                && (mForceHiding != KEYGUARD_ANIMATING_OUT && !mBlurUiEnabled);
+                && (mForceHiding != KEYGUARD_ANIMATING_OUT && !mBlurUiEnabled && !seeThrough);
         return keyguardOn && !allowWhenLocked && (win.getDisplayId() == Display.DEFAULT_DISPLAY);
     }
 
@@ -229,7 +230,10 @@ public class WindowAnimator {
 
         final WindowList windows = mService.getWindowListLocked(displayId);
 
-        if (mKeyguardGoingAway && !mBlurUiEnabled) {
+        final boolean seeThrough = Settings.System.getBoolean(mContext.getContentResolver(),
+                Settings.System.LOCKSCREEN_SEE_THROUGH, false);
+
+        if (mKeyguardGoingAway && !mBlurUiEnabled && !seeThrough) {
             for (int i = windows.size() - 1; i >= 0; i--) {
                 WindowState win = windows.get(i);
                 if (!mPolicy.isKeyguardHostWindow(win.mAttrs)) {
@@ -243,9 +247,7 @@ public class WindowAnimator {
 
                         // Create a new animation to delay until keyguard is gone on its own.
                         winAnimator.mAnimation = new AlphaAnimation(1.0f, 1.0f);
-                        winAnimator.mAnimation.setDuration(
-                                mBlurUiEnabled ? 0 : KEYGUARD_ANIM_TIMEOUT_MS);
-
+                        winAnimator.mAnimation.setDuration(KEYGUARD_ANIM_TIMEOUT_MS);
                         winAnimator.mAnimationIsEntrance = false;
                         winAnimator.mAnimationStartTime = -1;
                         winAnimator.mKeyguardGoingAwayAnimation = true;
@@ -271,7 +273,7 @@ public class WindowAnimator {
             WindowStateAnimator winAnimator = win.mWinAnimator;
             final int flags = win.mAttrs.flags;
             boolean canBeForceHidden = mPolicy.canBeForceHidden(win, win.mAttrs);
-            boolean shouldBeForceHidden = shouldForceHide(win);
+            boolean shouldBeForceHidden = shouldForceHide(win, seeThrough);
             if (winAnimator.mSurfaceControl != null) {
                 final boolean wasAnimating = winAnimator.mWasAnimating;
                 final boolean nowAnimating = winAnimator.stepAnimationLocked(mCurrentTime);
@@ -335,7 +337,7 @@ public class WindowAnimator {
                         if (nowAnimating && win.mWinAnimator.mKeyguardGoingAwayAnimation) {
                             mForceHiding = KEYGUARD_ANIMATING_OUT;
                         } else {
-                            mForceHiding = win.isDrawnLw()  && !mBlurUiEnabled ?
+                            mForceHiding = win.isDrawnLw()  && !mBlurUiEnabled && !seeThrough ?
                                 KEYGUARD_SHOWN : KEYGUARD_NOT_SHOWN;
                         }
                     }
