@@ -58,7 +58,10 @@ public class HeadsUpTile extends QSTile<QSTile.BooleanState> {
 
     @Override
     protected void handleLongClick() {
-        //mHost.startActivityDismissingKeyguard(NOTIFICATION_SETTINGS);
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setClassName("com.android.settings",
+            "com.android.settings.Settings$HeadsUpSettingsActivity");
+        mHost.startActivityDismissingKeyguard(intent);
     }
 
     private void setEnabled(boolean enabled) {
