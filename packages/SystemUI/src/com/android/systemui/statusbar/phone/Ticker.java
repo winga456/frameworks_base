@@ -18,13 +18,9 @@ package com.android.systemui.statusbar.phone;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.DrawableContainer;
-import android.graphics.drawable.VectorDrawable;
-import android.graphics.Typeface;
-import android.graphics.PorterDuff.Mode;
 import android.os.Handler;
 import android.os.UserHandle;
 import android.provider.Settings;
@@ -32,15 +28,16 @@ import android.service.notification.StatusBarNotification;
 import android.text.Layout.Alignment;
 import android.text.StaticLayout;
 import android.text.TextPaint;
-import android.view.View;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.View;
 import android.widget.ImageSwitcher;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 
 import com.android.internal.statusbar.StatusBarIcon;
 import com.android.internal.util.vrtoxin.FontHelper;
-import com.android.internal.util.vrtoxin.ImageHelper;
+import com.android.internal.util.vrtoxin.StatusBarColorHelper;
 import com.android.internal.util.NotificationColorUtil;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.StatusBarIconView;
@@ -58,8 +55,10 @@ public abstract class Ticker {
     private ImageSwitcher mIconSwitcher;
     private TextSwitcher mTextSwitcher;
     private float mIconScale;
-    private int mTickerTextColor;
+    private ColorStateList mIconTint = null;
+    private int mTextColor = 0xffffffff;
     private int mTickerFontSize = 14;
+
 
     public static boolean isGraphicOrEmoji(char c) {
         int gc = Character.getType(c);
@@ -181,15 +180,10 @@ public abstract class Ticker {
         mIconSwitcher.setScaleY(mIconScale);
 
         mTextSwitcher = (TextSwitcher)sb.findViewById(R.id.tickerText);
-        mTextSwitcher.setInAnimation(
-                    AnimationUtils.loadAnimation(context, com.android.internal.R.anim.push_up_in));
-        mTextSwitcher.setOutAnimation(
-                    AnimationUtils.loadAnimation(context, com.android.internal.R.anim.push_up_out));
 
         // Copy the paint style of one of the TextSwitchers children to use later for measuring
         TextView text = (TextView)mTextSwitcher.getChildAt(0);
         mPaint = text.getPaint();
-        updateTextColor();
         updateTickerSize();
     }
 
@@ -217,9 +211,6 @@ public abstract class Ticker {
                         n.getNotification().tickerText));
         final CharSequence text = n.getNotification().tickerText;
         final Segment newSegment = new Segment(n, icon, text);
-        int iconColor = Settings.System.getInt(resolver,
-                Settings.System.STATUS_BAR_TICKER_ICON_COLOR,
-                0xffffffff);
 
         // If there's already a notification schedule for this package and id, remove it.
         for (int i=0; i<mSegments.size(); i++) {
@@ -238,29 +229,13 @@ public abstract class Ticker {
 
             mIconSwitcher.setAnimateFirstView(false);
             mIconSwitcher.reset();
-            if (seg.icon != null) {
-                if (seg.icon instanceof AnimationDrawable) {
-                    ((DrawableContainer)seg.icon).setColorFilter(iconColor,
-                           Mode.MULTIPLY);
-                    mIconSwitcher.setImageDrawable(seg.icon);
-                } else if (seg.icon instanceof VectorDrawable) {
-                    seg.icon.setColorFilter(iconColor,
-                       Mode.MULTIPLY);
-                    mIconSwitcher.setImageDrawable(seg.icon);
-                } else {
-                    mIconSwitcher.setImageBitmap(ImageHelper
-                            .getColoredBitmap(seg.icon, iconColor));
-                    }
-            } else {
-                    mIconSwitcher.setImageDrawable(seg.icon);
-            }
+            mIconSwitcher.setColoredImageDrawable(seg.icon, mIconTint);
 
             mTextSwitcher.setAnimateFirstView(false);
             mTextSwitcher.reset();
             mTextSwitcher.setText(seg.getText());
             updateTickerSize();
-            updateTextColor();
-            mTextSwitcher.setTextColor(mTickerTextColor);
+            mTextSwitcher.setTextColor(mTextColor);
             mTextSwitcher.setTextSize(mTickerFontSize);
 
             tickerStarting();
@@ -303,8 +278,7 @@ public abstract class Ticker {
             CharSequence text = seg.getText();
             mTextSwitcher.setCurrentText(text);
             updateTickerSize();
-            updateTextColor();
-            mTextSwitcher.setTextColor(mTickerTextColor);
+            mTextSwitcher.setTextColor(mTextColor);
             mTextSwitcher.setTextSize(mTickerFontSize);
         }
     }
@@ -318,7 +292,7 @@ public abstract class Ticker {
                     // this makes the icon slide in for the first one for a given
                     // notification even if there are two notifications with the
                     // same icon in a row
-                    mIconSwitcher.setImageDrawable(seg.icon);
+                    mIconSwitcher.setColoredImageDrawable(seg.icon, mIconTint);
                 }
                 CharSequence text = seg.advance();
                 if (text == null) {
@@ -327,8 +301,7 @@ public abstract class Ticker {
                 }
                 mTextSwitcher.setText(text);
                 updateTickerSize();
-                updateTextColor();
-                mTextSwitcher.setTextColor(mTickerTextColor);
+                mTextSwitcher.setTextColor(mTextColor);
                 mTextSwitcher.setTextSize(mTickerFontSize);
 
                 scheduleAdvance();
@@ -355,12 +328,12 @@ public abstract class Ticker {
 
     }
 
-    public void updateTextColor() {
-        ContentResolver resolver = mContext.getContentResolver();
+    public void setIconColorTint(ColorStateList tint) {
+        mIconTint = tint;
+    }
 
-        mTickerTextColor = Settings.System.getInt(resolver,
-                Settings.System.STATUS_BAR_TICKER_TEXT_COLOR,
-                0xffffffff);
+    public void setTextColor(int color) {
+        mTextColor = color;
     }
 }
 

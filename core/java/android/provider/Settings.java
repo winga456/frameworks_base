@@ -6203,12 +6203,24 @@ public final class Settings {
          * @hide
          */
         public static final String STATUS_BAR_TICKER_TEXT_COLOR = "status_bar_ticker_text_color";
+ 
+        /**
+         * Color of the status bar notification text dark mode
+         * @hide
+         */
+        public static final String STATUS_BAR_TICKER_TEXT_COLOR_DARK_MODE = "status_bar_ticker_text_color_dark_mode";
 
         /**
          * Color of the ticker icon
          * @hide
          */
         public static final String STATUS_BAR_TICKER_ICON_COLOR = "status_bar_ticker_icon_color";
+
+        /**
+         * Color of the ticker icon dark mode
+         * @hide
+         */
+        public static final String STATUS_BAR_TICKER_ICON_COLOR_DARK_MODE = "status_bar_ticker_icon_color_dark_mode";
 
         /**
          * Ticker Font Style
@@ -6229,10 +6241,22 @@ public final class Settings {
         public static final String STATUS_BAR_NOTIF_COUNT_ICON_COLOR = "status_bar_notif_count_icon_color";
 
         /**
+         * Color of the status bar notification count icon dark mode
+         * @hide
+         */
+        public static final String STATUS_BAR_NOTIF_COUNT_ICON_COLOR_DARK_MODE = "status_bar_notif_count_icon_color_dark_mode";
+
+        /**
          * Color of the status bar notification count text
          * @hide
          */
         public static final String STATUS_BAR_NOTIF_COUNT_TEXT_COLOR = "status_bar_notif_count_text_color";
+
+        /**
+         * Color of the status bar notification count text dark mode
+         * @hide
+         */
+        public static final String STATUS_BAR_NOTIF_COUNT_TEXT_COLOR_DARK_MODE = "status_bar_notif_count_text_color_dark_mode";
 
         /**
          * Settings Dash Font Style

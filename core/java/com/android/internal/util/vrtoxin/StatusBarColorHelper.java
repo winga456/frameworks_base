@@ -114,4 +114,48 @@ public class StatusBarColorHelper {
                 Settings.System.STATUS_BAR_NOTIFICATION_ICONS_COLOR_DARK_MODE,
                 BLACK);
     }
+
+    public static int getTickerTextColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_TICKER_TEXT_COLOR, WHITE);
+    }
+
+    public static int getTickerTextColorDark(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_TICKER_TEXT_COLOR_DARK_MODE,
+                BLACK);
+    }
+
+    public static int getTickerIconColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_TICKER_ICON_COLOR, WHITE);
+    }
+
+    public static int getTickerIconColorDark(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_TICKER_ICON_COLOR_DARK_MODE,
+                BLACK);
+    }
+
+    /*public static int getNotifCountIconColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_NOTIF_COUNT_ICON_COLOR, WHITE);
+    }
+
+    public static int getNotifCountIconDarkColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_NOTIF_COUNT_ICON_COLOR_DARK_MODE, BLACK);
+    }
+
+    public static int getNotifCountTextColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_NOTIF_COUNT_TEXT_COLOR,
+                BLACK);
+    }
+
+    public static int getNotifCountTextDarkColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_NOTIF_COUNT_TEXT_COLOR_DARK_MODE,
+                WHITE);
+    }*/
 }
