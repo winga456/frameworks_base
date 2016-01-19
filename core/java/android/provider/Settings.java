@@ -5720,10 +5720,14 @@ public final class Settings {
         public static final String DT2L_TARGET_VIBRATE_CONFIG = "dt2l_target_vibrate_config";
 
         /**
-         * Whether to display recents in full screen
-         * @hide
+         * Immersive recents options
+         *
+         * 0 = Default AOSP look
+         * 1 = Statusbar only
+         * 2 = Navbar only
+         * 3 = Fullscreen
          */
-        public static final String RECENTS_FULL_SCREEN = "recents_full_screen";
+        public static final String IMMERSIVE_RECENTS = "immersive_recents";
 
         /**
          * Whether to display clock while recents are in full screen
@@ -6305,6 +6309,12 @@ public final class Settings {
          * @hide
          */
         public static final String LOCKSCREEN_BLUR_RADIUS = "lockscreen_blur_radius";
+
+        /**
+         * whether to enable or disable vibration on succesful fingerprint auth
+         * @hide
+         */
+        public static final String FINGERPRINT_SUCCESS_VIB = "fingerprint_success_vib";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
