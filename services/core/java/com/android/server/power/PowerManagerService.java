@@ -202,8 +202,6 @@ public final class PowerManagerService extends SystemService
 
     private TelephonyManager mTelephonyManager;
 
-    private TelephonyManager mTelephonyManager;
-
     private final Object mLock = new Object();
 
     // A bitfield that indicates what parts of the power state have
@@ -3364,14 +3362,6 @@ public final class PowerManagerService extends SystemService
             } finally {
                 Binder.restoreCallingIdentity(ident);
             }
-        }
-
-        TelephonyManager getTelephonyManager() {
-            if (mTelephonyManager == null) {
-                mTelephonyManager = (TelephonyManager)mContext.getSystemService(
-                        Context.TELEPHONY_SERVICE);
-            }
-            return mTelephonyManager;
         }
 
         @Override // Binder call
