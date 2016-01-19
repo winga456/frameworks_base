@@ -17,6 +17,7 @@
 package com.android.systemui.qs.tiles;
 
 import android.app.ActivityManager;
+import android.content.Intent;
 
 import com.android.internal.logging.MetricsLogger;
 import com.android.systemui.R;
@@ -68,6 +69,11 @@ public class FlashlightTile extends QSTile<QSTile.BooleanState> implements
         refreshState(newState ? UserBoolean.USER_TRUE : UserBoolean.USER_FALSE);
         mFlashlightController.setFlashlight(newState);
         qsCollapsePanel();
+    }
+
+    @Override
+    protected void handleLongClick() {
+      mHost.startActivityDismissingKeyguard(new Intent("android.media.action.IMAGE_CAPTURE"));
     }
 
     @Override
