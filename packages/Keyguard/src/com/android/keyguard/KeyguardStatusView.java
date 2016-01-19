@@ -431,16 +431,6 @@ public class KeyguardStatusView extends GridLayout implements
                 mWeatherCurrentTemp.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
                 break;
             case FontHelper.FONT_ITALIC:
-                mAlarmStatusView.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
-                mDateView.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
-                mClockView.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
-                noWeatherInfo.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
-                mWeatherCity.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
-                mWeatherConditionText.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
-                mOwnerInfo.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
-                mWeatherCurrentTemp.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
-                break;
-            case FontHelper.FONT_BOLD:
                 mAlarmStatusView.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
                 mDateView.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
                 mClockView.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
@@ -449,6 +439,16 @@ public class KeyguardStatusView extends GridLayout implements
                 mWeatherConditionText.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
                 mOwnerInfo.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
                 mWeatherCurrentTemp.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_BOLD:
+                mAlarmStatusView.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+                mDateView.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+                mClockView.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+                noWeatherInfo.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+                mWeatherCity.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+                mWeatherConditionText.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+                mOwnerInfo.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+                mWeatherCurrentTemp.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
                 break;
             case FontHelper.FONT_BOLD_ITALIC:
                 mAlarmStatusView.setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
