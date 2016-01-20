@@ -27,6 +27,7 @@ import android.database.ContentObserver;
 import android.graphics.Color;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.UserHandle;
@@ -218,6 +219,7 @@ public class StatusBarIconController {
 
         setUpCustomColors();
         updateGreetingFontSize();
+        setCenterClockVisibility();
     }
 
     private void setUpCustomColors() {
@@ -261,6 +263,7 @@ public class StatusBarIconController {
         mIconHPadding = mContext.getResources().getDimensionPixelSize(
                 R.dimen.status_bar_icon_padding);
         mClockController.updateFontSize();
+        setCenterClockVisibility();
     }
 
     public void addSystemIcon(String slot, int index, int viewIndex, StatusBarIcon icon) {
@@ -347,6 +350,7 @@ public class StatusBarIconController {
         }
 
         applyNotificationIconsTint();
+        setCenterClockVisibility();
     }
 
     class SettingsObserver extends ContentObserver {
@@ -359,10 +363,24 @@ public class StatusBarIconController {
             resolver.registerContentObserver(Settings.System
                     .getUriFor(Settings.System.STATUS_BAR_GREETING_FONT_SIZE),
                     false, this, UserHandle.USER_CURRENT);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CENTER_CLOCK_HIDE),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CENTER_CLOCK_NUMBER_OF_NOTIFICATION_ICONS),
+                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
-        public void onChange(boolean selfChange) {
+        public void onChange(boolean selfChange, Uri uri) {
+            super.onChange(selfChange, uri);
+
+            if (uri.equals(Settings.System.getUriFor(
+                Settings.System.STATUS_BAR_CENTER_CLOCK_HIDE))
+                || uri.equals(Settings.System.getUriFor(
+                Settings.System.STATUS_BAR_CENTER_CLOCK_NUMBER_OF_NOTIFICATION_ICONS))) {
+                setCenterClockVisibility();
+            }
             updateGreetingFontSize();
         }
     }
@@ -390,6 +408,7 @@ public class StatusBarIconController {
         animateShow(mSystemIconArea, true);
         if (ClockController.mClockLocation == ClockController.STYLE_CLOCK_CENTER) {
             animateShow(mCenterClock, true);
+            setCenterClockVisibility();
         }
         animateShow(mNotificationIconArea, true);
         animateHide(mGreetingLayout, true, true);
@@ -409,6 +428,7 @@ public class StatusBarIconController {
             animateShow(mSystemIconArea, animate);
             if (ClockController.mClockLocation == ClockController.STYLE_CLOCK_CENTER) {
                 animateShow(mCenterClock, animate);
+                setCenterClockVisibility();
             }
         }
     }
@@ -420,6 +440,31 @@ public class StatusBarIconController {
     public void showNotificationIconArea(boolean animate) {
         if (mShowGreeting == GREETING_HIDDEN || mHideGreeting || !animate) {
             animateShow(mNotificationIconArea, animate);
+        }
+    }
+
+    public void setCenterClockVisibility() {
+        final ContentResolver resolver = mContext.getContentResolver();
+
+        final boolean centerClock = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_CLOCK, 0) == 2;
+
+        final boolean forceHide = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_CENTER_CLOCK_HIDE, 1) == 1;
+        final int maxAllowedIcons = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_CENTER_CLOCK_NUMBER_OF_NOTIFICATION_ICONS, 3);
+        boolean forceHideByNumberOfIcons = false;
+        int currentVisibleNotificationIcons = 0;
+
+        if (mNotificationIcons != null) {
+            currentVisibleNotificationIcons = mNotificationIcons.getChildCount();
+        }
+        if (forceHide && currentVisibleNotificationIcons >= maxAllowedIcons) {
+            forceHideByNumberOfIcons = true;
+        }
+        if (mCenterClock != null && centerClock) {
+            mCenterClock.setVisibility(centerClock && !forceHideByNumberOfIcons
+                    ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -1011,6 +1056,7 @@ public class StatusBarIconController {
             animateShow(mSystemIconArea, true);
             if (ClockController.mClockLocation == ClockController.STYLE_CLOCK_CENTER) {
                 animateShow(mCenterClock, true);
+                setCenterClockVisibility();
             }
             animateShow(mNotificationIconArea, true);
             mTickingEnd = true;
