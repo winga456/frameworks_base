@@ -28,7 +28,6 @@ import android.app.ActivityManager;
 import android.app.ActivityManagerNative;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -88,7 +87,6 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -114,7 +112,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private static final String TAG = "GlobalActions";
 
     private static final boolean SHOW_SILENT_TOGGLE = true;
-    private static final String GLOBAL_ACTION_KEY_DND = "dnd";
 
     private final Context mContext;
     private final WindowManagerFuncs mWindowManagerFuncs;
@@ -122,7 +119,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private final IDreamManager mDreamManager;
     private IEdgeGestureService mEdgeGestureService;
     private Object mServiceAquireLock = new Object();
-    private final NotificationManager mNoMan;
 
     private ArrayList<Action> mItems;
     private GlobalActionsDialog mDialog;
@@ -136,7 +132,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private ToggleAction mAppSideBarModeOn;
     private ToggleAction mGestureAnywhereModeOn;
     private ToggleAction mFloatingWindowsModeOn;
-    private Action mDndModeAction;
 
     private MyAdapter mAdapter;
 
@@ -171,7 +166,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
         mDreamManager = IDreamManager.Stub.asInterface(
                 ServiceManager.getService(DreamService.DREAM_SERVICE));
-        mNoMan = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
         // receive broadcasts
         IntentFilter filter = new IntentFilter();
@@ -346,7 +340,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                     mSilentModeAction = new SilentModeTriStateAction(mContext, mAudioManager, mHandler);
                 }
                 mItems.add(mSilentModeAction);
-                mDndModeAction = new DndModeStateAction(mContext, mHandler, mNoMan);
             }
         }
 
@@ -992,10 +985,10 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private void prepareDialog() {
         if (mSilentModeAction != null) {
             refreshSilentMode();
-            /*if (mShowSilentToggle) {
+            if (mShowSilentToggle) {
                 IntentFilter filter = new IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION);
                 mContext.registerReceiver(mRingerModeReceiver, filter);
-            }*/
+            }
         }
 
         // Global menu is showing. Notify EdgeGestureService.
@@ -1053,14 +1046,14 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
     /** {@inheritDoc} */
     public void onDismiss(DialogInterface dialog) {
-        /*if (mShowSilentToggle) {
+        if (mShowSilentToggle) {
             try {
                 mContext.unregisterReceiver(mRingerModeReceiver);
             } catch (IllegalArgumentException ie) {
                 // ignore this
                 Log.w(TAG, ie);
             }
-        }*/
+        }
         // Global menu dismiss. Notify EdgeGestureService.
         IEdgeGestureService edgeGestureService = getEdgeGestureService();
         try {
@@ -1074,9 +1067,8 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
     /** {@inheritDoc} */
     public void onClick(DialogInterface dialog, int which) {
-        if (!(mAdapter.getItem(which) instanceof SilentModeTriStateAction) &&
-                !(mAdapter.getItem(which) instanceof DndModeStateAction)) {
-             dialog.dismiss();
+        if (!(mAdapter.getItem(which) instanceof SilentModeTriStateAction)) {
+            dialog.dismiss();
         }
         mAdapter.getItem(which).onPress();
     }
@@ -1441,7 +1433,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
 
         public boolean showBeforeProvisioning() {
-            return true;
+            return false;
         }
     }
 
@@ -1518,126 +1510,8 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         public void onClick(View v) {
             if (!(v.getTag() instanceof Integer)) return;
 
-            LinearLayout parent = (LinearLayout) v.getParent();
-            int count = parent.getChildCount();
-            for (int i = 0; i < count; i++) {
-                final View child = parent.getChildAt(i);
-                child.setSelected(false);
-            }
-
             int index = (Integer) v.getTag();
-            v.setSelected(true);
             mAudioManager.setRingerMode(indexToRingerMode(index));
-            mHandler.sendEmptyMessageDelayed(MESSAGE_DISMISS, DIALOG_DISMISS_DELAY);
-        }
-    }
-
-    private static class DndModeStateAction implements Action, View.OnClickListener {
-
-        private final int[] ITEM_IDS = { R.id.option1, R.id.option2, R.id.option3, R.id.option4 };
-
-        private final Handler mHandler;
-        private final Context mContext;
-        private final NotificationManager mNoMan;
-
-        DndModeStateAction(Context context, Handler handler, NotificationManager noMan) {
-            mHandler = handler;
-            mContext = context;
-            mNoMan = noMan;
-        }
-
-        private int getZenModeSetting() {
-            return Settings.Global.getInt(mContext.getContentResolver(), Settings.Global.ZEN_MODE, Settings.Global.ZEN_MODE_OFF);
-        }
-
-        /*ZEN_MODE_OFF = 0;
-        ZEN_MODE_IMPORTANT_INTERRUPTIONS = 1;
-        ZEN_MODE_NO_INTERRUPTIONS = 2;
-        ZEN_MODE_ALARMS = 3;*/
-        
-        private int dndModeToIndex(int dndMode) {
-            switch(dndMode) {
-                case Settings.Global.ZEN_MODE_OFF:
-                    return 3;
-                case Settings.Global.ZEN_MODE_IMPORTANT_INTERRUPTIONS:
-                    return 2;
-                case Settings.Global.ZEN_MODE_ALARMS:
-                    return 1;
-                case Settings.Global.ZEN_MODE_NO_INTERRUPTIONS:
-                    return 0;
-            }
-            return 3;
-        }
-
-        private int indexToDndMode(int index) {
-            switch(index) {
-                case 3:
-                    return Settings.Global.ZEN_MODE_OFF;
-                case 2:
-                    return Settings.Global.ZEN_MODE_IMPORTANT_INTERRUPTIONS;
-                case 1:
-                    return Settings.Global.ZEN_MODE_ALARMS;
-                case 0:
-                    return Settings.Global.ZEN_MODE_NO_INTERRUPTIONS;
-            }
-            return Settings.Global.ZEN_MODE_OFF;
-        }
-
-        @Override
-        public CharSequence getLabelForAccessibility(Context context) {
-            return null;
-        }
-
-        public View create(Context context, View convertView, ViewGroup parent,
-                LayoutInflater inflater) {
-            View v = inflater.inflate(R.layout.global_actions_dnd_mode, parent, false);
-
-            int selectedIndex = dndModeToIndex(getZenModeSetting());
-            for (int i = 0; i < 4; i++) {
-                View itemView = v.findViewById(ITEM_IDS[i]);
-                itemView.setSelected(selectedIndex == i);
-                // Set up click handler
-                itemView.setTag(i);
-                itemView.setOnClickListener(this);
-            }
-            return v;
-        }
-
-        @Override
-        public boolean showDuringKeyguard() {
-            return true;
-        }
-
-        @Override
-        public boolean showBeforeProvisioning() {
-            return true;
-        }
-
-        public boolean isEnabled() {
-            return true;
-        }
-
-        void willCreate() {
-        }
-
-        @Override
-        public void onPress() {
-        }
-
-        @Override
-        public void onClick(View v) {
-            if (!(v.getTag() instanceof Integer)) return;
-
-            LinearLayout parent = (LinearLayout) v.getParent();
-            int count = parent.getChildCount();
-            for (int i = 0; i < count; i++) {
-                final View child = parent.getChildAt(i);
-                child.setSelected(false);
-            }
-
-            int index = (Integer) v.getTag();
-            v.setSelected(true);
-            mNoMan.setZenMode(indexToDndMode(index), null, TAG);
             mHandler.sendEmptyMessageDelayed(MESSAGE_DISMISS, DIALOG_DISMISS_DELAY);
         }
     }
@@ -1730,14 +1604,14 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
     };
 
-    /*private BroadcastReceiver mRingerModeReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver mRingerModeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(AudioManager.RINGER_MODE_CHANGED_ACTION)) {
                 mHandler.sendEmptyMessage(MESSAGE_REFRESH);
             }
         }
-    };*/
+    };
 
     private ContentObserver mAirplaneModeObserver = new ContentObserver(new Handler()) {
         @Override
