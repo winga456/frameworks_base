@@ -163,4 +163,10 @@
     <!-- [CHAR LIMIT=NONE] Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
     <string name="permdesc_resetBatteryStats">Allows an application to reset the current low-level battery use data.</string>
 
+    <!-- global actions dnd selector -->
+    <string name="dnd_mode_off">Off</string>
+    <string name="dnd_mode_total_silence">Total Silence</string>
+    <string name="dnd_mode_alarms">Alarms Only</string>
+    <string name="dnd_mode_important">Priority Only</string>
+
 </resources>
