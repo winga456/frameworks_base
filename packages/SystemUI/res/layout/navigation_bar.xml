@@ -49,7 +49,6 @@
                 android:visibility="gone"
                 systemui:viewLocation="3"
                 android:layout_alignParentBottom="true" />
-
         </RelativeLayout>
 
         <LinearLayout
