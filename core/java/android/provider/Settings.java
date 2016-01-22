@@ -6360,6 +6360,30 @@ public final class Settings {
         public static final String KEYGUARD_TOGGLE_TORCH = "keyguard_toggle_torch";
 
         /**
+         * Background color of the volume dialog
+         * @hide
+         */
+        public static final String VOLUME_DIALOG_BG_COLOR = "volume_dialog_bg_color";
+
+        /**
+         * Icon color of the volume dialog
+         * @hide
+         */
+        public static final String VOLUME_DIALOG_ICON_COLOR = "volume_dialog_icon_color";
+
+        /**
+         * Slider color of the volume dialog
+         * @hide
+         */
+        public static final String VOLUME_DIALOG_SLIDER_COLOR = "volume_dialog_slider_color";
+
+        /**
+         * Inactive color of the volume dialog slider
+         * @hide
+         */
+        public static final String VOLUME_DIALOG_SLIDER_INACTIVE_COLOR = "volume_dialog_slider_inactive_color";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *

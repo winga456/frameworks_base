@@ -31,6 +31,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -74,6 +75,8 @@ import com.android.systemui.statusbar.policy.ZenModeController;
 import com.android.systemui.volume.VolumeDialogController.State;
 import com.android.systemui.volume.VolumeDialogController.StreamState;
 
+import com.android.internal.util.vrtoxin.VolumeDialogColorHelper;
+
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -111,9 +114,9 @@ public class VolumeDialog {
     private final LayoutTransition mLayoutTransition;
     private final Object mSafetyWarningLock = new Object();
     private final Accessibility mAccessibility = new Accessibility();
-    private final ColorStateList mActiveSliderTint;
-    private final ColorStateList mInactiveSliderTint;
     private final VolumeDialogMotion mMotion;
+    private int mBackgroundColor;
+    private int mIconColor;
 
     private boolean mShowing;
     private boolean mExpanded;
@@ -165,8 +168,6 @@ public class VolumeDialog {
         window.setAttributes(lp);
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
 
-        mActiveSliderTint = loadColorStateList(R.color.system_accent_color);
-        mInactiveSliderTint = loadColorStateList(R.color.volume_slider_inactive);
         mDialog.setContentView(R.layout.volume_dialog);
         mDialogView = (ViewGroup) mDialog.findViewById(R.id.volume_dialog);
         mDialogContentView = (ViewGroup) mDialog.findViewById(R.id.volume_dialog_content);
@@ -216,10 +217,7 @@ public class VolumeDialog {
 
         controller.addCallback(mControllerCallbackH, mHandler);
         controller.getState();
-    }
-
-    private ColorStateList loadColorStateList(int colorResId) {
-        return ColorStateList.valueOf(mContext.getColor(colorResId));
+        updateIconColor();
     }
 
     private void updateWindowWidthH() {
@@ -576,6 +574,8 @@ public class VolumeDialog {
         final VolumeRow activeRow = getActiveRow();
         updateFooterH();
         updateExpandButtonH();
+        setBackgroundColor();
+        updateIconColor();
         if (!mShowing) {
             trimObsoleteH();
         }
@@ -762,15 +762,16 @@ public class VolumeDialog {
     }
 
     private void updateVolumeRowSliderTintH(VolumeRow row, boolean isActive) {
+        final ColorStateList iconColor = VolumeDialogColorHelper.getIconColorList(mContext);
+        final ColorStateList sliderColor = VolumeDialogColorHelper.getSliderColorList(mContext);
+        final ColorStateList sliderInactiveColor = VolumeDialogColorHelper.getSliderInactiveColorList(mContext);
         if (isActive && mExpanded) {
             row.slider.requestFocus();
         }
-        final ColorStateList tint = isActive && row.slider.isEnabled() ? mActiveSliderTint
-                : mInactiveSliderTint;
-        if (tint == row.cachedSliderTint) return;
-        row.cachedSliderTint = tint;
-        row.slider.setProgressTintList(tint);
-        row.slider.setThumbTintList(tint);
+        row.cachedSliderTint = sliderColor;
+        row.slider.setProgressTintList(sliderColor);
+        row.slider.setProgressBackgroundTintList(sliderInactiveColor);
+        row.slider.setThumbTintList(iconColor);
     }
 
     private void updateVolumeRowSliderH(VolumeRow row, boolean enable, int vlevel, boolean maxChanged) {
@@ -1147,5 +1148,21 @@ public class VolumeDialog {
         void onSettingsClicked();
         void onZenSettingsClicked();
         void onZenPrioritySettingsClicked();
+    }
+
+    private void setBackgroundColor() {
+        mBackgroundColor = VolumeDialogColorHelper.getBackgroundColor(mContext);
+
+        if (mDialogView != null) {
+            mDialogView.setBackgroundColor(mBackgroundColor);
+        }
+    }
+
+    private void updateIconColor() {
+        mIconColor = VolumeDialogColorHelper.getIconColor(mContext);
+
+        if (mExpandButton != null) {
+            mExpandButton.setColorFilter(mIconColor, Mode.MULTIPLY);
+        }
     }
 }
