@@ -26,11 +26,12 @@ public class VolumeDialogColorHelper {
 
     private static int BLACK = 0xff000000;
     private static int WHITE = 0xffffffff;
-    private static int VRTOXIN_BLUE = 0xff1976D2;
+    private static int MATERIAL_GREEN = 0xff009688;
+    private static int MATERIAL_BLUE_GREY = 0xff37474f;
 
     public static int getBackgroundColor(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
-                Settings.System.VOLUME_DIALOG_BG_COLOR, BLACK);
+                Settings.System.VOLUME_DIALOG_BG_COLOR, MATERIAL_BLUE_GREY);
     }
 
     public static ColorStateList getIconColorList(Context context) {
@@ -39,7 +40,7 @@ public class VolumeDialogColorHelper {
 
     public static int getIconColor(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
-                Settings.System.VOLUME_DIALOG_ICON_COLOR, WHITE);
+                Settings.System.VOLUME_DIALOG_ICON_COLOR, MATERIAL_GREEN);
     }
 
     public static ColorStateList getSliderColorList(Context context) {
@@ -48,7 +49,7 @@ public class VolumeDialogColorHelper {
 
     public static int getSliderColor(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
-                Settings.System.VOLUME_DIALOG_SLIDER_COLOR, VRTOXIN_BLUE);
+                Settings.System.VOLUME_DIALOG_SLIDER_COLOR, MATERIAL_GREEN);
     }
 
     public static ColorStateList getSliderInactiveColorList(Context context) {
