@@ -469,7 +469,7 @@ public class VolumeDialog {
         if (mSafetyWarning != null) return 5000;
         if (mExpanded || mExpandButtonAnimationRunning) return 5000;
         if (mActiveStream == AudioManager.STREAM_MUSIC) return 1500;
-        return 3000;
+        return 5000;
     }
 
     protected void dismissH(int reason) {
