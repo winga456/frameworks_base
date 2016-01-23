@@ -653,11 +653,11 @@ final class UiModeManagerService extends SystemService
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.VOLUME_DIALOG_BG_COLOR, 0xff000000);
                 Settings.System.putInt(mContext.getContentResolver(),
-                        Settings.System.VOLUME_DIALOG_ICON_COLOR, 0xffffffff);
+                        Settings.System.VOLUME_DIALOG_ICON_COLOR, 0xff00ff00);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.VOLUME_DIALOG_SLIDER_COLOR, 0xff1976D2);
                 Settings.System.putInt(mContext.getContentResolver(),
-                        Settings.System.VOLUME_DIALOG_SLIDER_INACTIVE_COLOR, 0xffffffff);
+                        Settings.System.VOLUME_DIALOG_SLIDER_INACTIVE_COLOR, 0xffff0000);
             } else if (mNightMode == UiModeManager.MODE_NIGHT_RANDOM) {
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.NOTIFICATION_BG_COLOR, 0xff0f2e4c);
