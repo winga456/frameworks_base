@@ -314,10 +314,19 @@ public final class ShutdownThread extends Thread {
             }
 
             sConfirmDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG);
+            sConfirmDialog.getWindow().setDimAmount(setRebootDialogDim(context));
             sConfirmDialog.show();
         } else {
             beginShutdownSequence(context);
         }
+    }
+
+    private static float setRebootDialogDim(Context context) {
+        int mRebootDialogDim = Settings.System.getInt(context.getContentResolver(),
+                Settings.System.TRANSPARENT_POWER_DIALOG_DIM, 50);
+        double dDim = mRebootDialogDim / 100.0;
+        float dim = (float) dDim;
+        return dim;
     }
 
     private static boolean advancedRebootEnabled(Context context) {
@@ -475,7 +484,7 @@ public final class ShutdownThread extends Thread {
             attrs.windowAnimations = R.style.PowerMenuTopAnimation;
             attrs.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
         }
-
+        pd.getWindow().setDimAmount(setRebootDialogDim(context));
         pd.show();
 
         sInstance.mProgressDialog = pd;
