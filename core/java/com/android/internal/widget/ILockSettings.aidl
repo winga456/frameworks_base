@@ -40,5 +40,4 @@ interface ILockSettings {
     void registerStrongAuthTracker(in IStrongAuthTracker tracker);
     void unregisterStrongAuthTracker(in IStrongAuthTracker tracker);
     void requireStrongAuth(int strongAuthReason, int userId);
-    void sanitizePassword();
 }
