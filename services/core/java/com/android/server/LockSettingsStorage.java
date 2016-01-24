@@ -332,7 +332,9 @@ class LockSettingsStorage {
             ? CredentialHash.TYPE_NONE
             : CredentialHash.TYPE_PATTERN;
 
-        writeFile(getLockPatternFilename(userId), hash);
+        boolean defaultSize = isDefaultSize(userId);
+        writeFile(getLockPatternFilename(userId, defaultSize), hash);
+
         clearPasswordHash(userId);
     }
 
