@@ -62,8 +62,11 @@ public class ActionConstants {
     public static final String ACTION_GESTURE_ANYWHERE     = "**gesture_anywhere**";
     public static final String ACTION_FLOATING_WINDOWS     = "**floating_windows**";
     public static final String ACTION_HWKEYS               = "**hwkeys**";
-    public static final String ACTION_NOW_ON_TAP           = "**now_on_tap**";
     public static final String ACTION_ONTHEGO              = "**onthego**";
+
+    // longpress menu description
+    public static final String ACTION_NOW_ON_TAP           = "**now_on_tap**";
+    public static final String ACTION_GOOGLE_NOW_DESC      = "Google Now / Now on Tap";
 
     // no action
     public static final String ACTION_NULL            = "**null**";
