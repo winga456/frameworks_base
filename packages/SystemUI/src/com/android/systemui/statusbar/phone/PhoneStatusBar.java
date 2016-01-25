@@ -3438,6 +3438,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     protected void updateHeadsUp(String key, Entry entry, boolean shouldInterrupt,
             boolean alertAgain) {
+        if (!mUseHeadsUp) return;
         final boolean wasHeadsUp = isHeadsUp(key);
         if (wasHeadsUp) {
             if (!shouldInterrupt) {
