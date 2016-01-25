@@ -297,4 +297,7 @@
     <string name="quick_settings_led_on">Led ON</string>
     <string name="quick_settings_led_off">Led OFF</string>
 
+    <!-- Quick Settings -->
+    <string name="quick_settings_powermenu_label">Power Menu</string>
+
 </resources>

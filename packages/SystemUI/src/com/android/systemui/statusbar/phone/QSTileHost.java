@@ -62,6 +62,7 @@ import com.android.systemui.qs.tiles.MusicTile;
 import com.android.systemui.qs.tiles.LockscreenToggleTile;
 import com.android.systemui.qs.tiles.NavBarTile;
 import com.android.systemui.qs.tiles.NfcTile;
+import com.android.systemui.qs.tiles.PowerMenuTile;
 import com.android.systemui.qs.tiles.RebootTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
 import com.android.systemui.qs.tiles.ScreenOffTile;
@@ -361,6 +362,8 @@ public class QSTileHost implements QSTile.Host {
                 return new LedTile(this);
             case QSConstants.TILE_SLIMACTION:
                 return new SlimActionTile(this);
+            case QSConstants.TILE_POWERMENU:
+                return new PowerMenuTile(this);
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
         }
