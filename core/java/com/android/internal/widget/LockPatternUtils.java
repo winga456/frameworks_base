@@ -232,7 +232,7 @@ public class LockPatternUtils {
     public void reportFailedPasswordAttempt(int userId) {
         getDevicePolicyManager().reportFailedPasswordAttempt(userId);
         getTrustManager().reportUnlockAttempt(false /* authenticated */, userId);
-        requireStrongAuth(StrongAuthTracker.SOME_AUTH_REQUIRED_AFTER_WRONG_CREDENTIAL, userId);
+        requireCredentialEntry(userId);
     }
 
     public void reportSuccessfulPasswordAttempt(int userId) {
@@ -1071,22 +1071,12 @@ public class LockPatternUtils {
      *   enter a pattern.
      */
     public long getLockoutAttemptDeadline(int userId) {
-        long deadline = getLong(LOCKOUT_ATTEMPT_DEADLINE, 0L, userId);
+        final long deadline = getLong(LOCKOUT_ATTEMPT_DEADLINE, 0L, userId);
         final long timeoutMs = getLong(LOCKOUT_ATTEMPT_TIMEOUT_MS, 0L, userId);
         final long now = SystemClock.elapsedRealtime();
-        if (deadline < now && deadline != 0) {
-            // timeout expired
-            setLong(LOCKOUT_ATTEMPT_DEADLINE, 0, userId);
-            setLong(LOCKOUT_ATTEMPT_TIMEOUT_MS, 0, userId);
+        if (deadline < now || deadline > (now + timeoutMs)) {
             return 0L;
         }
-
-        if (deadline > (now + timeoutMs)) {
-            // device was rebooted, set new deadline
-            deadline = now + timeoutMs;
-            setLong(LOCKOUT_ATTEMPT_DEADLINE, deadline, userId);
-        }
-
         return deadline;
     }
 
@@ -1285,24 +1275,11 @@ public class LockPatternUtils {
          */
         public static final int SOME_AUTH_REQUIRED_AFTER_USER_REQUEST = 0x4;
 
-        /**
-         * Strong authentication is required because the user has been locked out after too many
-         * attempts.
-         */
-        public static final int STRONG_AUTH_REQUIRED_AFTER_LOCKOUT = 0x8;
-
-        /**
-         * Some authentication is required because the user has entered a wrong credential.
-         */
-        public static final int SOME_AUTH_REQUIRED_AFTER_WRONG_CREDENTIAL = 0x10;
-
         public static final int DEFAULT = STRONG_AUTH_REQUIRED_AFTER_BOOT;
+        private static final int ALLOWING_FINGERPRINT = SOME_AUTH_REQUIRED_AFTER_USER_REQUEST;
 
-        private static final int ALLOWING_FINGERPRINT = STRONG_AUTH_NOT_REQUIRED
-                | SOME_AUTH_REQUIRED_AFTER_USER_REQUEST
-                | SOME_AUTH_REQUIRED_AFTER_WRONG_CREDENTIAL;
+        final SparseIntArray mStrongAuthRequiredForUser = new SparseIntArray();
 
-        private final SparseIntArray mStrongAuthRequiredForUser = new SparseIntArray();
         private final H mHandler;
 
         public StrongAuthTracker() {
