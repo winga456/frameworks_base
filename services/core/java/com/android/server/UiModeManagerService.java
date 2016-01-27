@@ -600,6 +600,8 @@ final class UiModeManagerService extends SystemService
                         Settings.System.VOLUME_DIALOG_SLIDER_COLOR, 0xff009688);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.VOLUME_DIALOG_SLIDER_INACTIVE_COLOR, 0xffffffff);
+                Settings.Secure.putInt(mContext.getContentResolver(),
+                        Settings.Secure.DOZE_NOTIFICATION_INVERT_ENABLED, 1);
             } else if (mNightMode == UiModeManager.MODE_NIGHT_YES) {
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.NOTIFICATION_BG_COLOR, 0xff1b1f23);
@@ -629,6 +631,8 @@ final class UiModeManagerService extends SystemService
                         Settings.System.VOLUME_DIALOG_SLIDER_COLOR, 0xff009688);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.VOLUME_DIALOG_SLIDER_INACTIVE_COLOR, 0xffffffff);
+                Settings.Secure.putInt(mContext.getContentResolver(),
+                        Settings.Secure.DOZE_NOTIFICATION_INVERT_ENABLED, 0);
             } else if (mNightMode == UiModeManager.MODE_NIGHT_BLACKOUT) {
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.NOTIFICATION_BG_COLOR, 0xff000000);
@@ -658,6 +662,8 @@ final class UiModeManagerService extends SystemService
                         Settings.System.VOLUME_DIALOG_SLIDER_COLOR, 0xff1976D2);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.VOLUME_DIALOG_SLIDER_INACTIVE_COLOR, 0xffff0000);
+                Settings.Secure.putInt(mContext.getContentResolver(),
+                        Settings.Secure.DOZE_NOTIFICATION_INVERT_ENABLED, 0);
             } else if (mNightMode == UiModeManager.MODE_NIGHT_RANDOM) {
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.NOTIFICATION_BG_COLOR, 0xff0f2e4c);
