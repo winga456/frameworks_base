@@ -78,6 +78,7 @@ import com.android.systemui.qs.tiles.SyncTile;
 import com.android.systemui.qs.tiles.ThemesTile;
 import com.android.systemui.qs.tiles.WifiTile;
 import com.android.systemui.qs.tiles.VRToxinTile;
+import com.android.systemui.qs.tiles.VRTUpdaterTile;
 import com.android.systemui.qs.tiles.LedTile;
 import com.android.systemui.statusbar.policy.BluetoothController;
 import com.android.systemui.statusbar.policy.CastController;
@@ -364,6 +365,8 @@ public class QSTileHost implements QSTile.Host {
                 return new SlimActionTile(this);
             case QSConstants.TILE_POWERMENU:
                 return new PowerMenuTile(this);
+            case QSConstants.TILE_VRTUPDATER:
+                return new VRTUpdaterTile(this);
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
         }

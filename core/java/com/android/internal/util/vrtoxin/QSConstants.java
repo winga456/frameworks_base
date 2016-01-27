@@ -73,6 +73,7 @@ public class QSConstants {
     public static final String TILE_LED = "led";
     public static final String TILE_THEMES = "themes";
     public static final String TILE_KERNEL_ADIUTOR = "kernel_adiutor";
+    public static final String TILE_VRTUPDATER = "vrtupdater";
 
     protected static final ArrayList<String> STATIC_TILES_AVAILABLE = new ArrayList<String>();
     protected static final ArrayList<String> TILES_AVAILABLE = new ArrayList<String>();
@@ -124,6 +125,7 @@ public class QSConstants {
         STATIC_TILES_AVAILABLE.add(TILE_LED);
         STATIC_TILES_AVAILABLE.add(TILE_SLIMACTION);
         STATIC_TILES_AVAILABLE.add(TILE_POWERMENU);
+        STATIC_TILES_AVAILABLE.add(TILE_VRTUPDATER);
 
         TILES_AVAILABLE.addAll(STATIC_TILES_AVAILABLE);
     }
