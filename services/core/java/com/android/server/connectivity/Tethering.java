@@ -36,7 +36,10 @@ import android.net.Network;
 import android.net.NetworkInfo;
 import android.net.NetworkUtils;
 import android.net.RouteInfo;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiManager;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.INetworkManagementService;
 import android.os.Looper;
 import android.os.Message;
@@ -137,6 +140,8 @@ public class Tethering extends BaseNetworkObserver {
     private boolean mRndisEnabled;       // track the RNDIS function enabled state
     private boolean mUsbTetherRequested; // true if USB tethering should be started
                                          // when RNDIS is enabled
+    private long mWiFiApInactivityTimeout;
+    private final Handler mHandler;
 
     public Tethering(Context context, INetworkManagementService nmService,
             INetworkStatsService statsService, Looper looper) {
@@ -144,6 +149,7 @@ public class Tethering extends BaseNetworkObserver {
         mNMService = nmService;
         mStatsService = statsService;
         mLooper = looper;
+        mHandler = new Handler(mLooper);
 
         mPublicSync = new Object();
 
@@ -235,6 +241,18 @@ public class Tethering extends BaseNetworkObserver {
                     sm = new TetherInterfaceSM(iface, mLooper, usb);
                     mIfaces.put(iface, sm);
                     sm.start();
+                    if (isWifi(iface)) {
+                        // check if the user has specified an inactivity timeout for wifi AP and
+                        // if so schedule the timeout
+                        final WifiManager wm =
+                                (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
+                        final WifiConfiguration apConfig = wm.getWifiApConfiguration();
+                        mWiFiApInactivityTimeout =
+                                apConfig != null ? apConfig.wifiApInactivityTimeout : 0;
+                        if (mWiFiApInactivityTimeout > 0) {
+                            scheduleInactivityTimeout();
+                        }
+                    }
                 }
             } else {
                 if (isUsb(iface)) {
@@ -244,6 +262,9 @@ public class Tethering extends BaseNetworkObserver {
                 } else if (sm != null) {
                     sm.sendMessage(TetherInterfaceSM.CMD_INTERFACE_DOWN);
                     mIfaces.remove(iface);
+                    if (isWifi(iface)) {
+                        cancelInactivityTimeout();
+                    }
                 }
             }
         }
@@ -325,6 +346,29 @@ public class Tethering extends BaseNetworkObserver {
             sm.sendMessage(TetherInterfaceSM.CMD_INTERFACE_DOWN);
             mIfaces.remove(iface);
         }
+    }
+
+    private final Runnable mDisableWifiApRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (VDBG) Log.d(TAG, "Turning off hotpost due to inactivity");
+            final WifiManager wifiManager =
+                    (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
+            wifiManager.setWifiApEnabled(null, false);
+        }
+    };
+
+    private void scheduleInactivityTimeout() {
+        if (mWiFiApInactivityTimeout > 0) {
+            if (VDBG) Log.d(TAG, "scheduleInactivityTimeout: " + mWiFiApInactivityTimeout);
+            mHandler.removeCallbacks(mDisableWifiApRunnable);
+            mHandler.postDelayed(mDisableWifiApRunnable, mWiFiApInactivityTimeout);
+        }
+    }
+
+    private void cancelInactivityTimeout() {
+        if (VDBG) Log.d(TAG, "cancelInactivityTimeout");
+        mHandler.removeCallbacks(mDisableWifiApRunnable);
     }
 
     public int tether(String iface) {
