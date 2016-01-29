@@ -6320,6 +6320,13 @@ public final class Settings {
         public static final String HEADS_UP_NON_FS = "heads_up_non_fs";
 
         /**
+         * Which applications to enable heads up notifications for
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_WHITELIST_VALUES = "heads_up_whitelist_values";
+
+        /**
          * Allows to show the background activity back the lockscreen
          * 0 = off
          * 1 = on

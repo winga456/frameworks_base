@@ -313,6 +313,7 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     private ArrayList<String> mDndList = new ArrayList<String>();
     private ArrayList<String> mBlacklist = new ArrayList<String>();
+    private ArrayList<String> mWhitelist = new ArrayList<String>();
 
     private boolean mNotifySilent;
     private boolean mNonFS;
@@ -403,6 +404,8 @@ public abstract class BaseStatusBar extends SystemUI implements
                     Settings.System.HEADS_UP_NOTIFY_SILENT), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.HEADS_UP_NON_FS), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HEADS_UP_WHITELIST_VALUES), false, this);
             update();
         }
 
@@ -418,13 +421,17 @@ public abstract class BaseStatusBar extends SystemUI implements
                     Settings.System.HEADS_UP_CUSTOM_VALUES);
             final String blackString = Settings.System.getString(resolver,
                     Settings.System.HEADS_UP_BLACKLIST_VALUES);
+            final String whiteString = Settings.System.getString(resolver,
+                    Settings.System.HEADS_UP_WHITELIST_VALUES);
             splitAndAddToArrayList(mDndList, dndString, "\\|");
             splitAndAddToArrayList(mBlacklist, blackString, "\\|");
+            splitAndAddToArrayList(mWhitelist, whiteString, "\\|");
 
             mNotifySilent = Settings.System.getBoolean(resolver,
                     Settings.System.HEADS_UP_NOTIFY_SILENT, false);
             mNonFS = Settings.System.getBoolean(resolver,
                     Settings.System.HEADS_UP_NON_FS, false);
+
         }
     };
 
@@ -2758,6 +2765,8 @@ public abstract class BaseStatusBar extends SystemUI implements
 
         Notification notification = sbn.getNotification();
         // some predicates to make the boolean logic legible
+
+        boolean whiteListed = isPackageWhitelisted(sbn.getPackageName());
         boolean isNoisy = mNotifySilent
                 || (notification.defaults & Notification.DEFAULT_SOUND) != 0
                 || (notification.defaults & Notification.DEFAULT_VIBRATE) != 0
@@ -2777,7 +2786,8 @@ public abstract class BaseStatusBar extends SystemUI implements
 
         boolean isIMEShowing = inputMethodManager.isImeShowing();
 
-        boolean interrupt = (isFullscreen || (isHighPriority && (isNoisy || hasTicker)))
+        boolean interrupt = (whiteListed
+                || (isFullscreen || (isHighPriority && (isNoisy || hasTicker))))
                 && isAllowed
                 && !accessibilityForcesLaunch
                 && !justLaunchedFullScreenIntent
@@ -2811,6 +2821,10 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     private boolean isPackageBlacklisted(String packageName) {
         return mBlacklist.contains(packageName);
+    }
+
+    private boolean isPackageWhitelisted(String packageName) {
+        return mWhitelist.contains(packageName);
     }
 
     private void splitAndAddToArrayList(ArrayList<String> arrayList,
