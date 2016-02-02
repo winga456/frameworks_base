@@ -315,9 +315,6 @@ public abstract class BaseStatusBar extends SystemUI implements
     private ArrayList<String> mBlacklist = new ArrayList<String>();
     private ArrayList<String> mWhitelist = new ArrayList<String>();
 
-    private boolean mNotifySilent;
-    private boolean mNonFS;
-
     @Override  // NotificationData.Environment
     public boolean isDeviceProvisioned() {
         return mDeviceProvisioned;
@@ -401,10 +398,6 @@ public abstract class BaseStatusBar extends SystemUI implements
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.HEADS_UP_BLACKLIST_VALUES), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.HEADS_UP_NOTIFY_SILENT), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.HEADS_UP_NON_FS), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.HEADS_UP_WHITELIST_VALUES), false, this);
             update();
         }
@@ -426,11 +419,6 @@ public abstract class BaseStatusBar extends SystemUI implements
             splitAndAddToArrayList(mDndList, dndString, "\\|");
             splitAndAddToArrayList(mBlacklist, blackString, "\\|");
             splitAndAddToArrayList(mWhitelist, whiteString, "\\|");
-
-            mNotifySilent = Settings.System.getBoolean(resolver,
-                    Settings.System.HEADS_UP_NOTIFY_SILENT, false);
-            mNonFS = Settings.System.getBoolean(resolver,
-                    Settings.System.HEADS_UP_NON_FS, false);
 
         }
     };
@@ -2767,13 +2755,12 @@ public abstract class BaseStatusBar extends SystemUI implements
         // some predicates to make the boolean logic legible
 
         boolean whiteListed = isPackageWhitelisted(sbn.getPackageName());
-        boolean isNoisy = mNotifySilent
-                || (notification.defaults & Notification.DEFAULT_SOUND) != 0
+        boolean isNoisy = (notification.defaults & Notification.DEFAULT_SOUND) != 0
                 || (notification.defaults & Notification.DEFAULT_VIBRATE) != 0
                 || notification.sound != null
                 || notification.vibrate != null;
         boolean isHighPriority = sbn.getScore() >= INTERRUPTION_THRESHOLD;
-        boolean isFullscreen = mNonFS || notification.fullScreenIntent != null;
+        boolean isFullscreen = notification.fullScreenIntent != null;
         boolean hasTicker = mHeadsUpTicker && !TextUtils.isEmpty(notification.tickerText);
         boolean isAllowed = notification.extras.getInt(Notification.EXTRA_AS_HEADS_UP,
                 Notification.HEADS_UP_ALLOWED) != Notification.HEADS_UP_NEVER;
