@@ -6313,6 +6313,20 @@ public final class Settings {
         public static final String HEADS_UP_WHITELIST_VALUES = "heads_up_whitelist_values";
 
         /**
+         * Timeout for Heads Up
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_TIMEOUT = "heads_up_timeout";
+
+        /**
+         * Snooze time for heads up
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_SNOOZE_LENGTH_MS = "heads_up_snooze_length_ms";
+
+        /**
          * Allows to show the background activity back the lockscreen
          * 0 = off
          * 1 = on
