@@ -16,16 +16,20 @@
 
 package com.android.systemui.statusbar.phone;
 
+import android.app.ActivityManagerNative;
 import android.content.Context;
+import android.content.pm.UserInfo;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.graphics.drawable.Drawable;
 import android.graphics.PorterDuff.Mode;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.RemoteException;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -196,7 +200,18 @@ public class KeyguardStatusBarView extends RelativeLayout
         userInfoController.addListener(new UserInfoController.OnUserInfoChangedListener() {
             @Override
             public void onUserInfoChanged(String name, Drawable picture) {
+                mMultiUserAvatar.setColorFilter(null);
                 mMultiUserAvatar.setImageDrawable(picture);
+                UserInfo userInfo = null;
+                try {
+                    userInfo = ActivityManagerNative.getDefault().getCurrentUser();
+                } catch (RemoteException e) {
+                    Log.e("KeyguardStatusBarView", "Couldn't get user info", e);
+                }
+                if (userInfo != null && userInfo.isGuest()) {
+                    mMultiUserAvatar.setColorFilter(
+                            StatusBarColorHelper.getUserIconColor(getContext()), Mode.SRC_IN);
+                }
             }
         });
     }

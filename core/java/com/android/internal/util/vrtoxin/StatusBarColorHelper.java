@@ -17,6 +17,7 @@
 package com.android.internal.util.vrtoxin;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.provider.Settings;
 
@@ -25,6 +26,36 @@ public class StatusBarColorHelper {
     private static final int WHITE = 0xffffffff;
     private static final int BLACK = 0xff000000;
     private static final int TRANSLUCENT_BLACK = 0x7a000000;
+    private static final int VRTOXIN_BLUE = 0xff1976D2;
+
+    public static int getUserIconColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_MULTI_USER_SWITCH_ICON_COLOR, WHITE);
+    }
+
+    private static int getActiveUserTextColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_MULTI_USER_SWITCH_ACTIVE_TEXT_COLOR,
+                VRTOXIN_BLUE);
+    }
+
+    private static int getInactiveUserTextColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_MULTI_USER_SWITCH_INACTIVE_TEXT_COLOR,
+                WHITE);
+    }
+
+    public static ColorStateList getUserTextColors(Context context) {
+        int states[][] = new int[][] {
+            new int[] { com.android.internal.R.attr.state_activated },
+            new int[]{}
+        };
+        int colors[] = new int[] {
+            getActiveUserTextColor(context),
+            getInactiveUserTextColor(context)
+        };
+        return new ColorStateList(states, colors);
+    }
 
     public static int getGreetingColor(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
