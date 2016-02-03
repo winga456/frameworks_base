@@ -180,7 +180,6 @@ import com.android.internal.util.vrtoxin.WeatherController;
 import com.android.internal.util.vrtoxin.WeatherControllerImpl;
 import com.android.internal.util.vrtoxin.WeatherController.WeatherInfo;
 import com.android.systemui.statusbar.policy.BluetoothControllerImpl;
-import com.android.systemui.statusbar.policy.BrightnessMirrorController;
 import com.android.systemui.statusbar.policy.CastControllerImpl;
 import com.android.systemui.statusbar.policy.FlashlightController;
 import com.android.systemui.statusbar.policy.HeadsUpManager;
@@ -324,7 +323,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     UserSwitcherController mUserSwitcherController;
     NextAlarmController mNextAlarmController;
     KeyguardMonitor mKeyguardMonitor;
-    BrightnessMirrorController mBrightnessMirrorController;
     AccessibilityController mAccessibilityController;
     FingerprintUnlockController mFingerprintUnlockController;
     WeatherControllerImpl mWeatherController;
@@ -4704,9 +4702,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         if (mNotificationPanel != null) {
             mNotificationPanel.updateResources();
-        }
-        if (mBrightnessMirrorController != null) {
-            mBrightnessMirrorController.updateResources();
         }
     }
 

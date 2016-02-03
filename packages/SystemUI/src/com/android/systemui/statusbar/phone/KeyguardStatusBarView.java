@@ -79,7 +79,6 @@ public class KeyguardStatusBarView extends RelativeLayout
     private ContentObserver mObserver = new ContentObserver(new Handler()) {
         public void onChange(boolean selfChange, Uri uri) {
             showVRToxinLogo();
-            updateVisibilities();
         }
     };
 
@@ -309,11 +308,6 @@ public class KeyguardStatusBarView extends RelativeLayout
         getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
                 "status_bar_vrtoxin_logo_show"), false, mObserver);
 
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
     }
 
     public void updateLogoColor(int color) {
