@@ -83,6 +83,7 @@ public class KeyguardStatusBarView extends RelativeLayout
     private ContentObserver mObserver = new ContentObserver(new Handler()) {
         public void onChange(boolean selfChange, Uri uri) {
             showVRToxinLogo();
+            updateVisibilities();
         }
     };
 
@@ -116,6 +117,7 @@ public class KeyguardStatusBarView extends RelativeLayout
         mFastOutSlowInInterpolator = AnimationUtils.loadInterpolator(getContext(),
                 android.R.interpolator.fast_out_slow_in);
         updateUserSwitcher();
+        updateVisibilities();
     }
 
     @Override

@@ -92,7 +92,6 @@ public class StatusBarIconController {
     private NotificationColorUtil mNotificationColorUtil;
     private Clock mCenterClock;
 
-    private LinearLayout mStatusBarContents;
     private LinearLayout mSystemIconArea;
     private LinearLayout mStatusIcons;
     private LinearLayout mStatusIconsKeyguard;
@@ -190,7 +189,6 @@ public class StatusBarIconController {
         mKeyguardStatusBarView = keyguardStatusBar;
         mNotificationColorUtil = NotificationColorUtil.getInstance(context);
         mSystemIconArea = (LinearLayout) statusBar.findViewById(R.id.system_icon_area);
-        mStatusBarContents = (LinearLayout) statusBar.findViewById(R.id.status_bar_contents);
         mStatusIcons = (LinearLayout) statusBar.findViewById(R.id.statusIcons);
         mSignalCluster = (SignalClusterView) statusBar.findViewById(R.id.signal_cluster);
         mSignalClusterKeyguard = (SignalClusterView) keyguardStatusBar.findViewById(R.id.signal_cluster);
@@ -570,7 +568,9 @@ public class StatusBarIconController {
     }
 
     public void setIconsDark(boolean dark, boolean animate) {
-        if (mTransitionPending) {
+        if (!animate) {
+            setIconTintInternal(dark ? 1.0f : 0.0f);
+        } else if (mTransitionPending) {
             deferIconTintChange(dark ? 1.0f : 0.0f);
         } else if (mTransitionDeferring) {
             animateIconTint(dark ? 1.0f : 0.0f,
@@ -604,9 +604,9 @@ public class StatusBarIconController {
 
     private void setIconTintInternal(float darkIntensity) {
         mDarkIntensity = darkIntensity;
-        mGreetingColorTint = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
+        mGreetingColorTint = (int) ArgbEvaluator.getInstance().evaluate(mDarkIntensity,
                 mGreetingColor,  StatusBarColorHelper.getGreetingColorDark(mContext));
-        mBatteryColorTint = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity,
+        mBatteryColorTint = (int) ArgbEvaluator.getInstance().evaluate(mDarkIntensity,
                 mBatteryColor, StatusBarColorHelper.getBatteryColorDark(mContext));
         mBatteryTextColorTint = (int) ArgbEvaluator.getInstance().evaluate(mDarkIntensity,
                 mBatteryTextColor, StatusBarColorHelper.getBatteryTextColorDark(mContext));
@@ -911,8 +911,6 @@ public class StatusBarIconController {
     }
 
     private void updateTickerIconColor(int color) {
-        mTickerIconColor = StatusBarColorHelper.getTickerIconColor(mContext);
-        mTickerIconColorTint = mTickerIconColor;
         if (!mHeadsUpEnabled && mShowTicker && mTicker != null && mTickerView != null) {
             mTicker.setIconColorTint(ColorStateList.valueOf(color));
         }
@@ -1016,6 +1014,8 @@ public class StatusBarIconController {
 
                 TickerView tickerView = (TickerView) mStatusBar.findViewById(R.id.tickerText);
                 tickerView.mTicker = mTicker;
+                updateTickerIconColor(mTickerIconColor);
+                updateTickerTextColor();
             } else {
                 mShowTicker = false;
             }
@@ -1073,23 +1073,5 @@ public class StatusBarIconController {
             // we do not animate the ticker away at this point, just get rid of it (b/6992707)
             mTickerView.setVisibility(View.GONE);
         }
-    }
-
-    Animation.AnimationListener mTickingDoneListener = new Animation.AnimationListener() {
-        public void onAnimationEnd(Animation animation) {
-            mTicking = false;
-        }
-        public void onAnimationRepeat(Animation animation) {
-        }
-        public void onAnimationStart(Animation animation) {
-        }
-    };
-
-    private Animation loadAnim(int id, Animation.AnimationListener listener) {
-        Animation anim = AnimationUtils.loadAnimation(mContext, id);
-        if (listener != null) {
-            anim.setAnimationListener(listener);
-        }
-        return anim;
     }
 }
