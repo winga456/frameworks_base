@@ -44,6 +44,7 @@ import com.android.systemui.qs.tiles.AppCircleBarTile;
 import com.android.systemui.qs.tiles.BatterySaverTile;
 import com.android.systemui.qs.tiles.BluetoothTile;
 import com.android.systemui.qs.tiles.BrightnessTile;
+import com.android.systemui.qs.tiles.CaffeineTile;
 import com.android.systemui.qs.tiles.CastTile;
 import com.android.systemui.qs.tiles.CellularTile;
 import com.android.systemui.qs.tiles.ColorInversionTile;
@@ -370,6 +371,8 @@ public class QSTileHost implements QSTile.Host {
                 return new VRTUpdaterTile(this);
             case QSConstants.TILE_SOUNDS:
                 return new SoundTile(this);
+            case QSConstants.TILE_CAFFEINE:
+                return new CaffeineTile(this);
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
         }

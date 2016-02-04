@@ -74,6 +74,7 @@ public class QSConstants {
     public static final String TILE_KERNEL_ADIUTOR = "kernel_adiutor";
     public static final String TILE_VRTUPDATER = "vrtupdater";
     public static final String TILE_SOUNDS = "sounds";
+    public static final String TILE_CAFFEINE = "caffeine";
 
     protected static final ArrayList<String> STATIC_TILES_AVAILABLE = new ArrayList<String>();
     protected static final ArrayList<String> TILES_AVAILABLE = new ArrayList<String>();
