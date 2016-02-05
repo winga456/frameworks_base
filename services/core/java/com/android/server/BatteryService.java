@@ -34,6 +34,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.ContentObserver;
+import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.BatteryManagerInternal;
 import android.os.BatteryProperties;
@@ -156,7 +157,8 @@ public final class BatteryService extends SystemService {
 
     private boolean mSentLowBatteryBroadcast = false;
 
-    private boolean mShowBatteryFullyChargedNotification;
+    private boolean mShowBatteryFullyChargedSwitch;
+    private boolean mShowBatteryFullyChargedNotification = false;
     private boolean mIsShowingBatteryFullyChargedNotification;
 
     public BatteryService(Context context) {
@@ -175,13 +177,25 @@ public final class BatteryService extends SystemService {
                 com.android.internal.R.integer.config_lowBatteryCloseWarningBump);
         mShutdownBatteryTemperature = mContext.getResources().getInteger(
                 com.android.internal.R.integer.config_shutdownBatteryTemperature);
-        mShowBatteryFullyChargedNotification = mContext.getResources().getBoolean(
-                com.android.internal.R.bool.config_showBatteryFullyChargedNotification);
+
+        if (mShowBatteryFullyChargedSwitch) {
+            mShowBatteryFullyChargedNotification = true;
+        } else {
+            mShowBatteryFullyChargedNotification = false;
+        }
 
         // watch for invalid charger messages if the invalid_charger switch exists
         if (new File("/sys/devices/virtual/switch/invalid_charger/state").exists()) {
             mInvalidChargerObserver.startObserving(
                     "DEVPATH=/devices/virtual/switch/invalid_charger");
+        }
+    }
+
+    public void updateBattFullCharged() {
+        if (mShowBatteryFullyChargedSwitch) {
+            mShowBatteryFullyChargedNotification = true;
+        } else {
+            mShowBatteryFullyChargedNotification = false;
         }
     }
 
@@ -949,6 +963,11 @@ public final class BatteryService extends SystemService {
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.BATTERY_LIGHT_PULSE), false, this, UserHandle.USER_ALL);
 
+            // Battery fully charged notification
+            resolver.registerContentObserver(Settings.Global.getUriFor(
+                    Settings.Global.BATTERY_FULLY_CHARGE_NOTIF),
+                    false, this, UserHandle.USER_ALL);
+
             // Light colors
             if (mMultiColorLed) {
                 // Register observer if we have a multi color led
@@ -969,7 +988,18 @@ public final class BatteryService extends SystemService {
             update();
         }
 
-        @Override public void onChange(boolean selfChange) {
+        @Override 
+        public void onChange(boolean selfChange) {
+            update();
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            super.onChange(selfChange, uri);
+            if (uri.equals(Settings.Global.getUriFor(
+                    Settings.Global.BATTERY_FULLY_CHARGE_NOTIF))) {
+                    updateBattFullCharged();
+            }
             update();
         }
 
@@ -984,6 +1014,10 @@ public final class BatteryService extends SystemService {
             // Low battery pulse
             mLedPulseEnabled = Settings.System.getInt(resolver,
                         Settings.System.BATTERY_LIGHT_PULSE, 1) != 0;
+
+            // Battery fully charged notification
+            mShowBatteryFullyChargedSwitch = Settings.Global.getInt(resolver,
+                        Settings.Global.BATTERY_FULLY_CHARGE_NOTIF, 0) == 1;
 
             // Light colors
             mBatteryLowARGB = Settings.System.getInt(resolver,
@@ -1000,6 +1034,7 @@ public final class BatteryService extends SystemService {
                     com.android.internal.R.integer.config_notificationsBatteryReallyFullARGB));
 
             updateLedPulse();
+            updateBattFullCharged();
         }
     }
 }

@@ -10932,6 +10932,12 @@ public final class Settings {
          */
         public static final String POWER_NOTIFICATIONS_RINGTONE = "power_notifications_ringtone";
 
+        /**
+         * Battery fully charged notification
+         * @hide
+         */
+        public static final String BATTERY_FULLY_CHARGE_NOTIF = "battery_fully_charge_notif";
+
          /**
          * If 1, the activity manager will aggressively finish activities and
          * processes as soon as they are no longer needed.  If 0, the normal
