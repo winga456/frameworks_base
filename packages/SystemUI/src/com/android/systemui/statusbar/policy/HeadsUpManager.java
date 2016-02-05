@@ -654,7 +654,7 @@ public class HeadsUpManager implements ViewTreeObserver.OnComputeInternalInsetsL
     private void setSnooze() {
         ContentResolver resolver = mContext.getContentResolver();
 
-        mHeadsUpNotificationDecay = Settings.System.getIntForUser(resolver,
+        mSnoozeLengthMs = Settings.System.getIntForUser(resolver,
                 Settings.System.HEADS_UP_SNOOZE_LENGTH_MS, 60 / 1000,
                 UserHandle.USER_CURRENT);
     }
