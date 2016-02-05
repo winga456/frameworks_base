@@ -6498,7 +6498,16 @@ public final class Settings {
          * What application to launch when the user long clicks the weather in the notification bar
          * @hide
          */
-        public static final String WEATHER_LONG_SHORTCUT = "weather_long_shortcut";        
+        public static final String WEATHER_LONG_SHORTCUT = "weather_long_shortcut";
+
+        /**
+         * Status bar power menu
+         * 0 - disabled (default)
+         * 1 - screen off / power menu
+         * 2 - power menu - screen off
+         * @hide
+         */
+        public static final String POWER_MENU_BUTTON = "power_menu_button";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
