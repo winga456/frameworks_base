@@ -896,6 +896,41 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
                 mClock.setTypeface(Typeface.create("sans-serif-black", Typeface.ITALIC));
                 mDate.setTypeface(Typeface.create("sans-serif-black", Typeface.ITALIC));
                 break;
+            case FontHelper.FONT_DANCINGSCRIPT:
+                mMemText.setTypeface(Typeface.create("cursive", Typeface.NORMAL));
+                mClock.setTypeface(Typeface.create("cursive", Typeface.NORMAL));
+                mDate.setTypeface(Typeface.create("cursive", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT_BOLD:
+                mMemText.setTypeface(Typeface.create("cursive", Typeface.BOLD));
+                mClock.setTypeface(Typeface.create("cursive", Typeface.BOLD));
+                mDate.setTypeface(Typeface.create("cursive", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_COMINGSOON:
+                mMemText.setTypeface(Typeface.create("casual", Typeface.NORMAL));
+                mClock.setTypeface(Typeface.create("casual", Typeface.NORMAL));
+                mDate.setTypeface(Typeface.create("casual", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_NOTOSERIF:
+                mMemText.setTypeface(Typeface.create("serif", Typeface.NORMAL));
+                mClock.setTypeface(Typeface.create("serif", Typeface.NORMAL));
+                mDate.setTypeface(Typeface.create("serif", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_NOTOSERIF_ITALIC:
+                mMemText.setTypeface(Typeface.create("serif", Typeface.ITALIC));
+                mClock.setTypeface(Typeface.create("serif", Typeface.ITALIC));
+                mDate.setTypeface(Typeface.create("serif", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD:
+                mMemText.setTypeface(Typeface.create("serif", Typeface.BOLD));
+                mClock.setTypeface(Typeface.create("serif", Typeface.BOLD));
+                mDate.setTypeface(Typeface.create("serif", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD_ITALIC:
+                mMemText.setTypeface(Typeface.create("serif", Typeface.BOLD_ITALIC));
+                mClock.setTypeface(Typeface.create("serif", Typeface.BOLD_ITALIC));
+                mDate.setTypeface(Typeface.create("serif", Typeface.BOLD_ITALIC));
+                break;
         }
     }
 
