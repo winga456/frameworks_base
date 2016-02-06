@@ -3996,6 +3996,18 @@ public final class Settings {
          */
         public static final String KEY_BACK_DOUBLE_TAP_ACTION = "key_back_double_tap_action";
 
+	/*
+         * Hide lockscreen date
+         * @hide
+         */
+        public static final String HIDE_LOCKSCREEN_DATE = "hide_lockscreen_date";
+
+        /**
+         * Hide lockscreen clock
+         * @hide
+         */
+        public static final String HIDE_LOCKSCREEN_CLOCK = "hide_lockscreen_clock";
+
         /**
          * Action to perform when the home key is pressed. (default: ACTION_HOME)
          * (See ButtonsConstants.java for valid values)
