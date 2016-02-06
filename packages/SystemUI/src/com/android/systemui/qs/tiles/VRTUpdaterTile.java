@@ -48,7 +48,7 @@ public class VRTUpdaterTile extends QSTile<QSTile.BooleanState> {
     protected void handleClick() {
 		mHost.collapsePanels();
         Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setClassName("com.android.vrtoxin.ota",
+        intent.setClassName("com.android.vrtoxin",
             "com.android.vrtoxin.VRToxinOTA");
         mHost.startActivityDismissingKeyguard(intent);
     }
