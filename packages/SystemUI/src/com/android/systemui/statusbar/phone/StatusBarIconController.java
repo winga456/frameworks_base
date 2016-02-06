@@ -110,7 +110,6 @@ public class StatusBarIconController {
     private View mCenterClockLayout;
     private Ticker mTicker;
     private View mTickerView;
-    private int mTickerFontStyle = FontHelper.FONT_NORMAL;
 
     private int mGreetingColor;
     private int mGreetingColorTint;
