@@ -4053,6 +4053,12 @@ public final class Settings {
         public static final String HIDE_LOCKSCREEN_CLOCK = "hide_lockscreen_clock";
 
         /**
+         * Hide lockscreen alarm
+         * @hide
+         */
+        public static final String HIDE_LOCKSCREEN_ALARM = "hide_lockscreen_alarm";
+
+        /**
          * Action to perform when the home key is pressed. (default: ACTION_HOME)
          * (See ButtonsConstants.java for valid values)
          * @hide
