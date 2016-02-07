@@ -623,11 +623,7 @@ public class NavigationBarView extends LinearLayout {
 
         KeyButtonView v = new KeyButtonView(mContext, null);
         v.setClickAction(clickAction);
-        if (!clickAction.equals(ActionConstants.ACTION_HOME)) {
-            // Don't use the longpress listener for the home button
-            // This is set to use Google Now / Now On Tap as Home longpress action
-            v.setLongpressAction(longpress);
-        }
+        v.setLongpressAction(longpress);
         int i = mContext.getResources().getDimensionPixelSize(R.dimen.navigation_key_width);
         v.setLayoutParams(getLayoutParams(landscape, i));
 

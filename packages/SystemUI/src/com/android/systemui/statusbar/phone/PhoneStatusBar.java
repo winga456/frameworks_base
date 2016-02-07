@@ -2090,7 +2090,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
         if (home != null) {
             home.setOnTouchListener(mHomeActionListener);
-            home.setOnLongClickListener(mLongPressHomeListener);
         }
         mAssistManager.onConfigurationChanged();
     }
