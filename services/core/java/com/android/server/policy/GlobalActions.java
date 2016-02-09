@@ -28,6 +28,7 @@ import android.app.ActivityManager;
 import android.app.ActivityManagerNative;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.INotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -1544,9 +1545,15 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             int index = (Integer) v.getTag();
             if (index == 0 || index == 1) {
                 int zenMode = index == 0
-                            ? Global.ZEN_MODE_NO_INTERRUPTIONS
-                            : Global.ZEN_MODE_IMPORTANT_INTERRUPTIONS;
-                Global.putInt(mContext.getContentResolver(), Global.ZEN_MODE, zenMode);
+                        ? Global.ZEN_MODE_NO_INTERRUPTIONS
+                        : Global.ZEN_MODE_IMPORTANT_INTERRUPTIONS;
+                INotificationManager noMan = INotificationManager.Stub.asInterface(
+                        ServiceManager.getService(Context.NOTIFICATION_SERVICE));
+                try {
+                    noMan.setZenMode(zenMode, null, TAG);
+                } catch (RemoteException e) {
+                    Log.e(TAG, "Unable to set zen mode", e);
+                }
             } else {
                 Global.putInt(mContext.getContentResolver(), Global.ZEN_MODE, Global.ZEN_MODE_OFF);
             }
