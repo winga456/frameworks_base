@@ -80,6 +80,7 @@ public class KeyguardStatusView extends GridLayout implements
     private TextView noWeatherInfo;
     private boolean mShowWeather;
     private int mIconNameValue = 0;
+    private int mWeatherSize =16;
 
     private WeatherController mWeatherController;
 
@@ -96,6 +97,7 @@ public class KeyguardStatusView extends GridLayout implements
             updateOwnerSize();
             updateAlarmStatusColor();
             updateClockSize();
+            updateWeatherSize();
         }
 
         @Override
@@ -110,6 +112,7 @@ public class KeyguardStatusView extends GridLayout implements
                 updateOwnerSize();
                 updateAlarmStatusColor();
                 updateClockSize();
+                updateWeatherSize();
             }
         }
 
@@ -124,6 +127,7 @@ public class KeyguardStatusView extends GridLayout implements
             updateOwnerSize();
             updateAlarmStatusColor();
             updateClockSize();
+            updateWeatherSize();
         }
 
         @Override
@@ -142,6 +146,7 @@ public class KeyguardStatusView extends GridLayout implements
             updateOwnerSize();
             updateAlarmStatusColor();
             updateClockSize();
+            updateWeatherSize();
         }
     };
 
@@ -164,6 +169,7 @@ public class KeyguardStatusView extends GridLayout implements
         updateOwnerSize();
         updateAlarmStatusColor();
         updateClockSize();
+        updateWeatherSize();
     }
 
     private void setEnableMarquee(boolean enabled) {
@@ -197,6 +203,7 @@ public class KeyguardStatusView extends GridLayout implements
         updateOwnerSize();
         updateAlarmStatusColor();
         updateClockSize();
+        updateWeatherSize();
 
         // Disable elegant text height because our fancy colon makes the ymin value huge for no
         // reason.
@@ -729,6 +736,27 @@ public class KeyguardStatusView extends GridLayout implements
 
         if (mOwnerInfo != null) {
             mOwnerInfo.setTextSize(mOwnerSize);
+        }
+    }
+
+    private void updateWeatherSize() {
+        mWeatherSize = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.LS_WEATHER_FONT_SIZE, 16);
+
+        if (mAlarmStatusView != null) {
+            mAlarmStatusView.setTextSize(mWeatherSize);
+        }
+        if (mDateView != null) {
+            mDateView.setTextSize(mWeatherSize);
+        }
+        if (mWeatherCity != null) {
+            mWeatherCity.setTextSize(mWeatherSize);
+        }
+        if (mWeatherConditionText != null) {
+            mWeatherConditionText.setTextSize(mWeatherSize);
+        }
+        if (mWeatherCurrentTemp != null) {
+            mWeatherCurrentTemp.setTextSize(mWeatherSize);
         }
     }
 

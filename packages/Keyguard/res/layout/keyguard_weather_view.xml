@@ -55,7 +55,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:includeFontPadding="false"
-                android:textSize="16sp"
                 android:textColor="@color/keyguard_default_primary_text_color" />
 
             <TextView
@@ -64,7 +63,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:includeFontPadding="false"
-                android:textSize="12sp"
                 android:textColor="@color/keyguard_default_secondary_text_color" />
 
         </LinearLayout>
@@ -92,7 +90,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:includeFontPadding="false"
-        android:textSize="14sp"
         android:textStyle="bold"
         android:textColor="@color/keyguard_default_primary_text_color" />
 

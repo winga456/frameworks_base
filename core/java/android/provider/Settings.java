@@ -6170,6 +6170,12 @@ public final class Settings {
         public static final String OWNER_INFO_FONT_SIZE = "owner_info_font_size";
 
         /**
+         * Size of lock screen weather texts
+         * @hide
+         */
+        public static final String LS_WEATHER_FONT_SIZE = "ls_weather_font_size";
+
+        /**
          * Whether the proximity sensor will adjust call to speaker
          * @hide
          */
