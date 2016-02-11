@@ -81,6 +81,7 @@ public class KeyguardStatusView extends GridLayout implements
     private boolean mShowWeather;
     private int mIconNameValue = 0;
     private int mWeatherSize =16;
+    private int mAlarmDateSize =14;
 
     private WeatherController mWeatherController;
 
@@ -98,6 +99,7 @@ public class KeyguardStatusView extends GridLayout implements
             updateAlarmStatusColor();
             updateClockSize();
             updateWeatherSize();
+            updateAlarmDateSize();
         }
 
         @Override
@@ -113,6 +115,7 @@ public class KeyguardStatusView extends GridLayout implements
                 updateAlarmStatusColor();
                 updateClockSize();
                 updateWeatherSize();
+                updateAlarmDateSize();
             }
         }
 
@@ -128,6 +131,7 @@ public class KeyguardStatusView extends GridLayout implements
             updateAlarmStatusColor();
             updateClockSize();
             updateWeatherSize();
+            updateAlarmDateSize();
         }
 
         @Override
@@ -147,6 +151,7 @@ public class KeyguardStatusView extends GridLayout implements
             updateAlarmStatusColor();
             updateClockSize();
             updateWeatherSize();
+            updateAlarmDateSize();
         }
     };
 
@@ -170,6 +175,7 @@ public class KeyguardStatusView extends GridLayout implements
         updateAlarmStatusColor();
         updateClockSize();
         updateWeatherSize();
+        updateAlarmDateSize();
     }
 
     private void setEnableMarquee(boolean enabled) {
@@ -204,6 +210,7 @@ public class KeyguardStatusView extends GridLayout implements
         updateAlarmStatusColor();
         updateClockSize();
         updateWeatherSize();
+        updateAlarmDateSize();
 
         // Disable elegant text height because our fancy colon makes the ymin value huge for no
         // reason.
@@ -743,12 +750,6 @@ public class KeyguardStatusView extends GridLayout implements
         mWeatherSize = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.LS_WEATHER_FONT_SIZE, 16);
 
-        if (mAlarmStatusView != null) {
-            mAlarmStatusView.setTextSize(mWeatherSize);
-        }
-        if (mDateView != null) {
-            mDateView.setTextSize(mWeatherSize);
-        }
         if (mWeatherCity != null) {
             mWeatherCity.setTextSize(mWeatherSize);
         }
@@ -757,6 +758,18 @@ public class KeyguardStatusView extends GridLayout implements
         }
         if (mWeatherCurrentTemp != null) {
             mWeatherCurrentTemp.setTextSize(mWeatherSize);
+        }
+    }
+
+    private void updateAlarmDateSize() {
+        mWeatherSize = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.LS_ALARM_DATE_FONT_SIZE, 14);
+
+        if (mAlarmStatusView != null) {
+            mAlarmStatusView.setTextSize(mWeatherSize);
+        }
+        if (mDateView != null) {
+            mDateView.setTextSize(mWeatherSize);
         }
     }
 

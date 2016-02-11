@@ -6176,6 +6176,12 @@ public final class Settings {
         public static final String LS_WEATHER_FONT_SIZE = "ls_weather_font_size";
 
         /**
+         * Size of lock screen date and alarm texts
+         * @hide
+         */
+        public static final String LS_ALARM_DATE_FONT_SIZE = "ls_alarm_date_font_size";
+
+        /**
          * Whether the proximity sensor will adjust call to speaker
          * @hide
          */
