@@ -306,6 +306,9 @@
 
     <!-- QuickSettings: Sound [CHAR LIMIT=NONE] -->
     <string name="quick_settings_sound_label">Sound Mode</string>
+    <string name="quick_settings_sound_ring">Ring</string>
+    <string name="quick_settings_sound_vibrate">Vibrate</string>
+    <string name="quick_settings_sound_silent">Silent</string>
 
     <!-- Notification which notifies user flashlight is enabled -->
     <string name="quick_settings_tile_flashlight_not_title">Flashlight is on</string>
