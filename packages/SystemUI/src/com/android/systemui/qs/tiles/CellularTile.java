@@ -39,6 +39,7 @@ import com.android.systemui.statusbar.policy.SignalCallbackAdapter;
 
 /** Quick settings tile: Cellular **/
 public class CellularTile extends QSTile<QSTile.SignalState> {
+
     private static final Intent CELLULAR_SETTINGS = new Intent().setComponent(new ComponentName(
             "com.android.settings", "com.android.settings.Settings$DataUsageSummaryActivity"));
     private static final Intent MOBILE_NETWORK_SETTINGS = new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS);
@@ -91,7 +92,7 @@ public class CellularTile extends QSTile<QSTile.SignalState> {
                 mDataController.setMobileDataEnabled(false);
             }
         } else {
-            mHost.startActivityDismissingKeyguard(MOBILE_NETWORK_SETTINGS);
+            mHost.startActivityDismissingKeyguard(CELLULAR_SETTINGS);
         }
     }
 
