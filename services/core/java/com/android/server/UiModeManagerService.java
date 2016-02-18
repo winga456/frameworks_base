@@ -602,6 +602,12 @@ final class UiModeManagerService extends SystemService
                         Settings.System.VOLUME_DIALOG_SLIDER_INACTIVE_COLOR, 0xffffffff);
                 Settings.Secure.putInt(mContext.getContentResolver(),
                         Settings.Secure.DOZE_NOTIFICATION_INVERT_ENABLED, 1);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.SETTINGS_BG_COLOR, 0xffffffff);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.SETTINGS_TITLE_TEXT_COLOR, 0xff009688);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.SETTINGS_CATEGORY_TEXT_COLOR, 0xff009688);
             } else if (mNightMode == UiModeManager.MODE_NIGHT_YES) {
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.NOTIFICATION_BG_COLOR, 0xff1b1f23);
@@ -633,6 +639,12 @@ final class UiModeManagerService extends SystemService
                         Settings.System.VOLUME_DIALOG_SLIDER_INACTIVE_COLOR, 0xffffffff);
                 Settings.Secure.putInt(mContext.getContentResolver(),
                         Settings.Secure.DOZE_NOTIFICATION_INVERT_ENABLED, 0);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.SETTINGS_BG_COLOR, 0xff1b1f23);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.SETTINGS_TITLE_TEXT_COLOR, 0xff009688);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.SETTINGS_CATEGORY_TEXT_COLOR, 0xff009688);
             } else if (mNightMode == UiModeManager.MODE_NIGHT_BLACKOUT) {
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.NOTIFICATION_BG_COLOR, 0xff000000);
@@ -664,6 +676,12 @@ final class UiModeManagerService extends SystemService
                         Settings.System.VOLUME_DIALOG_SLIDER_INACTIVE_COLOR, 0xffff0000);
                 Settings.Secure.putInt(mContext.getContentResolver(),
                         Settings.Secure.DOZE_NOTIFICATION_INVERT_ENABLED, 0);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.SETTINGS_BG_COLOR, 0xff000000);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.SETTINGS_TITLE_TEXT_COLOR, 0xff1976D2);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.SETTINGS_CATEGORY_TEXT_COLOR, 0xff00ff00);
             } else if (mNightMode == UiModeManager.MODE_NIGHT_RANDOM) {
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.NOTIFICATION_BG_COLOR, 0xff0f2e4c);
