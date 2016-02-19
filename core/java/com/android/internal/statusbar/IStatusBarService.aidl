@@ -76,6 +76,7 @@ interface IStatusBarService
     void toggleSmartPulldown();
     void toggleLastApp();
     void toggleKillApp();
+    void toggleOrientationListener(boolean enable);
 
     /**
      * Notifies the status bar that an app transition is pending to delay applying some flags with

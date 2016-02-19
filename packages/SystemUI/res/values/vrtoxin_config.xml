@@ -40,5 +40,11 @@
     <!-- Doze: shake accelerometer threshold minimum is 2 and maximum is 10-->
     <integer name="doze_shake_accelerometer_threshold">10</integer>
 
+    <!-- Enable PA Pie relocation to either stick to a physical side or default to the right side -->
+    <bool name="config_relocatePieOnRotation">true</bool>
+
+    <!-- Enable force PA Pie centered -->
+    <bool name="config_forcePieCentered">true</bool>
+
 </resources>
 

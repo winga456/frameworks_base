@@ -17,6 +17,11 @@
  */
 -->
 <resources>
+
     <drawable name="ic_shortcut_chamberofsecrets">@*android:drawable/ic_shortcut_action_theme_switch</drawable>
     <drawable name="ic_shortcut_null">@*android:drawable/ic_shortcut_action_null</drawable>
+
+    <!-- PA Pie -->
+    <dimen name="pie_panel_padding">100dp</dimen>
+
 </resources>

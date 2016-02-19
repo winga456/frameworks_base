@@ -320,4 +320,12 @@
     <string name="accessibility_quick_settings_caffeine_on">Caffeine on</string>
     <string name="quick_settings_caffeine_label">Caffeine</string>
 
+    <!-- PA Pie controls -->
+    <string name="pa_pie_date_format">ccc, dd MMM yyyy</string>
+    <string name="pa_pie_hour_format_12">hh:mm</string>
+    <string name="pa_pie_hour_format_24">HH:mm</string>
+    <string name="pa_pie_am_pm">a</string>
+    <string name="nav_bar_enabled">Navigation Bar Enabled</string>
+    <string name="nav_bar_disabled">Navigation Bar Disabled</string>
+
 </resources>
