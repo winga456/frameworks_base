@@ -605,6 +605,8 @@ final class UiModeManagerService extends SystemService
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.SETTINGS_BG_COLOR, 0xffffffff);
                 Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.SETTINGS_ICON_COLOR, 0xff009688);
+                Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.SETTINGS_TITLE_TEXT_COLOR, 0xff009688);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.SETTINGS_CATEGORY_TEXT_COLOR, 0xff009688);
@@ -642,6 +644,8 @@ final class UiModeManagerService extends SystemService
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.SETTINGS_BG_COLOR, 0xff1b1f23);
                 Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.SETTINGS_ICON_COLOR, 0xff009688);
+                Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.SETTINGS_TITLE_TEXT_COLOR, 0xff009688);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.SETTINGS_CATEGORY_TEXT_COLOR, 0xff009688);
@@ -678,6 +682,8 @@ final class UiModeManagerService extends SystemService
                         Settings.Secure.DOZE_NOTIFICATION_INVERT_ENABLED, 0);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.SETTINGS_BG_COLOR, 0xff000000);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.SETTINGS_ICON_COLOR, 0xff1976D2);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.SETTINGS_TITLE_TEXT_COLOR, 0xff1976D2);
                 Settings.System.putInt(mContext.getContentResolver(),
@@ -717,6 +723,14 @@ final class UiModeManagerService extends SystemService
                         Settings.System.STATUS_BAR_EXPANDED_HEADER_ICON_COLOR, 0xfffff400);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.STATUS_BAR_EXPANDED_HEADER_BG_COLOR, 0xff0f2e4c);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.SETTINGS_BG_COLOR, 0xff0f2e4c);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.SETTINGS_ICON_COLOR, 0xfffff400);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.SETTINGS_TITLE_TEXT_COLOR, 0xff00ff00);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.SETTINGS_CATEGORY_TEXT_COLOR, 0xff0f2e4c);
 //            } else if (mNightMode == UiModeManager.MODE_NIGHT_CUSTOM_2) { *enable this after theme resources are implemented
 //            } else if (mNightMode == UiModeManager.MODE_NIGHT_CUSTOM_3) { *enable this after theme resources are implemented
 //            } else if (mNightMode == UiModeManager.MODE_NIGHT_CUSTOM_4) { *enable this after theme resources are implemented
