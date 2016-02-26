@@ -6235,10 +6235,10 @@ public final class Settings {
         public static final String BRIGHTNESS_ICON = "brightness_icon";
 
         /**
-         * Option to use two columns in dashboard settings by default
+         * Option to use more columns in dashboard settings by default
          * @hide
          */
-        public static final String DASHBOARD_COLUMN_COUNT = "dashboard_column_count";
+        public static final String DASHBOARD_COLUMNS_COUNT = "dashboard_columns_count";
 
         /**
          * Override and forcefully disable the fullscreen keyboard
@@ -6572,6 +6572,12 @@ public final class Settings {
          * @hide
          */
         public static final String SETTINGS_CATEGORY_TEXT_COLOR = "settings_category_text_color";
+
+        /**
+         * Dashboard divider color
+         * @hide
+         */
+        public static final String SETTINGS_DIVIDER_COLOR = "settings_divider_color";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
