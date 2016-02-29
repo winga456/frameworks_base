@@ -26,7 +26,6 @@ import android.content.res.ColorStateList;
 import android.database.ContentObserver;
 import android.graphics.Color;
 import android.graphics.PorterDuff.Mode;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -76,9 +75,6 @@ public class StatusBarIconController {
 
     public static final String ICON_BLACKLIST = "icon_blacklist";
 
-    private static final int GREETING_ALWAYS = 0;
-    private static final int GREETING_HIDDEN = 2;
-
     private static final int BATTERY_COLORS              = 0;
     private static final int STATUS_NETWORK_ICON_COLORS  = 1;
 
@@ -97,9 +93,6 @@ public class StatusBarIconController {
     private LinearLayout mStatusIconsKeyguard;
     private SignalClusterView mSignalCluster;
     private SignalClusterView mSignalClusterKeyguard;
-    private LinearLayout mGreetingLayout;
-    private TextView mGreetingView;
-    private int mGreetingFontStyle;
     private IconMerger mNotificationIcons;
     private View mNotificationIconArea;
     private ImageView mMoreIcon;
@@ -111,8 +104,6 @@ public class StatusBarIconController {
     private Ticker mTicker;
     private View mTickerView;
 
-    private int mGreetingColor;
-    private int mGreetingColorTint;
     private int mBatteryColor;
     private int mBatteryColorOld;
     private int mBatteryColorTint;
@@ -153,18 +144,12 @@ public class StatusBarIconController {
     private Animator mColorTransitionAnimator;
     private ValueAnimator mTintAnimator;
 
-    private int mShowGreeting;
-    private boolean mHideGreeting = false;
-    private int mGreetingTimeout;
-    private boolean mIsGreetingVisible = false;
     private int mColorToChange;
 
-    private boolean mShowTicker;
+    private boolean mShowTicker = false;
     private boolean mTicking;
     private boolean mTickingEnd = false;
     private boolean mHeadsUpEnabled;
-
-    private int mGreetingFontSize = 14;
 
     private final Handler mHandler;
     private boolean mTransitionDeferring;
@@ -192,8 +177,6 @@ public class StatusBarIconController {
         mSignalCluster = (SignalClusterView) statusBar.findViewById(R.id.signal_cluster);
         mSignalClusterKeyguard = (SignalClusterView) keyguardStatusBar.findViewById(R.id.signal_cluster);
         mNotificationIconArea = statusBar.findViewById(R.id.notification_icon_area_inner);
-        mGreetingLayout = (LinearLayout) statusBar.findViewById(R.id.status_bar_greeting_layout);
-        mGreetingView = (TextView) statusBar.findViewById(R.id.status_bar_greeting_view);
         mNotificationIcons = (IconMerger) statusBar.findViewById(R.id.notificationIcons);
         mMoreIcon = (ImageView) statusBar.findViewById(R.id.moreIcon);
         mNotificationIcons.setOverflowIndicator(mMoreIcon);
@@ -215,13 +198,10 @@ public class StatusBarIconController {
         settingsObserver.observe();
 
         setUpCustomColors();
-        updateGreetingFontSize();
         setCenterClockVisibility();
     }
 
     private void setUpCustomColors() {
-        mGreetingColor = StatusBarColorHelper.getGreetingColor(mContext);
-        mGreetingColorTint = mGreetingColor;
         mBatteryColor = StatusBarColorHelper.getBatteryColor(mContext);
         mBatteryColorOld = mBatteryColor;
         mBatteryColorTint = mBatteryColor;
@@ -357,9 +337,6 @@ public class StatusBarIconController {
 
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
-            resolver.registerContentObserver(Settings.System
-                    .getUriFor(Settings.System.STATUS_BAR_GREETING_FONT_SIZE),
-                    false, this, UserHandle.USER_CURRENT);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_CENTER_CLOCK_HIDE),
                     false, this, UserHandle.USER_ALL);
@@ -378,37 +355,7 @@ public class StatusBarIconController {
                 Settings.System.STATUS_BAR_CENTER_CLOCK_NUMBER_OF_NOTIFICATION_ICONS))) {
                 setCenterClockVisibility();
             }
-            updateGreetingFontSize();
         }
-    }
-
-    public void showGreeting(boolean isPreview) {
-        if (mIsGreetingVisible || mTicking) {
-            return;
-        }
-        mIsGreetingVisible = true;
-        updateGreetingFontStyle();
-        if (isPreview) {
-            hideSystemIconArea(true);
-            hideNotificationIconArea(true);
-        } else {
-            animateHide(mSystemIconArea, false);
-            if (ClockController.mClockLocation == ClockController.STYLE_CLOCK_CENTER) {
-                animateHide(mCenterClock, false);
-            }
-            animateHide(mNotificationIconArea, false);
-        }
-        animateShow(mGreetingLayout, true, true);
-    }
-
-    public void hideGreeting() {
-        animateShow(mSystemIconArea, true);
-        if (ClockController.mClockLocation == ClockController.STYLE_CLOCK_CENTER) {
-            animateShow(mCenterClock, true);
-            setCenterClockVisibility();
-        }
-        animateShow(mNotificationIconArea, true);
-        animateHide(mGreetingLayout, true, true);
     }
 
     public void hideSystemIconArea(boolean animate) {
@@ -419,14 +366,10 @@ public class StatusBarIconController {
     }
 
     public void showSystemIconArea(boolean animate) {
-        if (mShowGreeting != GREETING_HIDDEN && !mHideGreeting && animate) {
-            showGreeting(false);
-        } else {
-            animateShow(mSystemIconArea, animate);
-            if (ClockController.mClockLocation == ClockController.STYLE_CLOCK_CENTER) {
-                animateShow(mCenterClock, animate);
-                setCenterClockVisibility();
-            }
+        animateShow(mSystemIconArea, animate);
+        if (ClockController.mClockLocation == ClockController.STYLE_CLOCK_CENTER) {
+            animateShow(mCenterClock, animate);
+            setCenterClockVisibility();
         }
     }
 
@@ -435,9 +378,7 @@ public class StatusBarIconController {
     }
 
     public void showNotificationIconArea(boolean animate) {
-        if (mShowGreeting == GREETING_HIDDEN || mHideGreeting || !animate) {
-            animateShow(mNotificationIconArea, animate);
-        }
+        animateShow(mNotificationIconArea, animate);
     }
 
     public void setCenterClockVisibility() {
@@ -485,14 +426,10 @@ public class StatusBarIconController {
         mDemoStatusIcons.dispatchDemoCommand(command, args);
     }
 
-    private void animateHide(final View v, boolean animate) {
-        animateHide(v, animate, false);
-    }
-
     /**
      * Hides a view.
      */
-    private void animateHide(final View v, boolean animate, final boolean isGreeting) {
+    private void animateHide(final View v, boolean animate) {
         v.animate().cancel();
         if (!animate) {
             v.setAlpha(0f);
@@ -502,7 +439,7 @@ public class StatusBarIconController {
         v.animate()
                 .alpha(0f)
                 .setDuration(160)
-                .setStartDelay(mIsGreetingVisible && isGreeting ? mGreetingTimeout : 0)
+                .setStartDelay(0)
                 .setInterpolator(PhoneStatusBar.ALPHA_OUT)
                 .withEndAction(new Runnable() {
                     @Override
@@ -512,22 +449,14 @@ public class StatusBarIconController {
                             mTicking = false;
                             mTickingEnd = false;
                         }
-                        if (isGreeting) {
-                            mIsGreetingVisible = false;
-                            mHideGreeting = true;
-                        }
                     }
                 });
-    }
-
-    private void animateShow(View v, boolean animate) {
-        animateShow(v, animate, false);
     }
 
     /**
      * Shows a view, and synchronizes the animation with Keyguard exit animations, if applicable.
      */
-    private void animateShow(View v, boolean animate, boolean isGreeting) {
+    private void animateShow(View v, boolean animate) {
         v.animate().cancel();
         v.setVisibility(View.VISIBLE);
         if (!animate) {
@@ -538,26 +467,15 @@ public class StatusBarIconController {
                 .alpha(1f)
                 .setDuration(320)
                 .setInterpolator(PhoneStatusBar.ALPHA_IN)
-                .setStartDelay(mIsGreetingVisible && !isGreeting ? mGreetingTimeout : 50);
+                .setStartDelay(50)
 
-        if (isGreeting) {
-            v.animate()
-                    .withEndAction(new Runnable() {
-                        @Override
-                        public void run() {
-                            hideGreeting();
-                        }
-                    });
-        } else {
-            // We need to clean up any pending end action from animateHide if we call
-            // both hide and show in the same frame before the animation actually gets started.
-            // cancel() doesn't really remove the end action.
-            v.animate()
-                    .withEndAction(null);
-        }
+                // We need to clean up any pending end action from animateHide if we call
+                // both hide and show in the same frame before the animation actually gets started.
+                // cancel() doesn't really remove the end action.
+                .withEndAction(null);
 
         // Synchronize the motion with the Keyguard fading if necessary.
-        if (mPhoneStatusBar.isKeyguardFadingAway() && !mIsGreetingVisible && !isGreeting) {
+        if (mPhoneStatusBar.isKeyguardFadingAway()) {
             v.animate()
                     .setDuration(mPhoneStatusBar.getKeyguardFadingAwayDuration())
                     .setInterpolator(mLinearOutSlowIn)
@@ -603,8 +521,6 @@ public class StatusBarIconController {
 
     private void setIconTintInternal(float darkIntensity) {
         mDarkIntensity = darkIntensity;
-        mGreetingColorTint = (int) ArgbEvaluator.getInstance().evaluate(mDarkIntensity,
-                mGreetingColor,  StatusBarColorHelper.getGreetingColorDark(mContext));
         mBatteryColorTint = (int) ArgbEvaluator.getInstance().evaluate(mDarkIntensity,
                 mBatteryColor, StatusBarColorHelper.getBatteryColorDark(mContext));
         mBatteryTextColorTint = (int) ArgbEvaluator.getInstance().evaluate(mDarkIntensity,
@@ -639,7 +555,6 @@ public class StatusBarIconController {
     }
 
     private void applyIconTint() {
-        mGreetingView.setTextColor(mGreetingColorTint);
         mBatteryMeterView.setBatteryColors(mBatteryColorTint);
         mBatteryMeterView.setTextColor(mBatteryTextColorTint);
         mSignalCluster.setIconTint(
@@ -650,7 +565,7 @@ public class StatusBarIconController {
         }
         mMoreIcon.setColorFilter(mNotificationIconColorTint, Mode.MULTIPLY);
         applyNotificationIconsTint();
-        if (mShowTicker && mTicker != null && mTickerView != null) {
+        if (mTicker != null && mTickerView != null) {
             mTicker.setTextColor(mTickerTextColorTint);
         }
     }
@@ -664,7 +579,7 @@ public class StatusBarIconController {
                 v.setImageTintList(ColorStateList.valueOf(mNotificationIconColorTint));
             }
         }
-        if (mShowTicker && mTicker != null && mTickerView != null) {
+        if (mTicker != null && mTickerView != null) {
             mTicker.setIconColorTint(ColorStateList.valueOf(mTickerIconColorTint));
         }
     }
@@ -779,31 +694,6 @@ public class StatusBarIconController {
         return animator;
     }
 
-    public void resetHideGreeting() {
-        if (mShowGreeting == GREETING_ALWAYS) {
-            mHideGreeting = false;
-        }
-    }
-    public void updateShowGreeting(int show) {
-        mShowGreeting = show;
-        updateGreetingFontStyle();
-    }
-
-    public void updateGreetingText(String text) {
-        mGreetingView.setText(text);
-        updateGreetingFontStyle();
-    }
-
-    public void updateGreetingTimeout(int timeout) {
-        mGreetingTimeout = timeout;
-    }
-
-    public void updateGreetingColor() {
-        mGreetingColor = StatusBarColorHelper.getGreetingColor(mContext);
-        mGreetingView.setTextColor(mGreetingColor);
-        mGreetingColorTint = mGreetingColor;
-    }
-
     public void updateBatteryIndicator(int indicator) {
         mBatteryMeterView.updateBatteryIndicator(indicator);
         mBatteryMeterViewKeyguard.updateBatteryIndicator(indicator);
@@ -886,7 +776,9 @@ public class StatusBarIconController {
 
     public void updateShowTicker(boolean show) {
         mShowTicker = show;
-        inflateTickerView();
+        if (mShowTicker && (mTicker == null || mTickerView == null)) {
+            inflateTickerView();
+        }
     }
 
     public void showHeadsUpState(boolean show) {
@@ -910,7 +802,7 @@ public class StatusBarIconController {
     }
 
     private void updateTickerIconColor(int color) {
-        if (!mHeadsUpEnabled && mShowTicker && mTicker != null && mTickerView != null) {
+        if (!mHeadsUpEnabled && mTicker != null && mTickerView != null) {
             mTicker.setIconColorTint(ColorStateList.valueOf(color));
         }
     }
@@ -918,7 +810,7 @@ public class StatusBarIconController {
     public void updateTickerTextColor() {
         mTickerTextColor = StatusBarColorHelper.getTickerTextColor(mContext);
         mTickerTextColorTint = mTickerTextColor;
-        if (!mHeadsUpEnabled && mShowTicker && mTicker != null && mTickerView != null) {
+        if (!mHeadsUpEnabled && mTicker != null && mTickerView != null) {
             mTicker.setTextColor(mTickerTextColor);
         }
     }
@@ -927,118 +819,18 @@ public class StatusBarIconController {
         return mNotificationIcons.getChildCount();
     }
 
-    private void updateGreetingFontSize() {
-        ContentResolver resolver = mContext.getContentResolver();
-
-        mGreetingFontSize = Settings.System.getIntForUser(resolver,
-                Settings.System.STATUS_BAR_GREETING_FONT_SIZE, 14,
-                UserHandle.USER_CURRENT);
-
-        mGreetingView.setTextSize(mGreetingFontSize);
-    }
-
-    private void updateGreetingFontStyle() {
-        final int mGreetingFontStyle = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.STATUS_BAR_GREETING_FONT_STYLE, FontHelper.FONT_NORMAL);
-
-        getFontStyle(mGreetingFontStyle);
-    }
-
-    public void getFontStyle(int font) {
-        switch (font) {
-            case FontHelper.FONT_NORMAL:
-            default:
-                mGreetingView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
-                break;
-            case FontHelper.FONT_ITALIC:
-                mGreetingView.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
-                break;
-            case FontHelper.FONT_BOLD:
-                mGreetingView.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
-                break;
-            case FontHelper.FONT_BOLD_ITALIC:
-                mGreetingView.setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
-                break;
-            case FontHelper.FONT_LIGHT:
-                mGreetingView.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
-                break;
-            case FontHelper.FONT_LIGHT_ITALIC:
-                mGreetingView.setTypeface(Typeface.create("sans-serif-light", Typeface.ITALIC));
-                break;
-            case FontHelper.FONT_THIN:
-                mGreetingView.setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
-                break;
-            case FontHelper.FONT_THIN_ITALIC:
-                mGreetingView.setTypeface(Typeface.create("sans-serif-thin", Typeface.ITALIC));
-                break;
-            case FontHelper.FONT_CONDENSED:
-                mGreetingView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
-                break;
-            case FontHelper.FONT_CONDENSED_ITALIC:
-                mGreetingView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
-                break;
-            case FontHelper.FONT_CONDENSED_LIGHT:
-                mGreetingView.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
-                break;
-            case FontHelper.FONT_CONDENSED_LIGHT_ITALIC:
-                mGreetingView.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
-                break;
-            case FontHelper.FONT_CONDENSED_BOLD:
-                mGreetingView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
-                break;
-            case FontHelper.FONT_CONDENSED_BOLD_ITALIC:
-                mGreetingView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
-                break;
-            case FontHelper.FONT_MEDIUM:
-                mGreetingView.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
-                break;
-            case FontHelper.FONT_MEDIUM_ITALIC:
-                mGreetingView.setTypeface(Typeface.create("sans-serif-medium", Typeface.ITALIC));
-                break;
-            case FontHelper.FONT_BLACK:
-                mGreetingView.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
-                break;
-            case FontHelper.FONT_BLACK_ITALIC:
-                mGreetingView.setTypeface(Typeface.create("sans-serif-black", Typeface.ITALIC));
-                break;
-            case FontHelper.FONT_DANCINGSCRIPT:
-                mGreetingView.setTypeface(Typeface.create("cursive", Typeface.NORMAL));
-                break;
-            case FontHelper.FONT_DANCINGSCRIPT_BOLD:
-                mGreetingView.setTypeface(Typeface.create("cursive", Typeface.BOLD));
-                break;
-            case FontHelper.FONT_COMINGSOON:
-                mGreetingView.setTypeface(Typeface.create("casual", Typeface.NORMAL));
-                break;
-            case FontHelper.FONT_NOTOSERIF:
-                mGreetingView.setTypeface(Typeface.create("serif", Typeface.NORMAL));
-                break;
-            case FontHelper.FONT_NOTOSERIF_ITALIC:
-                mGreetingView.setTypeface(Typeface.create("serif", Typeface.ITALIC));
-                break;
-            case FontHelper.FONT_NOTOSERIF_BOLD:
-                mGreetingView.setTypeface(Typeface.create("serif", Typeface.BOLD));
-                break;
-            case FontHelper.FONT_NOTOSERIF_BOLD_ITALIC:
-                mGreetingView.setTypeface(Typeface.create("serif", Typeface.BOLD_ITALIC));
-                break;
-        }
-    }
-
     private void inflateTickerView() {
-        if (!mHeadsUpEnabled && mShowTicker && (mTicker == null || mTickerView == null)) {
-            final ViewStub tickerStub = (ViewStub) mStatusBar.findViewById(R.id.ticker_stub);
-            if (tickerStub != null) {
-                mTickerView = tickerStub.inflate();
-                mTicker = new MyTicker(mContext, mStatusBar);
+        final ViewStub tickerStub = (ViewStub) mStatusBar.findViewById(R.id.ticker_stub);
+        if (tickerStub != null) {
+            mTickerView = tickerStub.inflate();
+            mTicker = new MyTicker(mContext, mStatusBar);
 
-                TickerView tickerView = (TickerView) mStatusBar.findViewById(R.id.tickerText);
-                tickerView.mTicker = mTicker;
-                updateTickerIconColor(mTickerIconColor);
-                updateTickerTextColor();
-            } else {
-                mShowTicker = false;
-            }
+            TickerView tickerView = (TickerView) mStatusBar.findViewById(R.id.tickerText);
+            tickerView.mTicker = mTicker;
+            updateTickerIconColor(mNotificationIconColor);
+            updateTickerTextColor();
+        } else {
+            mShowTicker = false;
         }
     }
 
@@ -1063,7 +855,7 @@ public class StatusBarIconController {
 
         @Override
         public void tickerStarting() {
-            if (!mShowTicker || mIsGreetingVisible) return;
+            if (!mShowTicker) return;
             mTicking = true;
             hideSystemIconArea(true);
             hideNotificationIconArea(true);
@@ -1072,7 +864,7 @@ public class StatusBarIconController {
 
         @Override
         public void tickerDone() {
-            if (!mShowTicker || mIsGreetingVisible) return;
+            if (!mShowTicker) return;
             animateShow(mSystemIconArea, true);
             if (ClockController.mClockLocation == ClockController.STYLE_CLOCK_CENTER) {
                 animateShow(mCenterClock, true);
@@ -1084,7 +876,7 @@ public class StatusBarIconController {
         }
 
         public void tickerHalting() {
-            if (!mShowTicker || mIsGreetingVisible) return;
+            if (!mShowTicker) return;
             animateShow(mSystemIconArea, true);
             if (ClockController.mClockLocation == ClockController.STYLE_CLOCK_CENTER) {
                 animateShow(mCenterClock, true);

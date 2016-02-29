@@ -5972,31 +5972,6 @@ public final class Settings {
         @ChaosLab(name="Identicons", classification=Classification.NEW_FIELD)
         public static final String IDENTICONS_STYLE = "identicons_style";
 
-
-        /**
-         *  Color of the greeting text on the status bar
-         * @hide
-         */
-        public static final String STATUS_BAR_GREETING_COLOR = "status_bar_greeting_color";
-
-        /**
-         *  Color of the greeting text on the status bar
-         * @hide
-         */
-        public static final String STATUS_BAR_GREETING_COLOR_DARK_MODE = "status_bar_greeting_color_dark_mode";
-
-        /**
-         *  Font style for status bar greeting text
-         * @hide
-         */
-        public static final String STATUS_BAR_GREETING_FONT_STYLE = "status_bar_greeting_font_style";
-
-        /**
-         *  Font size for status bar greeting text
-         * @hide
-         */
-        public static final String STATUS_BAR_GREETING_FONT_SIZE = "status_bar_greeting_font_size";
-
         /**
          * Alternative recent apps integration using OmniSwitch
          * @hide

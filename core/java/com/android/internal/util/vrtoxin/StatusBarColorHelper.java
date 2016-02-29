@@ -57,18 +57,6 @@ public class StatusBarColorHelper {
         return new ColorStateList(states, colors);
     }
 
-    public static int getGreetingColor(Context context) {
-        return Settings.System.getInt(context.getContentResolver(),
-                Settings.System.STATUS_BAR_GREETING_COLOR, WHITE);
-    }
-
-    public static int getGreetingColorDark(Context context) {
-        final int color = Settings.System.getInt(context.getContentResolver(),
-                Settings.System.STATUS_BAR_GREETING_COLOR_DARK_MODE,
-                TRANSLUCENT_BLACK);
-        return (153 << 24) | (color & 0x00ffffff);
-    }
-
     public static int getBatteryColor(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
                 Settings.System.STATUS_BAR_BATTERY_STATUS_BATTERY_COLOR, WHITE);
