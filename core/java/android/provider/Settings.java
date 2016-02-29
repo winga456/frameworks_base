@@ -2626,8 +2626,13 @@ public final class Settings {
          */
         public static final String QS_TYPE = "qs_type";
 
-        /** Whether to show the brightness slider in quick settings panel.
+        /** Allow opening quick settings in floating window mode
          *
+         * @hide
+         */
+        public static final String QS_FLOAT_MODE = "qs_float_mode";
+
+        /** Whether to show the brightness slider in quick settings panel.
          * @hide
          */
         public static final String QS_SHOW_BRIGHTNESS_SLIDER = "qs_show_brightness_slider";
