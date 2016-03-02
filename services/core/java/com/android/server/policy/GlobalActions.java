@@ -53,6 +53,9 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.DrawableWrapper;
 import android.graphics.drawable.RippleDrawable;
 import android.graphics.PorterDuff.Mode;
+import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraAccessException;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -142,6 +145,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private ToggleAction mAppSideBarModeOn;
     private ToggleAction mGestureAnywhereModeOn;
     private ToggleAction mFloatingWindowsModeOn;
+    private boolean mTorchEnabled = false;
 
     private MyAdapter mAdapter;
 
@@ -360,6 +364,8 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 mItems.add(getScreenshotAction());
             } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_ONTHEGO)) {
                 mItems.add(getOnTheGoAction());
+            } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_TORCH)) {
+                mItems.add(getTorchToggleAction());
             } else if (config.getClickAction().equals(PowerMenuConstants.ACTION_SOUND) && mShowSilentToggle) {
                 if (!mHasVibrator) {
                     mSilentModeAction = new SilentModeToggleAction();
@@ -893,6 +899,37 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
              public boolean showBeforeProvisioning() {
                  return true;
              }
+        };
+    }
+
+    private Action getTorchToggleAction() {
+        return new SinglePressAction(com.android.internal.R.drawable.ic_lock_torch,
+                R.string.global_action_torch) {
+
+            public void onPress() {
+                try {
+                    CameraManager cameraManager = (CameraManager)
+                            mContext.getSystemService(Context.CAMERA_SERVICE);
+                    for (final String cameraId : cameraManager.getCameraIdList()) {
+                        CameraCharacteristics characteristics =
+                            cameraManager.getCameraCharacteristics(cameraId);
+                        int orient = characteristics.get(CameraCharacteristics.LENS_FACING);
+                        if (orient == CameraCharacteristics.LENS_FACING_BACK) {
+                            cameraManager.setTorchMode(cameraId, !mTorchEnabled);
+                            mTorchEnabled = !mTorchEnabled;
+                        }
+                    }
+                } catch (CameraAccessException e) {
+                }
+            }
+
+            public boolean showDuringKeyguard() {
+                return true;
+            }
+
+            public boolean showBeforeProvisioning() {
+                return false;
+            }
         };
     }
 

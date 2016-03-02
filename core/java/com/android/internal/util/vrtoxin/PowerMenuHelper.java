@@ -128,6 +128,9 @@ public class PowerMenuHelper {
         } else if (clickAction.equals(PowerMenuConstants.ACTION_ONTHEGO)) {
             return res.getDrawable(
                 com.android.internal.R.drawable.ic_lock_onthego);
+        } else if (clickAction.equals(PowerMenuConstants.ACTION_TORCH)) {
+            return res.getDrawable(
+                com.android.internal.R.drawable.ic_lock_torch);
         }
         return null;
     }

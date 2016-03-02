@@ -311,4 +311,8 @@
 
   <java-symbol type="string" name="default_empty_shade_text" />
 
+  <!-- Powermenu Torch -->
+  <java-symbol type="drawable" name="ic_lock_torch" />
+  <java-symbol type="string" name="global_action_torch" />
+
 </resources>

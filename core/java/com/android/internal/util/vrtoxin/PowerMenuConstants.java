@@ -37,6 +37,7 @@ public class PowerMenuConstants {
     public static final String ACTION_SOUND                = "**sound**";
     public static final String ACTION_SCREENRECORD         = "**screenrecord**";
     public static final String ACTION_ONTHEGO              = "**onthego**";
+    public static final String ACTION_TORCH                = "**torch**";
 
     // no action
     public static final String ACTION_NULL            = "**null**";
