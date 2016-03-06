@@ -309,4 +309,6 @@
   <java-symbol type="string" name="notify_battery_fully_charged_title" />
   <java-symbol type="string" name="notify_battery_fully_charged_text" />
 
+  <java-symbol type="string" name="default_empty_shade_text" />
+
 </resources>

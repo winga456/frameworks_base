@@ -128,7 +128,9 @@ import com.android.internal.util.vrtoxin.ActionConstants;
 import com.android.internal.util.vrtoxin.ActionHelper;
 import com.android.internal.util.vrtoxin.Blur;
 import com.android.internal.util.vrtoxin.DUPackageMonitor;
+import com.android.internal.util.vrtoxin.EmptyShadeTextHelper;
 import com.android.internal.util.vrtoxin.FontHelper;
+import com.android.internal.util.vrtoxin.StatusBarColorHelper;
 import com.android.internal.util.vrtoxin.WeatherControllerImpl;
 
 import com.android.keyguard.CarrierText;
@@ -679,6 +681,21 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_CUSTOM_HEADER_DEFAULT), 
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EMPTY_SHADE_TEXT_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EMPTY_SHADE_FONT_STYLE),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EMPTY_SHADE_TEXT_SIZE),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EMPTY_SHADE_TEXT_CUSTOM),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EMPTY_SHADE_IMAGE),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -865,8 +882,20 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.STATUS_BAR_NOTIF_COUNT_TEXT_COLOR))) {
                 updateNotifCountTextColor();*/
             } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_CUSTOM_HEADER_DEFAULT))) {
-                    updateHeaderView();
+                    Settings.System.STATUS_BAR_EMPTY_SHADE_TEXT_COLOR))) {
+                setEmptyShadeTextColor();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EMPTY_SHADE_FONT_STYLE))) {
+                setEmptyShadeFontStyle();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EMPTY_SHADE_TEXT_SIZE))) {
+                setEmptyShadeTextSize();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EMPTY_SHADE_TEXT_CUSTOM))) {
+                setEmptyShadeText();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EMPTY_SHADE_IMAGE))) {
+                showEmptyShadeImage();
             }
             update();
         }
@@ -1609,6 +1638,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mStackScroller.setSpeedBumpView(speedBump);
         mEmptyShadeView = (EmptyShadeView) LayoutInflater.from(mContext).inflate(
                 R.layout.status_bar_no_notifications, mStackScroller, false);
+        if (mEmptyShadeView != null) {
+            mEmptyShadeView.setUp(this);
+        }
         mStackScroller.setEmptyShadeView(mEmptyShadeView);
         mDismissView = (DismissView) LayoutInflater.from(mContext).inflate(
                 R.layout.status_bar_notification_dismiss_all, mStackScroller, false);
@@ -2833,6 +2865,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         setCarrierLabelFontStyle();
         updateCarrierLabelSpot();
         updateShowTicker();
+        setEmptyShadeTextColor();
+        setEmptyShadeFontStyle();
+        setEmptyShadeTextSize();
+        setEmptyShadeText();
+        showEmptyShadeImage();
     }
 
     private void updateCarrierLabel() {
@@ -3172,9 +3209,129 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     }*/
 
-    private void updateHeaderView() {
-        if (mStatusBarHeaderMachine != null) {
-            mStatusBarHeaderMachine.updateEnablement();
+    private void setEmptyShadeTextColor() {
+        int color = StatusBarColorHelper.getEmptyShadeTextColor(mContext);
+        if (mEmptyShadeView != null) {
+            mEmptyShadeView.updateTextColor(color);
+        }
+    }
+
+    private void setEmptyShadeFontStyle() {
+        final int mEmptyShadeFontStyle = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_EMPTY_SHADE_FONT_STYLE, 0);
+
+        getEmptyShadeFontStyle(mEmptyShadeFontStyle);
+    }
+
+    public void getEmptyShadeFontStyle(int font) {
+        if (mEmptyShadeView == null) return;
+        switch (font) {
+            case FontHelper.FONT_NORMAL:
+            default:
+                mEmptyShadeView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_ITALIC:
+                mEmptyShadeView.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_BOLD:
+                mEmptyShadeView.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_BOLD_ITALIC:
+                mEmptyShadeView.setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
+                break;
+            case FontHelper.FONT_LIGHT:
+                mEmptyShadeView.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_LIGHT_ITALIC:
+                mEmptyShadeView.setTypeface(Typeface.create("sans-serif-light", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_THIN:
+                mEmptyShadeView.setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_THIN_ITALIC:
+                mEmptyShadeView.setTypeface(Typeface.create("sans-serif-thin", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_CONDENSED:
+                mEmptyShadeView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_CONDENSED_ITALIC:
+                mEmptyShadeView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_CONDENSED_LIGHT:
+                mEmptyShadeView.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_CONDENSED_LIGHT_ITALIC:
+                mEmptyShadeView.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_CONDENSED_BOLD:
+                mEmptyShadeView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_CONDENSED_BOLD_ITALIC:
+                mEmptyShadeView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
+                break;
+            case FontHelper.FONT_MEDIUM:
+                mEmptyShadeView.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_MEDIUM_ITALIC:
+                mEmptyShadeView.setTypeface(Typeface.create("sans-serif-medium", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_BLACK:
+                mEmptyShadeView.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_BLACK_ITALIC:
+                mEmptyShadeView.setTypeface(Typeface.create("sans-serif-black", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT:
+                mEmptyShadeView.setTypeface(Typeface.create("cursive", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT_BOLD:
+                mEmptyShadeView.setTypeface(Typeface.create("cursive", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_COMINGSOON:
+                mEmptyShadeView.setTypeface(Typeface.create("casual", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_NOTOSERIF:
+                mEmptyShadeView.setTypeface(Typeface.create("serif", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_NOTOSERIF_ITALIC:
+                mEmptyShadeView.setTypeface(Typeface.create("serif", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD:
+                mEmptyShadeView.setTypeface(Typeface.create("serif", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD_ITALIC:
+                mEmptyShadeView.setTypeface(Typeface.create("serif", Typeface.BOLD_ITALIC));
+                break;
+        }
+    }
+
+    private void setEmptyShadeText() {
+        String emptyShadeText = Settings.System.getString(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_EMPTY_SHADE_TEXT_CUSTOM);
+
+        if (emptyShadeText == null || emptyShadeText.isEmpty()) {
+            emptyShadeText = EmptyShadeTextHelper.getDefaultEmptyShadeText(mContext);
+        }
+        if (mEmptyShadeView != null) {
+            mEmptyShadeView.setCustomText(emptyShadeText);
+        }
+    }
+
+    private void setEmptyShadeTextSize() {
+        int mEmptyShadeFontSize = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_EMPTY_SHADE_TEXT_SIZE, 14);
+
+        if (mEmptyShadeView != null) {
+            mEmptyShadeView.setTextSize(mEmptyShadeFontSize);
+        }
+    }
+
+    private void showEmptyShadeImage() {
+        final boolean show = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_EMPTY_SHADE_IMAGE, 0) == 1;
+
+        if (mEmptyShadeView != null) {
+            mEmptyShadeView.showRomLogo(show);
         }
     }
 

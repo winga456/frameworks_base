@@ -42,6 +42,31 @@ public class ActionHelper {
     private static final String SYSTEMUI_METADATA_NAME = "com.android.systemui";
     private static final String SETTINGS_METADATA_NAME = "com.android.settings";
 
+    public static ArrayList<ActionConfig> getPanelShortcutsConfig(Context context) {
+        String config = Settings.System.getStringForUser(
+                    context.getContentResolver(),
+                    Settings.System.PANEL_SHORTCUTS,
+                    UserHandle.USER_CURRENT);
+        if (config == null) {
+            config = "";
+        }
+
+        return (ConfigSplitHelper.getActionConfigValues(context, config, null, null, true));
+    }
+
+    public static void setPanelShortcutsConfig(Context context,
+            ArrayList<ActionConfig> actionConfig, boolean reset) {
+        String config;
+        if (reset) {
+            config = "";
+        } else {
+            config = ConfigSplitHelper.setActionConfig(actionConfig, true);
+        }
+        Settings.System.putString(context.getContentResolver(),
+                    Settings.System.PANEL_SHORTCUTS,
+                    config);
+    }
+
     // get and set the lockcreen button bar configs from provider and return propper arraylist objects
     // @ActionConfig
     public static ArrayList<ActionConfig> getLockscreenButtonBarConfig(Context context) {

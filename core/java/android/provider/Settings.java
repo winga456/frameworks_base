@@ -6554,10 +6554,84 @@ public final class Settings {
         public static final String SETTINGS_CATEGORY_TEXT_COLOR = "settings_category_text_color";
 
         /**
-         * Dashboard divider color
+         * Empty Shade Text Color
          * @hide
          */
-        public static final String SETTINGS_DIVIDER_COLOR = "settings_divider_color";
+        public static final String STATUS_BAR_EMPTY_SHADE_TEXT_COLOR = "status_bar_empty_shade_text_color";
+
+        /**
+         * Empty Shade Text Font Style
+         * @hide
+         */
+        public static final String STATUS_BAR_EMPTY_SHADE_FONT_STYLE = "status_bar_empty_shade_font_style";
+
+        /**
+         * Size of the Empty Shade Text
+         * @hide
+         */
+        public static final String STATUS_BAR_EMPTY_SHADE_TEXT_SIZE = "status_bar_empty_shade_text_size";
+
+        /**
+         * Empty Shade Custom Text
+         * @hide
+         */
+        public static final String STATUS_BAR_EMPTY_SHADE_TEXT_CUSTOM = "status_bar_empty_shade_text_custom";
+
+        /**
+         * Empty Shade Image
+         * @hide
+         */
+        public static final String STATUS_BAR_EMPTY_SHADE_IMAGE = "status_bar_empty_shade_image";
+
+        /**
+         * Custom shortcuts for the empty shade view
+         * @hide
+         */
+        public static final String PANEL_SHORTCUTS = "panel_shortcuts";
+
+        /**
+         * The way in which shortcuts will launch
+         * @hide
+         */
+        public static final String PANEL_SHORTCUTS_PRESS_TYPE = "panel_shortcuts_press_type";
+
+        /**
+         * Whether to colorize the shadeview shortcut bar icons
+         * 0: never
+         * 1: if the icon is an greyscale icon
+         * 2: always
+         * default: 0
+         * @hide
+         */
+        public static final String PANEL_SHORTCUTS_ICON_COLOR_MODE = "panel_shortcuts_icon_color_mode";
+
+        /**
+         * Color the shadeview shortcut bar ripple
+         * 0: Auto
+         * 1: Custom color
+         * 2: Disabled
+         * default: 2
+         * @hide
+         */
+        public static final String PANEL_SHORTCUTS_RIPPLE_COLOR_MODE = "panel_shortcuts_ripple_color_mode";
+
+        /**
+         * Header shortcuts ripple color
+         * @hide
+         */
+        public static final String PANEL_SHORTCUTS_RIPPLE_COLOR = "panel_shortcuts_ripple_color";
+
+        /**
+         * Color of shortcut bar icons
+         * @hide
+         */
+        public static final String PANEL_SHORTCUTS_ICON_COLOR = "panel_shortcuts_icon_color";
+
+        /**
+         * Size of the shortcut bar icons
+         * @hide
+         */
+        public static final String PANEL_SHORTCUTS_ICON_SIZE = "panel_shortcuts_icon_size";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
