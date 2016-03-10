@@ -23,9 +23,10 @@ import android.provider.Settings;
 
 import com.android.internal.util.NotificationColorUtil;
 
-public class HeaderBarColorHelper {
+public class EmptyShadeColorHelper {
 
     private static int WHITE = 0xffffffff;
+    private static int VRTOXIN_BLUE = 0xff1976D2;
 
     public static int getIconColor(Context context, Drawable d) {
         if (colorizeIcon(context, d)) {
@@ -95,5 +96,11 @@ public class HeaderBarColorHelper {
     private static int getCustomRippleColor(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
                 Settings.System.PANEL_SHORTCUTS_RIPPLE_COLOR, WHITE);
+    }
+
+    public static int getEmptyShadeTextColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_EMPTY_SHADE_TEXT_COLOR,
+                VRTOXIN_BLUE);
     }
 }

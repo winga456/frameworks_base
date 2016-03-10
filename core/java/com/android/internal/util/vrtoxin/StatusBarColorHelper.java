@@ -156,12 +156,6 @@ public class StatusBarColorHelper {
                 BLACK);
     }
 
-    public static int getEmptyShadeTextColor(Context context) {
-        return Settings.System.getInt(context.getContentResolver(),
-                Settings.System.STATUS_BAR_EMPTY_SHADE_TEXT_COLOR,
-                VRTOXIN_BLUE);
-    }
-
     /*public static int getNotifCountIconColor(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
                 Settings.System.STATUS_BAR_NOTIF_COUNT_ICON_COLOR, WHITE);

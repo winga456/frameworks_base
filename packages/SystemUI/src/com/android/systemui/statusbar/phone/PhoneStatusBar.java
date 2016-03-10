@@ -130,7 +130,7 @@ import com.android.internal.util.vrtoxin.Blur;
 import com.android.internal.util.vrtoxin.DUPackageMonitor;
 import com.android.internal.util.vrtoxin.EmptyShadeTextHelper;
 import com.android.internal.util.vrtoxin.FontHelper;
-import com.android.internal.util.vrtoxin.StatusBarColorHelper;
+import com.android.internal.util.vrtoxin.EmptyShadeColorHelper;
 import com.android.internal.util.vrtoxin.WeatherControllerImpl;
 
 import com.android.keyguard.CarrierText;
@@ -3210,7 +3210,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     }*/
 
     private void setEmptyShadeTextColor() {
-        int color = StatusBarColorHelper.getEmptyShadeTextColor(mContext);
+        int color = EmptyShadeColorHelper.getEmptyShadeTextColor(mContext);
         if (mEmptyShadeView != null) {
             mEmptyShadeView.updateTextColor(color);
         }
