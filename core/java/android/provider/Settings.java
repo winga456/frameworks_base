@@ -6584,6 +6584,12 @@ public final class Settings {
         public static final String STATUS_BAR_EMPTY_SHADE_IMAGE = "status_bar_empty_shade_image";
 
         /**
+         * Empty Shade Force View
+         * @hide
+         */
+        public static final String STATUS_BAR_EMPTY_SHADE_FORCE_SHOW = "status_bar_empty_shade_force_show";
+
+        /**
          * Custom shortcuts for the empty shade view
          * @hide
          */

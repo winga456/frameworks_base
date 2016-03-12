@@ -169,6 +169,7 @@ public class NotificationStackScrollLayout extends ViewGroup
     private boolean mScrollingEnabled;
     private DismissView mDismissView;
     private EmptyShadeView mEmptyShadeView;
+    private boolean mForceShadeView = false;
     private boolean mDismissAllInProgress;
 
     /**
@@ -2452,7 +2453,9 @@ public class NotificationStackScrollLayout extends ViewGroup
     public void goToFullShade(long delay) {
         updateSpeedBump(true /* visibility */);
         mDismissView.setInvisible();
-        mEmptyShadeView.setInvisible();
+        if (!mForceShadeView) {
+            mEmptyShadeView.setInvisible();
+        }
         mGoToFullShadeNeedsAnimation = true;
         mGoToFullShadeDelay = delay;
         mNeedsAnimation = true;
@@ -2539,36 +2542,46 @@ public class NotificationStackScrollLayout extends ViewGroup
     public void updateEmptyShadeView(boolean visible) {
         int oldVisibility = mEmptyShadeView.willBeGone() ? GONE : mEmptyShadeView.getVisibility();
         int newVisibility = visible ? VISIBLE : GONE;
-        if (oldVisibility != newVisibility) {
-            if (newVisibility != GONE) {
-                if (mEmptyShadeView.willBeGone()) {
-                    mEmptyShadeView.cancelAnimation();
-                } else {
-                    mEmptyShadeView.setInvisible();
-                }
-                mEmptyShadeView.setVisibility(newVisibility);
-                mEmptyShadeView.setWillBeGone(false);
-                updateContentHeight();
-                notifyHeightChangeListener(mEmptyShadeView);
-            } else {
-                Runnable onFinishedRunnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        mEmptyShadeView.setVisibility(GONE);
-                        mEmptyShadeView.setWillBeGone(false);
-                        updateContentHeight();
-                        notifyHeightChangeListener(mEmptyShadeView);
+        if (!mForceShadeView) {
+            if (oldVisibility != newVisibility) {
+                if (newVisibility != GONE) {
+                    if (mEmptyShadeView.willBeGone()) {
+                        mEmptyShadeView.cancelAnimation();
+                    } else {
+                        mEmptyShadeView.setInvisible();
                     }
-                };
-                if (mAnimationsEnabled) {
-                    mEmptyShadeView.setWillBeGone(true);
-                    mEmptyShadeView.performVisibilityAnimation(false, onFinishedRunnable);
+                    mEmptyShadeView.setVisibility(newVisibility);
+                    mEmptyShadeView.setWillBeGone(false);
+                    updateContentHeight();
+                    notifyHeightChangeListener(mEmptyShadeView);
                 } else {
-                    mEmptyShadeView.setInvisible();
-                    onFinishedRunnable.run();
+                    Runnable onFinishedRunnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            mEmptyShadeView.setVisibility(GONE);
+                            mEmptyShadeView.setWillBeGone(false);
+                            updateContentHeight();
+                            notifyHeightChangeListener(mEmptyShadeView);
+                        }
+                    };
+                    if (mAnimationsEnabled) {
+                        mEmptyShadeView.setWillBeGone(true);
+                        mEmptyShadeView.performVisibilityAnimation(false, onFinishedRunnable);
+                    } else {
+                        mEmptyShadeView.setInvisible();
+                        onFinishedRunnable.run();
+                    }
                 }
             }
+        } else if (mPhoneStatusBar.getBarState() == StatusBarState.KEYGUARD) {
+            mEmptyShadeView.setVisibility(GONE);
+        } else {
+            mEmptyShadeView.setVisibility(VISIBLE);
         }
+    }
+
+    public void forceShowShade(boolean show) {
+        mForceShadeView = show;
     }
 
     public void setOverflowContainer(NotificationOverflowContainer overFlowContainer) {
