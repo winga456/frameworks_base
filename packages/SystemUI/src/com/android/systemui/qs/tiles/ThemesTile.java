@@ -62,6 +62,14 @@ public class ThemesTile extends QSTile<QSTile.BooleanState> {
     }
 
     @Override
+    public void handleLongClick() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setClassName("com.android.settings",
+            "com.android.settings.Settings$DashboardSettingsActivity");
+        mHost.startActivityDismissingKeyguard(intent);
+    }
+
+    @Override
     protected void handleUpdateState(BooleanState state, Object arg) {
         state.visible = true;
         state.icon = ResourceIcon.get(R.drawable.ic_settings_themes_alpha);

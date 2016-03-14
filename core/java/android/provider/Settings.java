@@ -6554,6 +6554,12 @@ public final class Settings {
         public static final String SETTINGS_CATEGORY_TEXT_COLOR = "settings_category_text_color";
 
         /**
+         * Dash Switches
+         * @hide
+         */
+        public static final String SETTINGS_SWITCHES= "settings_switches";
+
+        /**
          * Empty Shade Text Color
          * @hide
          */
