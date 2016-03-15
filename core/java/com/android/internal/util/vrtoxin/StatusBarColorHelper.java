@@ -156,6 +156,18 @@ public class StatusBarColorHelper {
                 BLACK);
     }
 
+    public static int getSettingsTitleTextColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.SETTINGS_TITLE_TEXT_COLOR,
+                VRTOXIN_BLUE);
+    }
+
+    /*public static int getActionBarIconColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.ACTIONBAR_ICON_COLOR,
+                VRTOXIN_BLUE);
+    }*/
+
     /*public static int getNotifCountIconColor(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
                 Settings.System.STATUS_BAR_NOTIF_COUNT_ICON_COLOR, WHITE);

@@ -19,11 +19,14 @@ package com.android.internal.widget;
 import android.animation.LayoutTransition;
 import android.app.ActionBar;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.graphics.Typeface;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.provider.Settings;
 import android.text.Layout;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -55,6 +58,9 @@ import com.android.internal.view.menu.MenuItemImpl;
 import com.android.internal.view.menu.MenuPresenter;
 import com.android.internal.view.menu.MenuView;
 import com.android.internal.view.menu.SubMenuBuilder;
+
+import com.android.internal.util.vrtoxin.FontHelper;
+import com.android.internal.util.vrtoxin.StatusBarColorHelper;
 
 /**
  * @hide
@@ -253,6 +259,8 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
             }
             mTabScrollView.setAllowCollapse(true);
         }
+        updateFontStyle();
+        updateTextColor();
     }
 
     /**
@@ -507,6 +515,8 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
             mLogoNavItem.setTitle(title);
         }
         updateHomeAccessibility(mUpGoerFive.isEnabled());
+        updateFontStyle();
+        updateTextColor();
     }
 
     public CharSequence getSubtitle() {
@@ -524,6 +534,8 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
             mTitleLayout.setVisibility(visible ? VISIBLE : GONE);
         }
         updateHomeAccessibility(mUpGoerFive.isEnabled());
+        updateFontStyle();
+        updateTextColor();
     }
 
     public void setHomeButtonEnabled(boolean enable) {
@@ -660,6 +672,8 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
 
         // Make sure the home button has an accurate content description for accessibility.
         updateHomeAccessibility(mUpGoerFive.isEnabled());
+        updateFontStyle();
+        updateTextColor();
     }
 
     public void setIcon(Drawable icon) {
@@ -671,10 +685,12 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         if (mExpandedActionView != null) {
             mExpandedHomeLayout.setIcon(mIcon.getConstantState().newDrawable(getResources()));
         }
+        //updateIconColor();
     }
 
     public void setIcon(int resId) {
         setIcon(resId != 0 ? mContext.getDrawable(resId) : null);
+        //updateIconColor();
     }
 
     public boolean hasIcon() {
@@ -686,10 +702,12 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
         if (logo != null && (mDisplayOptions & ActionBar.DISPLAY_USE_LOGO) != 0) {
             mHomeLayout.setIcon(logo);
         }
+        //updateIconColor();
     }
 
     public void setLogo(int resId) {
         setLogo(resId != 0 ? mContext.getDrawable(resId) : null);
+        //updateIconColor();
     }
 
     public boolean hasLogo() {
@@ -827,6 +845,8 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
                 mSubtitleView.setVisibility(VISIBLE);
             }
         }
+        updateFontStyle();
+        updateTextColor();
 
         mUpGoerFive.addView(mTitleLayout);
         if (mExpandedActionView != null ||
@@ -1723,6 +1743,131 @@ public class ActionBarView extends AbsActionBarView implements DecorToolbar {
 
         @Override
         public void onRestoreInstanceState(Parcelable state) {
+        }
+    }
+
+    /*public void updateIconColor() {
+        final int iconColor = StatusBarColorHelper.getActionBarIconColor(mContext);
+        //mIcon.setImageTintList(ColorStateList.valueOf(iconColor));
+        //mLogo.setImageTintList(ColorStateList.valueOf(iconColor));
+    }*/
+
+    public void updateTextColor() {
+        final int textColor = StatusBarColorHelper.getSettingsTitleTextColor(mContext);
+        mTitleView.setTextColor(textColor);
+        mSubtitleView.setTextColor(textColor);
+    }
+
+    public void updateFontStyle() {
+        final int mMasterFontStyle = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.DASHBOARD_FONT_STYLE, FontHelper.FONT_NORMAL);
+
+        getFontStyle(mMasterFontStyle);
+    }
+
+    public void getFontStyle(int font) {
+        switch (font) {
+            case FontHelper.FONT_NORMAL:
+            default:
+                mTitleView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+                mSubtitleView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_ITALIC:
+                mTitleView.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
+                mSubtitleView.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_BOLD:
+                mTitleView.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+                mSubtitleView.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_BOLD_ITALIC:
+                mTitleView.setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
+                mSubtitleView.setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
+                break;
+            case FontHelper.FONT_LIGHT:
+                mTitleView.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
+                mSubtitleView.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_LIGHT_ITALIC:
+                mTitleView.setTypeface(Typeface.create("sans-serif-light", Typeface.ITALIC));
+                mSubtitleView.setTypeface(Typeface.create("sans-serif-light", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_THIN:
+                mTitleView.setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
+                mSubtitleView.setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_THIN_ITALIC:
+                mTitleView.setTypeface(Typeface.create("sans-serif-thin", Typeface.ITALIC));
+                mSubtitleView.setTypeface(Typeface.create("sans-serif-thin", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_CONDENSED:
+                mTitleView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
+                mSubtitleView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_CONDENSED_ITALIC:
+                mTitleView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
+                mSubtitleView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_CONDENSED_LIGHT:
+                mTitleView.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
+                mSubtitleView.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_CONDENSED_LIGHT_ITALIC:
+                mTitleView.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
+                mSubtitleView.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_CONDENSED_BOLD:
+                mTitleView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
+                mSubtitleView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_CONDENSED_BOLD_ITALIC:
+                mTitleView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
+                mSubtitleView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
+                break;
+            case FontHelper.FONT_MEDIUM:
+                mTitleView.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+                mSubtitleView.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_MEDIUM_ITALIC:
+                mTitleView.setTypeface(Typeface.create("sans-serif-medium", Typeface.ITALIC));
+                mSubtitleView.setTypeface(Typeface.create("sans-serif-medium", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_BLACK:
+                mTitleView.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
+                mSubtitleView.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_BLACK_ITALIC:
+                mTitleView.setTypeface(Typeface.create("sans-serif-black", Typeface.ITALIC));
+                mSubtitleView.setTypeface(Typeface.create("sans-serif-black", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT:
+                mTitleView.setTypeface(Typeface.create("cursive", Typeface.NORMAL));
+                mSubtitleView.setTypeface(Typeface.create("cursive", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT_BOLD:
+                mTitleView.setTypeface(Typeface.create("cursive", Typeface.BOLD));
+                mSubtitleView.setTypeface(Typeface.create("cursive", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_COMINGSOON:
+                mTitleView.setTypeface(Typeface.create("casual", Typeface.NORMAL));
+                mSubtitleView.setTypeface(Typeface.create("casual", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_NOTOSERIF:
+                mTitleView.setTypeface(Typeface.create("serif", Typeface.NORMAL));
+                mSubtitleView.setTypeface(Typeface.create("serif", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_NOTOSERIF_ITALIC:
+                mTitleView.setTypeface(Typeface.create("serif", Typeface.ITALIC));
+                mSubtitleView.setTypeface(Typeface.create("serif", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD:
+                mTitleView.setTypeface(Typeface.create("serif", Typeface.BOLD));
+                mSubtitleView.setTypeface(Typeface.create("serif", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD_ITALIC:
+                mTitleView.setTypeface(Typeface.create("serif", Typeface.BOLD_ITALIC));
+                mSubtitleView.setTypeface(Typeface.create("serif", Typeface.BOLD_ITALIC));
+                break;
         }
     }
 }
