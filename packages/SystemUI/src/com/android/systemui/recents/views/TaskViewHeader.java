@@ -38,6 +38,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.provider.Settings;
 import android.view.View;
@@ -52,6 +53,8 @@ import com.android.systemui.recents.misc.SystemServicesProxy;
 import com.android.systemui.recents.misc.Utilities;
 import com.android.systemui.recents.model.RecentsTaskLoader;
 import com.android.systemui.recents.model.Task;
+
+import com.android.internal.util.vrtoxin.FontHelper;
 
 
 /* The task bar view */
@@ -174,6 +177,7 @@ public class TaskViewHeader extends FrameLayout {
         mBackground.setColor(ColorStateList.valueOf(0));
         mBackground.setDrawableByLayerId(mBackground.getId(0), mBackgroundColorDrawable);
         setBackground(mBackground);
+        updateRecentsFontStyle();
     }
 
     @Override
@@ -248,6 +252,7 @@ public class TaskViewHeader extends FrameLayout {
                 mLightMultiwindowDrawable : mDarkMultiwindowDrawable);
         mFloatButton.setImageDrawable(t.useLightOnPrimaryColor ?
                 mLightFloatDrawable : mDarkFloatDrawable);
+        updateRecentsFontStyle();
     }
 
     /** Unbinds the bar view from the task */
@@ -482,6 +487,94 @@ public class TaskViewHeader extends FrameLayout {
                 mBackground.setState(new int[] {});
                 setTranslationZ(0f);
             }
+        }
+    }
+
+    private void updateRecentsFontStyle() {
+        final int mRecentsFontStyle = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.RECENTS_FONT_STYLE, FontHelper.FONT_NORMAL);
+
+        getFontStyle(mRecentsFontStyle);
+    }
+
+    public void getFontStyle(int font) {
+        switch (font) {
+            case FontHelper.FONT_NORMAL:
+            default:
+                mActivityDescription.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_ITALIC:
+                mActivityDescription.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_BOLD:
+                mActivityDescription.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_BOLD_ITALIC:
+                mActivityDescription.setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
+                break;
+            case FontHelper.FONT_LIGHT:
+                mActivityDescription.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_LIGHT_ITALIC:
+                mActivityDescription.setTypeface(Typeface.create("sans-serif-light", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_THIN:
+                mActivityDescription.setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_THIN_ITALIC:
+                mActivityDescription.setTypeface(Typeface.create("sans-serif-thin", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_CONDENSED:
+                mActivityDescription.setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_CONDENSED_ITALIC:
+                mActivityDescription.setTypeface(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_CONDENSED_LIGHT:
+                mActivityDescription.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_CONDENSED_LIGHT_ITALIC:
+                mActivityDescription.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_CONDENSED_BOLD:
+                mActivityDescription.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_CONDENSED_BOLD_ITALIC:
+                mActivityDescription.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
+                break;
+            case FontHelper.FONT_MEDIUM:
+                mActivityDescription.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_MEDIUM_ITALIC:
+                mActivityDescription.setTypeface(Typeface.create("sans-serif-medium", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_BLACK:
+                mActivityDescription.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_BLACK_ITALIC:
+                mActivityDescription.setTypeface(Typeface.create("sans-serif-black", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT:
+                mActivityDescription.setTypeface(Typeface.create("cursive", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT_BOLD:
+                mActivityDescription.setTypeface(Typeface.create("cursive", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_COMINGSOON:
+                mActivityDescription.setTypeface(Typeface.create("casual", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_NOTOSERIF:
+                mActivityDescription.setTypeface(Typeface.create("serif", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_NOTOSERIF_ITALIC:
+                mActivityDescription.setTypeface(Typeface.create("serif", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD:
+                mActivityDescription.setTypeface(Typeface.create("serif", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD_ITALIC:
+                mActivityDescription.setTypeface(Typeface.create("serif", Typeface.BOLD_ITALIC));
+                break;
         }
     }
 }
