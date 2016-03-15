@@ -6602,6 +6602,18 @@ public final class Settings {
         public static final String SETTINGS_SWITCHES= "settings_switches";
 
         /**
+         * Dashboard title text size
+         * @hide
+         */
+        public static final String SETTINGS_TITLE_TEXT_SIZE = "settings_title_text_size";
+
+        /**
+         * Dashboard category text size
+         * @hide
+         */
+        public static final String SETTINGS_CATEGORY_TEXT_SIZE = "settings_category_text_size";
+
+        /**
          * Empty Shade Text Color
          * @hide
          */
