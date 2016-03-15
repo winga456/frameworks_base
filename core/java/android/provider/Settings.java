@@ -5518,6 +5518,48 @@ public final class Settings {
         public static final String STATUS_BAR_EXPANDED_HEADER_ICON_COLOR = "status_bar_expanded_header_icon_color";
 
         /**
+         * Color of the expanded status bar header alarm
+         * @hide
+         */
+        public static final String STATUS_BAR_EXPANDED_HEADER_ALARM_COLOR = "status_bar_expanded_header_alarm_color";
+
+        /**
+         * Color of the clock on the header of the expanded status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_EXPANDED_HEADER_CLOCK_COLOR = "status_bar_expanded_header_clock_color";
+
+        /**
+         * Color of the date on the header of the expanded status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_EXPANDED_HEADER_DATE_COLOR = "status_bar_expanded_header_date_color";
+
+        /**
+         * Color of the weather on the header of the expanded status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_EXPANDED_HEADER_WEATHER_COLOR = "status_bar_expanded_header_weather_color";
+
+        /**
+         * Color of the settings button on the header of the expanded status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_EXPANDED_HEADER_SETTINGS_COLOR = "status_bar_expanded_header_settings_color";
+
+        /**
+         * Color of the power menu button on the header of the expanded status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_EXPANDED_HEADER_POWER_MENU_COLOR = "status_bar_expanded_header_power_menu_color";
+
+        /**
+         * Color of the vrtoxin button on the header of the expanded status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_EXPANDED_HEADER_VRTOXIN_COLOR = "status_bar_expanded_header_vrtoxin_color";
+
+        /**
          * Icon of the battery on the expanded status bar
          * 0 - Battery portrait
          * 1 - Battery landscape

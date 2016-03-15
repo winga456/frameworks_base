@@ -30,6 +30,44 @@ public class SBEHeaderColorHelper {
                 SYSTEMUI_SECONDARY);
     }
 
+    public static int getSettingsColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_EXPANDED_HEADER_SETTINGS_COLOR, WHITE);
+    }
+
+    public static int getPowerMenuColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_EXPANDED_HEADER_POWER_MENU_COLOR, WHITE);
+    }
+
+    public static int getVRToxinColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_EXPANDED_HEADER_VRTOXIN_COLOR,
+                WHITE);
+    }
+
+    public static int getAlarmColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_EXPANDED_HEADER_ALARM_COLOR,
+                WHITE);
+    }
+
+    public static int getClockColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_EXPANDED_HEADER_CLOCK_COLOR, WHITE);
+    }
+
+    public static int getDateColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_EXPANDED_HEADER_DATE_COLOR, WHITE);
+    }
+
+    public static int getWeatherColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_EXPANDED_HEADER_WEATHER_COLOR,
+                WHITE);
+    }
+
     public static int getIconColor(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
                 Settings.System.STATUS_BAR_EXPANDED_HEADER_ICON_COLOR, WHITE);

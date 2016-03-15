@@ -1243,6 +1243,18 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                     Settings.System.STATUS_BAR_EXPANDED_HEADER_ICON_COLOR),
                     false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EXPANDED_HEADER_ALARM_COLOR),
+                    false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EXPANDED_HEADER_CLOCK_COLOR),
+                    false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EXPANDED_HEADER_DATE_COLOR),
+                    false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EXPANDED_HEADER_WEATHER_COLOR),
+                    false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_EXPANDED_BATTERY_ICON_INDICATOR),
                     false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -1295,6 +1307,18 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 || uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_EXPANDED_HEADER_RIPPLE_COLOR))) {
                 updateBackgroundColor();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EXPANDED_HEADER_ALARM_COLOR))) {
+                updateAlarmColor();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EXPANDED_HEADER_CLOCK_COLOR))) {
+                updateClockColor();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EXPANDED_HEADER_DATE_COLOR))) {
+                updateDateColor();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EXPANDED_HEADER_WEATHER_COLOR))) {
+                updateWeatherColor();
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_EXPANDED_HEADER_TEXT_COLOR))) {
                 updateTextColor();
@@ -1349,6 +1373,10 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             updateBatteryTextColor();
             updateHeaderFontStyle();
             updateVRToxinButton();
+            updateWeatherColor();
+            updateAlarmColor();
+            updateDateColor();
+            updateClockColor();
         }
     }
 
@@ -1370,24 +1398,33 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     }
 
     private void updateTextColor() {
-        mWeatherLine1.setTextColor(
-                SBEHeaderColorHelper.getTextColor(mContext, 255));
-        mWeatherLine2.setTextColor(
-                SBEHeaderColorHelper.getTextColor(mContext, 255));
         mBatteryLevel.setTextColor(
                 SBEHeaderColorHelper.getTextColor(mContext, 255));
-        mTime.setTextColor(
-                SBEHeaderColorHelper.getTextColor(mContext, 255));
-        mAmPm.setTextColor(
-                SBEHeaderColorHelper.getTextColor(mContext, 255));
-        mDateCollapsed.setTextColor(
-                SBEHeaderColorHelper.getTextColor(mContext, 178));
-        mDateExpanded.setTextColor(
-                SBEHeaderColorHelper.getTextColor(mContext, 178));
         mEmergencyCallsOnly.setTextColor(
                 SBEHeaderColorHelper.getTextColor(mContext, 102));
-        mAlarmStatus.setTextColor(
-                SBEHeaderColorHelper.getTextColor(mContext, 100));
+    }
+
+    private void updateWeatherColor() {
+        final int weatherColor = SBEHeaderColorHelper.getWeatherColor(mContext);
+        mWeatherLine1.setTextColor(weatherColor);
+        mWeatherLine2.setTextColor(weatherColor);
+    }
+
+    private void updateAlarmColor() {
+        final int alarmColor = SBEHeaderColorHelper.getAlarmColor(mContext);
+        mAlarmStatus.setTextColor(alarmColor);
+    }
+
+    private void updateClockColor() {
+        final int clockColor = SBEHeaderColorHelper.getClockColor(mContext);
+        mTime.setTextColor(clockColor);
+        mAmPm.setTextColor(clockColor);
+    }
+
+    private void updateDateColor() {
+        final int dateColor = SBEHeaderColorHelper.getDateColor(mContext);
+        mDateCollapsed.setTextColor(dateColor);
+        mDateExpanded.setTextColor(dateColor);
     }
 
     private void updateVRToxinButton() {
@@ -1408,22 +1445,26 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
 
     private void updateIconColor() {
         final int iconColor = SBEHeaderColorHelper.getIconColor(mContext);
+        final int alarmColor = SBEHeaderColorHelper.getAlarmColor(mContext);
+        final int settingsIconColor = SBEHeaderColorHelper.getSettingsColor(mContext);
+        final int vrtoxinButtonColor = SBEHeaderColorHelper.getVRToxinColor(mContext);
+        final int powerMenuColor = SBEHeaderColorHelper.getPowerMenuColor(mContext);
         final int noSimIconColor = SBEHeaderColorHelper.getNoSimIconColor(mContext);
         final int airplaneModeIconColor = SBEHeaderColorHelper.getAirplaneModeIconColor(mContext);
 
         mSignalCluster.setIconTint(
                 iconColor, noSimIconColor, airplaneModeIconColor);
         mBatteryMeterView.setBatteryColors(iconColor);
-        ((ImageView) mSettingsButton).setImageTintList(ColorStateList.valueOf(iconColor));
+        ((ImageView) mSettingsButton).setImageTintList(ColorStateList.valueOf(settingsIconColor));
         if (mVRToxinButton != null) {
-            ((ImageView) mVRToxinButton).setImageTintList(ColorStateList.valueOf(iconColor));
+            ((ImageView) mVRToxinButton).setImageTintList(ColorStateList.valueOf(vrtoxinButtonColor));
         }
         if (mPowerMenuButton != null) {
-            ((ImageView)mPowerMenuButton).setImageTintList(ColorStateList.valueOf(iconColor));
+            ((ImageView)mPowerMenuButton).setImageTintList(ColorStateList.valueOf(powerMenuColor));
         }
         Drawable alarmIcon =
                 getResources().getDrawable(R.drawable.ic_access_alarms_small).mutate();
-        alarmIcon.setTintList(ColorStateList.valueOf(iconColor));
+        alarmIcon.setTintList(ColorStateList.valueOf(alarmColor));
         mAlarmStatus.setCompoundDrawablesWithIntrinsicBounds(alarmIcon, null, null, null);
     }
 
