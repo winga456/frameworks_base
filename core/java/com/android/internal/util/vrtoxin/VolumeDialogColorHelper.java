@@ -34,6 +34,11 @@ public class VolumeDialogColorHelper {
                 Settings.System.VOLUME_DIALOG_BG_COLOR, MATERIAL_BLUE_GREY);
     }
 
+    public static int getExpandButtonColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.VOLUME_DIALOG_EXPAND_BUTTON_COLOR, MATERIAL_GREEN);
+    }
+
     public static ColorStateList getIconColorList(Context context) {
         return ColorStateList.valueOf(getIconColor(context));
     }
@@ -41,6 +46,15 @@ public class VolumeDialogColorHelper {
     public static int getIconColor(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
                 Settings.System.VOLUME_DIALOG_ICON_COLOR, MATERIAL_GREEN);
+    }
+
+    public static ColorStateList getSliderIconColorList(Context context) {
+        return ColorStateList.valueOf(getSliderIconColor(context));
+    }
+
+    public static int getSliderIconColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.VOLUME_DIALOG_SLIDER_ICON_COLOR, MATERIAL_GREEN);
     }
 
     public static ColorStateList getSliderColorList(Context context) {

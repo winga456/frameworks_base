@@ -6456,10 +6456,22 @@ public final class Settings {
         public static final String VOLUME_DIALOG_SLIDER_COLOR = "volume_dialog_slider_color";
 
         /**
+         * Slider icon color of the volume dialog
+         * @hide
+         */
+        public static final String VOLUME_DIALOG_SLIDER_ICON_COLOR = "volume_dialog_slider_icon_color";
+
+        /**
          * Inactive color of the volume dialog slider
          * @hide
          */
         public static final String VOLUME_DIALOG_SLIDER_INACTIVE_COLOR = "volume_dialog_slider_inactive_color";
+
+        /**
+         * Slider icon color of the volume dialog
+         * @hide
+         */
+        public static final String VOLUME_DIALOG_EXPAND_BUTTON_COLOR = "volume_dialog_expand_button_color";
 
         /**
          * Dim amount around power/reboot menu dialogs

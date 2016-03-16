@@ -27,6 +27,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.KeyguardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -116,7 +117,7 @@ public class VolumeDialog {
     private final Accessibility mAccessibility = new Accessibility();
     private final VolumeDialogMotion mMotion;
     private int mBackgroundColor;
-    private int mIconColor;
+    private int mExpandButtonColor;
 
     private boolean mShowing;
     private boolean mExpanded;
@@ -217,7 +218,7 @@ public class VolumeDialog {
 
         controller.addCallback(mControllerCallbackH, mHandler);
         controller.getState();
-        updateIconColor();
+        updateExpandButtonColor();
     }
 
     private void updateWindowWidthH() {
@@ -394,8 +395,10 @@ public class VolumeDialog {
                 return false;
             }
         });
+        final ColorStateList iconColor = VolumeDialogColorHelper.getIconColorList(mContext);
         row.icon = (ImageButton) row.view.findViewById(R.id.volume_row_icon);
         row.icon.setImageResource(iconRes);
+        row.icon.setImageTintList(iconColor);
         row.icon.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -575,7 +578,7 @@ public class VolumeDialog {
         updateFooterH();
         updateExpandButtonH();
         setBackgroundColor();
-        updateIconColor();
+        updateExpandButtonColor();
         if (!mShowing) {
             trimObsoleteH();
         }
@@ -762,7 +765,7 @@ public class VolumeDialog {
     }
 
     private void updateVolumeRowSliderTintH(VolumeRow row, boolean isActive) {
-        final ColorStateList iconColor = VolumeDialogColorHelper.getIconColorList(mContext);
+        final ColorStateList sliderIconColor = VolumeDialogColorHelper.getSliderIconColorList(mContext);
         final ColorStateList sliderColor = VolumeDialogColorHelper.getSliderColorList(mContext);
         final ColorStateList sliderInactiveColor = VolumeDialogColorHelper.getSliderInactiveColorList(mContext);
         if (isActive && mExpanded) {
@@ -771,7 +774,7 @@ public class VolumeDialog {
         row.cachedSliderTint = sliderColor;
         row.slider.setProgressTintList(sliderColor);
         row.slider.setProgressBackgroundTintList(sliderInactiveColor);
-        row.slider.setThumbTintList(iconColor);
+        row.slider.setThumbTintList(sliderIconColor);
     }
 
     private void updateVolumeRowSliderH(VolumeRow row, boolean enable, int vlevel, boolean maxChanged) {
@@ -1158,11 +1161,11 @@ public class VolumeDialog {
         }
     }
 
-    private void updateIconColor() {
-        mIconColor = VolumeDialogColorHelper.getIconColor(mContext);
+    private void updateExpandButtonColor() {
+        mExpandButtonColor = VolumeDialogColorHelper.getExpandButtonColor(mContext);
 
         if (mExpandButton != null) {
-            mExpandButton.setColorFilter(mIconColor, Mode.MULTIPLY);
+            mExpandButton.setColorFilter(mExpandButtonColor, Mode.MULTIPLY);
         }
     }
 }
