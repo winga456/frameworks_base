@@ -52,6 +52,11 @@ public class SBEHeaderColorHelper {
                 WHITE);
     }
 
+    public static int getBatteryColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_EXPANDED_HEADER_BATTERY_COLOR, WHITE);
+    }
+
     public static int getClockColor(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
                 Settings.System.STATUS_BAR_EXPANDED_HEADER_CLOCK_COLOR, WHITE);
