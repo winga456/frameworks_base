@@ -2137,6 +2137,10 @@ public abstract class BaseStatusBar extends SystemUI implements
         if (!isOmniSwitchEnabled()) {
             if (mRecents != null) {
                 mRecents.showNextAffiliatedTask();
+        	} else if (mRecents != null) {
+             mRecents.showNextAffiliatedTask();
+        	} else if (mSlimRecents != null) {
+            mSlimRecents.cancelPreloadingRecentTasksList();
             }
         }
     }
