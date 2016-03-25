@@ -58,6 +58,7 @@ import com.android.systemui.qs.tiles.HotspotTile;
 import com.android.systemui.qs.tiles.HWKeysTile;
 import com.android.systemui.qs.tiles.IntentTile;
 import com.android.systemui.qs.tiles.KernelAdiutorTile;
+import com.android.systemui.qs.tiles.LayersManagerTile;
 import com.android.systemui.qs.tiles.LocationTile;
 import com.android.systemui.qs.tiles.MusicTile;
 import com.android.systemui.qs.tiles.LockscreenToggleTile;
@@ -376,6 +377,8 @@ public class QSTileHost implements QSTile.Host {
                 return new CaffeineTile(this);
             case QSConstants.TILE_SCREEN_RECORD:
                 return new ScreenrecordTile(this);
+            case QSConstants.TILE_LAYERS:
+                return new LayersManagerTile(this);
             default:
                 throw new IllegalArgumentException("Bad tile spec: " + tileSpec);
         }
