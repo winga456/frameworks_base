@@ -19,29 +19,16 @@ package com.android.systemui.qs.tiles;
 import android.content.Context;
 import android.content.Intent;
 import android.provider.Settings;
-import android.provider.Settings.Global;
 
 import com.android.internal.logging.MetricsLogger;
-import com.android.systemui.qs.GlobalSetting;
 import com.android.systemui.qs.QSTile;
 import com.android.systemui.R;
 
 /** Quick settings tile: Heads up **/
 public class HeadsUpTile extends QSTile<QSTile.BooleanState> {
 
-    //private static final Intent NOTIFICATION_SETTINGS = new Intent("android.settings.NOTIFICATION_MANAGER");
-
-    private final GlobalSetting mSetting;
-
     public HeadsUpTile(Host host) {
         super(host);
-
-        mSetting = new GlobalSetting(mContext, mHandler, Global.HEADS_UP_NOTIFICATIONS_ENABLED) {
-            @Override
-            protected void handleValueChanged(int value) {
-                handleRefreshState(value);
-            }
-        };
     }
 
     @Override
@@ -52,7 +39,7 @@ public class HeadsUpTile extends QSTile<QSTile.BooleanState> {
     @Override
     protected void handleClick() {
         MetricsLogger.action(mContext, getMetricsCategory());
-        setEnabled(!mState.value);
+        setEnabled();
         refreshState();
     }
 
@@ -64,10 +51,16 @@ public class HeadsUpTile extends QSTile<QSTile.BooleanState> {
         mHost.startActivityDismissingKeyguard(intent);
     }
 
-    private void setEnabled(boolean enabled) {
-        Settings.Global.putInt(mContext.getContentResolver(),
-                Settings.Global.HEADS_UP_NOTIFICATIONS_ENABLED,
-                enabled ? 1 : 0);
+    private boolean getUserHeadsUpState() {
+         return Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.HEADS_UP_USER_ENABLED,
+                Settings.System.HEADS_UP_USER_ON) != 0;
+    }
+
+    private void setEnabled() {
+        Settings.System.putInt(mContext.getContentResolver(),
+                Settings.System.HEADS_UP_USER_ENABLED,
+                getUserHeadsUpState() ? 0 : 1);
     }
 
     @Override
@@ -77,12 +70,10 @@ public class HeadsUpTile extends QSTile<QSTile.BooleanState> {
 
     @Override
     protected void handleUpdateState(BooleanState state, Object arg) {
-        final int value = arg instanceof Integer ? (Integer)arg : mSetting.getValue();
-        final boolean headsUp = value != 0;
-        state.value = headsUp;
+        state.value = getUserHeadsUpState();
         state.visible = true;
         state.label = mContext.getString(R.string.quick_settings_heads_up_label);
-        if (headsUp) {
+        if (getUserHeadsUpState()) {
             state.icon = ResourceIcon.get(R.drawable.ic_headsup_toggle_on);
             state.contentDescription =  mContext.getString(
                     R.string.accessibility_quick_settings_heads_up_on);
