@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2016 AllianceROM, ~Morningstar
+ * Copyright (C) 2016 Brett Rogers (rogersb11)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +23,8 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
+import android.graphics.drawable.DrawableWrapper;
 import android.os.SystemProperties;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -74,7 +77,7 @@ public class DexoptDialog extends Dialog {
 
     public static DexoptDialog create(Context context, int windowType) {
         final PackageManager pm = context.getPackageManager();
-        final int theme = com.android.internal.R.style.Theme_Material_Light;
+        final int theme = 6;
         return new DexoptDialog(context, theme, windowType);
     }
 
@@ -121,6 +124,10 @@ public class DexoptDialog extends Dialog {
             }
         });
         startLogoAnimation();
+        updatePackageNameColor();
+        updateProgressBarColor();
+        updateProgressBarInactiveColor();
+        updateTextColor();
     }
 
     public void setProgress(final ApplicationInfo info, final int current, final int total) {
@@ -173,6 +180,11 @@ public class DexoptDialog extends Dialog {
             mAppIcon.setImageDrawable(null);
         }
         mPrimaryText.setText(msg);
+
+        updatePackageNameColor();
+        updateProgressBarColor();
+        updateProgressBarInactiveColor();
+        updateTextColor();
     }
 
     // This dialog will consume all events coming in to
@@ -346,5 +358,25 @@ public class DexoptDialog extends Dialog {
         mLogoTextShadow.startAnimation(alphaAnim);
         mLogo.startAnimation(transAnim);
         mLogoShadow.startAnimation(shadowSet);
+    }
+
+    private void updatePackageNameColor() {
+        final int packageNameTextColor = CustomBootDialogColorHelper.getPackageNameTextColor(mContext);
+        mPackageName.setTextColor(packageNameTextColor);
+    }
+
+    private void updateProgressBarColor() {
+        final ColorStateList progressBarColor = CustomBootDialogColorHelper.getProgressBarColorList(mContext);
+        mProgress.setProgressTintList(progressBarColor);
+    }
+
+    private void updateProgressBarInactiveColor() {
+        final ColorStateList progressBarInactiveColor = CustomBootDialogColorHelper.getProgressBarInactiveColorList(mContext);
+        mProgress.setProgressBackgroundTintList(progressBarInactiveColor);
+    }
+
+    private void updateTextColor() {
+        final int textColor = CustomBootDialogColorHelper.getTextColor(mContext);
+        mPrimaryText.setTextColor(textColor);
     }
 }

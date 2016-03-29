@@ -114,7 +114,6 @@ import android.view.MotionEvent;
 
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.policy.PhoneWindow;
-import com.android.internal.util.vrtoxin.BootDialogColorHelper;
 import android.view.Surface;
 import android.view.View;
 import android.view.ViewConfiguration;
