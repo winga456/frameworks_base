@@ -65,12 +65,6 @@ public class KeyguardStatusView extends GridLayout implements
     private int mLCFontSize = 88;
     private TextView mOwnerInfo;
     private int mOwnerSize = 14;
-
-    //On the first boot, keygard will start to receiver TIME_TICK intent.
-    //And onScreenTurnedOff will not get called if power off when keyguard is not started.
-    //Set initial value to false to skip the above case.
-    private boolean mEnableRefresh = false;
-
     private View mWeatherView;
     private TextView mWeatherCity;
     private ImageView mWeatherConditionImage;
@@ -84,6 +78,11 @@ public class KeyguardStatusView extends GridLayout implements
     private int mAlarmDateSize =14;
 
     private WeatherController mWeatherController;
+
+    //On the first boot, keygard will start to receiver TIME_TICK intent.
+    //And onScreenTurnedOff will not get called if power off when keyguard is not started.
+    //Set initial value to false to skip the above case.
+    private boolean mEnableRefresh = false;
 
     private KeyguardUpdateMonitorCallback mInfoCallback = new KeyguardUpdateMonitorCallback() {
 
@@ -193,14 +192,14 @@ public class KeyguardStatusView extends GridLayout implements
         mDateView.setShowCurrentUserTime(true);
         mClockView.setShowCurrentUserTime(true);
         mOwnerInfo = (TextView) findViewById(R.id.owner_info);
-        boolean shouldMarquee = KeyguardUpdateMonitor.getInstance(mContext).isDeviceInteractive();
-        setEnableMarquee(shouldMarquee);
         mWeatherView = findViewById(R.id.keyguard_weather_view);
         mWeatherCity = (TextView) findViewById(R.id.city);
         mWeatherConditionImage = (ImageView) findViewById(R.id.weather_image);
         mWeatherCurrentTemp = (TextView) findViewById(R.id.current_temp);
         mWeatherConditionText = (TextView) findViewById(R.id.condition);
         noWeatherInfo = (TextView) findViewById(R.id.no_weather_info_text);
+        boolean shouldMarquee = KeyguardUpdateMonitor.getInstance(mContext).isDeviceInteractive();
+        setEnableMarquee(shouldMarquee);
         refresh();
         updateOwnerInfo();
         updateClockColor();
@@ -220,11 +219,6 @@ public class KeyguardStatusView extends GridLayout implements
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        mClockView.setTextSize(mLCFontSize);
-        mClockView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
-        mDateView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                getResources().getDimensionPixelSize(R.dimen.widget_label_font_size));
-        mOwnerInfo.setTextSize(mOwnerSize);
     }
 
     public void hideLockscreenItems() {
