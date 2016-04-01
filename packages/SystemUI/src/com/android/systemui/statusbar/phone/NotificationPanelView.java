@@ -240,6 +240,8 @@ public class NotificationPanelView extends PanelView implements
     private SettingsObserver mSettingsObserver;
     private int mOneFingerQuickSettingsIntercept;
     private int mQsSmartPullDown;
+    private boolean mDozeWakeupDoubleTap;
+    private GestureDetector mDoubleTapGesture;
 
     public NotificationPanelView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -785,7 +787,10 @@ public class NotificationPanelView extends PanelView implements
         }
         if ((!mIsExpanding || mHintAnimationRunning)
                 && !mQsExpanded
-                && mStatusBar.getBarState() != StatusBarState.SHADE) {
+                && mStatusBar.getBarState() != StatusBarState.SHADE
+                && !(mDozeWakeupDoubleTap
+                     && mStatusBarState == StatusBarState.KEYGUARD
+                     && mStatusBar.isDozing())) {
             mAfforanceHelper.onTouchEvent(event);
         }
         if (mOnlyAffordanceInThisMotion) {
@@ -2585,6 +2590,9 @@ public class NotificationPanelView extends PanelView implements
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.STATUS_BAR_LOCKED_ON_SECURE_KEYGUARD),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.DOZE_WAKEUP_DOUBLETAP),
+                    false, this, UserHandle.USER_ALL);
             update();
         }
 
@@ -2630,6 +2638,9 @@ public class NotificationPanelView extends PanelView implements
             mOneFingerQuickSettingsIntercept = Settings.System.getIntForUser(
                     resolver, Settings.System.QS_QUICK_PULLDOWN, 1,
                     UserHandle.USER_CURRENT);
+            mDozeWakeupDoubleTap = Settings.System.getIntForUser(resolver,
+                    Settings.System.DOZE_WAKEUP_DOUBLETAP, 0,
+                    UserHandle.USER_CURRENT) == 1;
             mQsSmartPullDown = Settings.System.getIntForUser(
                     resolver, Settings.System.QS_SMART_PULLDOWN, 0,
                     UserHandle.USER_CURRENT);

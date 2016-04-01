@@ -2686,6 +2686,12 @@ public final class Settings {
         public static final String QS_BRIGHTNESS_SLIDER_ICON_COLOR = "qs_brightness_slider_icon_color";
 
         /**
+         * Require double tap instead of simple tap to wake from Doze pulse screen
+         * @hide
+         */
+        public static final String DOZE_WAKEUP_DOUBLETAP = "doze_wakeup_doubletap";
+
+        /**
          * Quick Settings Smart Pulldown
          *
          * @hide
