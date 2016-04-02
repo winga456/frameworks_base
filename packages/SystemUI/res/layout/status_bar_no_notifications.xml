@@ -19,54 +19,31 @@
 <com.android.systemui.statusbar.EmptyShadeView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="220dp"
+        android:layout_height="match_parent"
         android:id="@+id/empty_shade"
         android:visibility="gone"
         >
 
     <com.android.systemui.vrtoxin.ExpansionView
         android:id="@+id/expansion_view"
-        android:layout_height="220dp"
+        android:layout_height="125dp"
         android:layout_width="match_parent"
-        android:background="@drawable/expansion_view_bg"
-        android:layout_gravity="bottom">
+        android:gravity="center"
+        android:background="@drawable/expansion_view_bg">
 
-            <include layout="@layout/expansion_view_shortcut_panel" />
-            <com.android.systemui.vrtoxin.WeatherBarContainer
-            android:id="@+id/expansion_view_weather_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center" >
+        <include layout="@layout/expansion_view_custom_panel" />
+        <include layout="@layout/expansion_view_weather_layout" />
+        <include layout="@layout/expansion_view_activity_panel" />
+        <include layout="@layout/expansion_view_logo_panel" />
 
-        <TextView
-                android:id="@+id/expansion_view_weather_no_weather"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:paddingTop="@dimen/weather_bar_padding_top_bottom"
-                android:paddingBottom="@dimen/weather_bar_padding_top_bottom"
-                android:text="@string/weather_info_not_available"
-                android:textSize="16sp"
-                android:textColor="#ffffffff" />
-
-        <LinearLayout
-                android:id="@+id/expansion_view_weather"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/weather_panel_margin_start_end"
-                android:layout_marginEnd="@dimen/weather_panel_margin_start_end"
-                android:paddingTop="@dimen/weather_bar_padding_top_bottom"
-                android:paddingBottom="@dimen/weather_bar_padding_top_bottom"
-                android:gravity="center_vertical" />
-
-    </com.android.systemui.vrtoxin.WeatherBarContainer>
-
-            <ImageView
-                android:id="@+id/expansion_view_layout_changer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|right"
-                android:src="@drawable/ic_layout_changer" />
+        <ImageView
+            android:id="@+id/expansion_view_layout_changer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:scaleType="center"
+            android:src="@drawable/ic_layout_changer" />
 
     </com.android.systemui.vrtoxin.ExpansionView>
 </com.android.systemui.statusbar.EmptyShadeView>

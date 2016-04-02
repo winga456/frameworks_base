@@ -24,10 +24,10 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
 import android.graphics.PorterDuff.Mode;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
-import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -64,6 +64,9 @@ public class WeatherBarContainer extends FrameLayout implements
     private boolean mWeatherAvailable = false;
     private boolean mListening = false;
     private int mExpansionViewWeatherTextSize;
+    private boolean mExpansionViewVibrate = false;
+
+    protected Vibrator mVibrator;
 
     public WeatherBarContainer(Context context) {
         this(context, null);
@@ -82,25 +85,40 @@ public class WeatherBarContainer extends FrameLayout implements
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
         mNoWeather = (TextView) findViewById(R.id.expansion_view_weather_no_weather);
         mWeatherBar = 
                 (LinearLayout) findViewById(R.id.expansion_view_weather);
+        mWeatherBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mExpansionViewVibrate) {
+                    vibrate(20);
+                }
+                startForecastActivity();
+            }
+        });
         mWeatherBar.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                doHapticKeyClick(HapticFeedbackConstants.LONG_PRESS);
-                startForecastActivity();
+                if (mExpansionViewVibrate) {
+                    vibrate(20);
+                }
+                startLockClockActivity();
                 return true;
             }
         });
     }
 
     public void setListening(boolean listening) {
-        if (!isLockClockInstalled()) {
+        if (!isLockClockInstalled() || mWeatherController == null) {
             return;
         }
         if (listening && !mListening) {
             mListening = true;
+            mWeatherController.addCallback(this);
+        }
+        if (mListening) {
             mWeatherController.addCallback(this);
         }
     }
@@ -219,15 +237,26 @@ public class WeatherBarContainer extends FrameLayout implements
         mStatusBar.startActivity(intent, true /* dismissShade */);
     }
 
+    private void startLockClockActivity() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setClassName("com.cyanogenmod.lockclock",
+            "com.cyanogenmod.lockclock.preference.Preferences");
+        mStatusBar.startActivity(intent, true /* dismissShade */);
+    }
+
     public void setExpansionViewWeatherTextSize() {
         mExpansionViewWeatherTextSize = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.EXPANSION_VIEW_WEATHER_TEXT_SIZE, 14);
     }
 
-    private void doHapticKeyClick(int type) {
-        performHapticFeedback(type,
-                HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING
-                | HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+    public void vibrateOnClick(boolean vibrate) {
+        mExpansionViewVibrate = vibrate;
+    }
+
+    public void vibrate(int duration) {
+        if (mVibrator != null) {
+            if (mVibrator.hasVibrator()) { mVibrator.vibrate(duration); }
+        }
     }
 
     private String getUpdateTime(WeatherController.WeatherInfo info) {

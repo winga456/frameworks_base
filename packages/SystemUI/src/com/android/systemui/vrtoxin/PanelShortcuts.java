@@ -28,11 +28,11 @@ import android.graphics.PorterDuff.Mode;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.UserHandle;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.Display;
 import android.view.GestureDetector;
-import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -56,6 +56,10 @@ public class PanelShortcuts extends LinearLayout {
     private PackageManager mPackageManager;
     private Context mContext;
 
+    private boolean mExpansionViewVibrate = false;
+
+    protected Vibrator mVibrator;
+
     public PanelShortcuts(Context context) {
         this(context, null);
     }
@@ -71,6 +75,8 @@ public class PanelShortcuts extends LinearLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+
+        mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     @Override
@@ -93,7 +99,7 @@ public class PanelShortcuts extends LinearLayout {
         setVisibility(View.VISIBLE);
 
         int clickType = Settings.System.getIntForUser(mContext.getContentResolver(),
-                Settings.System.PANEL_SHORTCUTS_PRESS_TYPE, 1, UserHandle.USER_CURRENT);
+                Settings.System.PANEL_SHORTCUTS_PRESS_TYPE, 0, UserHandle.USER_CURRENT);
         int iconSize = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.PANEL_SHORTCUTS_ICON_SIZE, 36);
 
@@ -125,7 +131,9 @@ public class PanelShortcuts extends LinearLayout {
                 i.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        doHapticKeyClick(HapticFeedbackConstants.VIRTUAL_KEY);
+                        if (mExpansionViewVibrate) {
+                            vibrate(20);
+                        }
                         Action.processAction(mContext, action, false);
                     }
                 });
@@ -134,7 +142,9 @@ public class PanelShortcuts extends LinearLayout {
                         new GestureDetector.SimpleOnGestureListener() {
                     @Override
                     public boolean onDoubleTap(MotionEvent e) {
-                        doHapticKeyClick(HapticFeedbackConstants.VIRTUAL_KEY);
+                        if (mExpansionViewVibrate) {
+                            vibrate(20);
+                        }
                         Action.processAction(mContext, action, false);
                         return true;
                     }
@@ -149,7 +159,9 @@ public class PanelShortcuts extends LinearLayout {
                 i.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        doHapticKeyClick(HapticFeedbackConstants.LONG_PRESS);
+                        if (mExpansionViewVibrate) {
+                            vibrate(20);
+                        }
                         Action.processAction(mContext, action, true);
                         return true;
                     }
@@ -203,10 +215,14 @@ public class PanelShortcuts extends LinearLayout {
         iv.setBackground(rd);
     }
 
-    public void doHapticKeyClick(int type) {
-        performHapticFeedback(type,
-                HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING
-                | HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+    public void vibrateOnClick(boolean vibrate) {
+        mExpansionViewVibrate = vibrate;
+    }
+
+    public void vibrate(int duration) {
+        if (mVibrator != null) {
+            if (mVibrator.hasVibrator()) { mVibrator.vibrate(duration); }
+        }
     }
 
     private void addSeparator(boolean useHalfWidth) {

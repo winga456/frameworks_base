@@ -150,4 +150,8 @@
     <dimen name="pa_pie_tab_title_height">24dp</dimen>
     <dimen name="pa_pie_panel_padding">20dp</dimen>
 
+    <!-- Expansion View Shortcut Bar Padding -->
+    <dimen name="expansion_view_shortcut_panel_padding_bottom">8dp</dimen>
+    <dimen name="expansion_view_shortcut_panel_padding_top">30dp</dimen>
+
 </resources>

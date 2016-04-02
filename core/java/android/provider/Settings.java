@@ -6661,6 +6661,18 @@ public final class Settings {
         public static final String SETTINGS_CATEGORY_TEXT_SIZE = "settings_category_text_size";
 
         /**
+         * Size of the Text in Expansion View Activity Panel
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_ACTIVITY_PANEL_TEXT_SIZE = "expansion_view_activity_panel_text_size";
+
+        /**
+         * Expansion View Text
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_TEXT = "expansion_view_text";
+
+        /**
          * Expansion View Text Color
          * @hide
          */
@@ -6695,12 +6707,6 @@ public final class Settings {
          * @hide
          */
         public static final String EXPANSION_VIEW_TEXT_CUSTOM = "expansion_view_text_custom";
-
-        /**
-         * Empty Shade Image
-         * @hide
-         */
-        public static final String EXPANSION_VIEW_IMAGE = "expansion_view_image";
 
         /**
          * Expansion View Forced On
@@ -6771,6 +6777,18 @@ public final class Settings {
          * @hide
          */
         public static final String EXPANSION_VIEW_ANIMATION = "expansion_view_animation";
+
+        /**
+         * Expansion View Vibration
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_VIBRATION = "expansion_view_vibration";
+
+        /**
+         * Expansion View Shortcut Bar Visibility
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_PANEL_SHORTCUTS = "expansion_view_panel_shortcuts";
 
         /**
          * Custom shortcuts for the empty shade view

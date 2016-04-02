@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-** Copyright (C) 2015 CyanideL (Brett Rogers)
+** Copyright (C) 2015-16 Brett Rogers (rogersb11)
 **
 ** Licensed under the Apache License, Version 2.0 (the "License")
 ** you may not use this file except in compliance with the License.
@@ -17,9 +17,10 @@
 -->
 <HorizontalScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/header_bar_container"
+    android:id="@+id/panel_shortcuts_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_gravity="center"
     android:fadingEdgeLength="30dp"
     android:requiresFadingEdge="horizontal"
     android:scrollbars="none"

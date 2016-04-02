@@ -25,6 +25,7 @@ import com.android.internal.util.NotificationColorUtil;
 
 public class ExpansionViewColorHelper {
 
+    private static int BLACK = 0xff000000;
     private static int WHITE = 0xffffffff;
     private static int VRTOXIN_BLUE = 0xff1976D2;
 
