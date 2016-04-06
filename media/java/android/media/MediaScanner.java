@@ -529,6 +529,10 @@ public class MediaScanner
                 FileEntry entry = beginFile(path, mimeType, lastModified,
                         fileSize, isDirectory, noMedia);
 
+                if (entry == null) {
+                    return null;
+                }
+
                 // if this file was just inserted via mtp, set the rowid to zero
                 // (even though it already exists in the database), to trigger
                 // the correct code path for updating its entry
@@ -536,12 +540,13 @@ public class MediaScanner
                     entry.mRowId = 0;
                 }
 
-                if ((!mDefaultNotificationSet &&
-                        doesPathHaveFilename(entry.mPath, mDefaultNotificationFilename))
+                if (entry.mPath != null &&
+                        ((!mDefaultNotificationSet &&
+                                doesPathHaveFilename(entry.mPath, mDefaultNotificationFilename))
                         || (!mDefaultRingtoneSet &&
                                 doesPathHaveFilename(entry.mPath, mDefaultRingtoneFilename))
                         || (!mDefaultAlarmSet &&
-                                doesPathHaveFilename(entry.mPath, mDefaultAlarmAlertFilename))) {
+                                doesPathHaveFilename(entry.mPath, mDefaultAlarmAlertFilename)))) {
                     Log.w(TAG, "forcing rescan of " + entry.mPath +
                             "since ringtone setting didn't finish");
                     scanAlways = true;
@@ -1029,18 +1034,15 @@ public class MediaScanner
             if(wasSettingAlreadySet(settingName)) {
                 return;
             }
-
-            String existingSettingValue = Settings.System.getString(mContext.getContentResolver(),
-                    settingName);
-
+            ContentResolver cr = mContext.getContentResolver();
+            String existingSettingValue = Settings.System.getString(cr, settingName);
             if (TextUtils.isEmpty(existingSettingValue)) {
                 // Set the setting to the given URI
-
-                ContentResolver cr = mContext.getContentResolver();
                 Settings.System.putString(cr, settingName,
                         ContentUris.withAppendedId(uri, rowId).toString());
                 Settings.System.putInt(cr, settingSetIndicatorName(settingName), 1);
             }
+            Settings.System.putInt(cr, settingSetIndicatorName(settingName), 1);
         }
 
         private int getFileTypeFromDrm(String path) {
