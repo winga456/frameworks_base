@@ -17,6 +17,7 @@
 package com.android.systemui.statusbar.phone;
 
 import android.app.ActivityManagerNative;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.UserInfo;
 import android.content.res.Configuration;
@@ -37,6 +38,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.internal.util.vrtoxin.StatusBarColorHelper;
@@ -47,6 +49,7 @@ import com.android.systemui.BatteryMeterView;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.policy.BatteryController;
 import com.android.systemui.statusbar.policy.KeyguardUserSwitcher;
+import com.android.systemui.statusbar.policy.KeyguardClock;
 import com.android.systemui.statusbar.policy.UserInfoController;
 import com.android.systemui.statusbar.policy.UserSwitcherController;
 
@@ -67,6 +70,14 @@ public class KeyguardStatusBarView extends RelativeLayout
     private MultiUserSwitch mMultiUserSwitch;
     private ImageView mMultiUserAvatar;
     private TextView mBatteryLevel;
+
+    // Keyguard clock options
+    private TextView mKeyguardClock;
+    private LinearLayout mKeyguardCenterClockLayout;
+    private TextView mKeyguardCenterClock;
+    private TextView mKeyguardLeftClock;
+    private boolean mShowKeyguardClock;
+    private int mKeyguardClockLocation;
 
     private BatteryController mBatteryController;
     private KeyguardUserSwitcher mKeyguardUserSwitcher;
@@ -107,6 +118,10 @@ public class KeyguardStatusBarView extends RelativeLayout
         mMultiUserAvatar = (ImageView) findViewById(R.id.multi_user_avatar);
         mBatteryLevel = (TextView) findViewById(R.id.battery_level);
         mCarrierLabel = (CarrierText) findViewById(R.id.keyguard_carrier_text);
+        mKeyguardClock = (TextView) findViewById(R.id.keyguard_clock);
+        mKeyguardCenterClock = (TextView) findViewById(R.id.keyguard_center_clock);
+        mKeyguardLeftClock = (TextView) findViewById(R.id.keyguard_left_clock);
+        mKeyguardCenterClockLayout = (LinearLayout) findViewById(R.id.keyguard_center_clock_layout); 
         loadDimens();
         if (mVRToxinLogoStyle == 0) {
             VRToxinLogo = (ImageView) findViewById(R.id.left_vrtoxin_logo);
@@ -128,6 +143,15 @@ public class KeyguardStatusBarView extends RelativeLayout
                         com.android.internal.R.dimen.text_size_small_material));
         mBatteryLevel.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 getResources().getDimensionPixelSize(R.dimen.battery_level_text_size));
+        mKeyguardClock.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                getResources().getDimensionPixelSize(
+                        com.android.internal.R.dimen.text_size_small_material));
+        mKeyguardCenterClock.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                getResources().getDimensionPixelSize(
+                        com.android.internal.R.dimen.text_size_small_material));
+        mKeyguardLeftClock.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                getResources().getDimensionPixelSize(
+                        com.android.internal.R.dimen.text_size_small_material));
     }
 
     private void loadDimens() {
@@ -155,6 +179,30 @@ public class KeyguardStatusBarView extends RelativeLayout
             }
         }
         updateBatteryLevelVisibility();
+    }
+    
+    private void setKeyguardClockVisibility(boolean visible) {
+        ContentResolver resolver = mContext.getContentResolver();
+        boolean showKeyguardClock = (Settings.System.getIntForUser(
+                resolver, Settings.System.KEYGUARD_STATUS_BAR_CLOCK, 1,
+                UserHandle.USER_CURRENT) == 1);
+        int keyguardClockLocation = Settings.System.getIntForUser(
+                resolver, Settings.System.KEYGUARD_STATUSBAR_CLOCK_STYLE, 0,
+                UserHandle.USER_CURRENT);
+        if (keyguardClockLocation == 0 && mKeyguardClock != null) {
+            mKeyguardClock.setVisibility(visible ? (showKeyguardClock ? View.VISIBLE : View.GONE) : View.GONE);
+        }
+        if (keyguardClockLocation == 1 && mKeyguardCenterClock != null) {
+            mKeyguardCenterClock.setVisibility(visible ? (showKeyguardClock ? View.VISIBLE : View.GONE) : View.GONE);
+        }
+        if (keyguardClockLocation == 2 && mKeyguardLeftClock != null) {
+            mKeyguardLeftClock.setVisibility(visible ? (showKeyguardClock ? View.VISIBLE : View.GONE) : View.GONE);
+        }
+    }
+
+    private void setKeyguardClockAndDateStatus(int width, int mode, boolean enabled) {
+        mKeyguardClockLocation = mode;
+        mShowKeyguardClock = enabled;
     }
 
     private void updateSystemIconsLayoutParams() {

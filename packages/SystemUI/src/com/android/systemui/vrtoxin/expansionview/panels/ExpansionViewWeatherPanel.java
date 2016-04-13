@@ -199,7 +199,7 @@ public class ExpansionViewWeatherPanel extends FrameLayout implements
                 calendar.roll(Calendar.DAY_OF_WEEK, true);
 
                 ImageView image = (ImageView) forecastItem.findViewById(R.id.weather_image);
-                Drawable icon = WeatherHelper.getForcastConditionDrawable(mContext, d)
+                Drawable icon = ExpansionViewWeatherHelper.getForcastConditionDrawable(mContext, d)
                         .getConstantState().newDrawable();
                 image.setImageDrawable(icon);
                 if (ExpansionViewWeatherHelper.getIconType(mContext) == 0) {

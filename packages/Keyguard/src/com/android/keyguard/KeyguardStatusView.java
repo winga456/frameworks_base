@@ -885,7 +885,7 @@ public class KeyguardStatusView extends GridLayout implements
             mAmbientDisplayWeatherC.setText(info.condition);
             mAmbientDisplayWeatherLT.setTextColor(mPrimaryTextColor);
             mAmbientDisplayWeatherC.setTextColor(mPrimaryTextColor);
-            mAmbientDisplayWeatherC.setTextColor(mSecondaryTextColor);
+            mAmbientDisplayWeatherC.setTextColor(mPrimaryTextColor);
             mAmbientDisplayWeatherIcon.setImageDrawable(icon);
             mAmbientDisplayWeatherIcon.setColorFilter(mIconColor, Mode.MULTIPLY);
         } else {
