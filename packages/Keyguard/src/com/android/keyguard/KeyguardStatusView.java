@@ -244,7 +244,7 @@ public class KeyguardStatusView extends GridLayout implements
             mClockView.setVisibility(View.VISIBLE);
         } else {
             mClockView = (TextClock) findViewById(R.id.clock_view);
-            mClockView.setVisibility(View.GONE);
+            mClockView.setVisibility(View.INVISIBLE);
         }
         if (Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.HIDE_LOCKSCREEN_DATE, 1) == 1) {
@@ -252,7 +252,7 @@ public class KeyguardStatusView extends GridLayout implements
             mDateView.setVisibility(View.VISIBLE);
         } else {
             mDateView = (TextClock) findViewById(R.id.date_view);
-            mDateView.setVisibility(View.GONE);
+            mDateView.setVisibility(View.INVISIBLE);
         }
     }
 
