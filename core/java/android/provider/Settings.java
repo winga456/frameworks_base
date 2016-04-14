@@ -6676,7 +6676,19 @@ public final class Settings {
          * Size of the Text in Expansion View Activity Panel
          * @hide
          */
+        public static final String EXPANSION_VIEW_ACTIVITY_PANEL_TEXT_COLOR = "expansion_view_activity_panel_text_color";
+
+        /**
+         * Size of the Text in Expansion View Activity Panel
+         * @hide
+         */
         public static final String EXPANSION_VIEW_ACTIVITY_PANEL_TEXT_SIZE = "expansion_view_activity_panel_text_size";
+
+        /**
+         * Expansion View Logo Panel Visibility
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_SHOW_LOGO_PANEL = "expansion_view_show_logo_panel";
 
         /**
          * Expansion View Text
@@ -6801,6 +6813,98 @@ public final class Settings {
          * @hide
          */
         public static final String EXPANSION_VIEW_PANEL_SHORTCUTS = "expansion_view_panel_shortcuts";
+
+        /**
+         * Icon of the battery in expansion view
+         * 0 - Battery portrait
+         * 1 - Battery landscape
+         * 2 - Circle
+         * 3 - Hidden
+         * default: 0
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_BATTERY_ICON_INDICATOR = "expansion_view_battery_icon_indicator";
+
+        /**
+         *  Weather to show the battery status text in expansion view
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_BATTERY_SHOW_TEXT = "expansion_view_battery_show_text";
+
+        /**
+         * Dot interval of the battery circle icon in expanion view
+         * 0 - No dots
+         * 1 - 10
+         * default: 0
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_BATTERY_CIRCLE_DOT_INTERVAL = "expansion_view_battery_circle_dot_interval";
+
+        /**
+         * Dot length of the battery circle icon in expansion view
+         * 0 - 10
+         * default: 0
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_BATTERY_CIRCLE_DOT_LENGTH = "expansion_view_battery_circle_dot_length";
+
+        /**
+         *  Weather to show a battery charging animation in expansion view
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_BATTERY_SHOW_CHARGE_ANIMATION = "expansion_view_battery_show_charge_animation";
+
+        /**
+         *  Weather to cut the battery percentage out of the battery status icon in expansion view
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_BATTERY_CUT_OUT_TEXT = "expansion_view_battery_cut_out_text";
+
+        /**
+         * Color of the battery status text in expansion view
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_BATTERY_ICON_COLOR = "expansion_view_battery_icon_color";
+
+        /**
+         * Color of the battery status text in expansion view
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_BATTERY_TEXT_COLOR = "expansion_view_battery_text_color";
+
+        /**
+         * Network traffic indicator, goes from least to greatest significant bitwise
+         * 0 = Display up-stream traffic if set
+         * 1 = Display down-stream traffic if set
+         * 2 = Show as Byte/s if set
+         * 16-31 = Refresh interval(ms) min: 250 max: 32750 default: 1000
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_NETWORK_TRAFFIC_STATE = "expansion_view_network_traffic_state";
+
+        /**
+         * Whether or not to hide the network traffic indicator when there is no activity
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_NETWORK_TRAFFIC_AUTOHIDE = "expansion_view_network_traffic_autohide";
+
+        /**
+         * Network traffic inactivity threshold (default is 10 kBs)
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_NETWORK_TRAFFIC_AUTOHIDE_THRESHOLD = "expansion_view_network_traffic_autohide_threshold";
+
+        /**
+         * Network stats arrows on/off switch
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_NETWORK_TRAFFIC_HIDE_ARROW = "expansion_view_network_traffic_hide_arrow";
+
+        /**
+         * Network stats Color style
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_NETWORK_TRAFFIC_COLOR = "expansion_view_network_traffic_color";
 
         /**
          * Custom shortcuts for the empty shade view

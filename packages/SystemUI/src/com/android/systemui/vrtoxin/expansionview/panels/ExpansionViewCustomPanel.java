@@ -14,7 +14,7 @@
  * limitations under the License
  */
 
-package com.android.systemui.vrtoxin;
+package com.android.systemui.vrtoxin.expansionview.panels;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -47,7 +47,7 @@ import com.android.systemui.R;
 
 import com.android.internal.util.vrtoxin.ExpansionViewColorHelper;
 
-public class ExpansionView extends RelativeLayout {
+public class ExpansionViewCustomPanel extends RelativeLayout {
 
     private static Context mContext;
     private static ContentResolver mResolver;
@@ -59,7 +59,7 @@ public class ExpansionView extends RelativeLayout {
     private View mLogoPanel;
     private View mShortcutBar;
     private View mShortcutBarContainer;
-    private WeatherBarContainer mWeatherPanel;
+    private ExpansionViewWeatherPanel mWeatherPanel;
 
     // Views
     private TextView mCustomText;
@@ -71,28 +71,29 @@ public class ExpansionView extends RelativeLayout {
     private boolean mShowChanger = false;
     private boolean mShowShortcutPanel = false;
     private boolean mShowText = false;
+    private boolean mShowLogoPanel = false;
 
     protected Vibrator mVibrator;
 
     // Panels
-    private final static int CUSTOM_PANEL    = 0;
-    private final static int WEATHER_PANEL   = 1;
-    private final static int ACTIVITY_PANEL  = 2;
-    private final static int LOGO_PANEL      = 3;
+    public final static int CUSTOM_PANEL    = 0;
+    public final static int WEATHER_PANEL   = 1;
+    public final static int ACTIVITY_PANEL  = 2;
+    public final static int LOGO_PANEL      = 3;
  
-    private static int NEXT_VISIBLE_PANEL = CUSTOM_PANEL;
+    public static int NEXT_VISIBLE_PANEL = WEATHER_PANEL;
 
     private boolean mListening = false;
 
-    public ExpansionView(Context context) {
+    public ExpansionViewCustomPanel(Context context) {
         this(context, null);
     }
 
-    public ExpansionView(Context context, AttributeSet attrs) {
+    public ExpansionViewCustomPanel(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ExpansionView(Context context, AttributeSet attrs, int defStyle) {
+    public ExpansionViewCustomPanel(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mContext = context;
         mResolver = mContext.getContentResolver();
@@ -115,7 +116,7 @@ public class ExpansionView extends RelativeLayout {
         mShadeRomLogo = (ImageView) findViewById(R.id.expansion_view_rom_logo);
         mShortcutBar = findViewById(R.id.expansion_view_shortcut_bar_container);
         mShortcutBarContainer = findViewById(R.id.expansion_view_shortcut_bar_container);
-        mWeatherPanel = (WeatherBarContainer) findViewById(R.id.expansion_view_weather_container);
+        mWeatherPanel = (ExpansionViewWeatherPanel) findViewById(R.id.expansion_view_weather_container);
 
         mCustomText.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -173,26 +174,47 @@ public class ExpansionView extends RelativeLayout {
         mWeatherPanel.setVisibility(NEXT_VISIBLE_PANEL == WEATHER_PANEL
                 ? View.VISIBLE : View.GONE);
  
-        if (NEXT_VISIBLE_PANEL == ACTIVITY_PANEL && animate) {
-            mActivityPanel.startAnimation(getAnimation(true));
-            mWeatherPanel.startAnimation(getAnimation(false));
-        } else if (NEXT_VISIBLE_PANEL == WEATHER_PANEL && animate) {
-            mWeatherPanel.startAnimation(getAnimation(true));
-            mCustomPanel.startAnimation(getAnimation(false));
-        } else if (NEXT_VISIBLE_PANEL == LOGO_PANEL && animate) {
-            mLogoPanel.startAnimation(getAnimation(true));
-            mActivityPanel.startAnimation(getAnimation(false));
-        } else if (NEXT_VISIBLE_PANEL == CUSTOM_PANEL && animate) {
-            mCustomPanel.startAnimation(getAnimation(true));
-            mLogoPanel.startAnimation(getAnimation(false));
+        if (!mShowLogoPanel) {
+            if (NEXT_VISIBLE_PANEL == ACTIVITY_PANEL && animate) {
+                mActivityPanel.startAnimation(getAnimation(true));
+                mWeatherPanel.startAnimation(getAnimation(false));
+            } else if (NEXT_VISIBLE_PANEL == WEATHER_PANEL && animate) {
+                mWeatherPanel.startAnimation(getAnimation(true));
+                mCustomPanel.startAnimation(getAnimation(false));
+            } else if (NEXT_VISIBLE_PANEL == CUSTOM_PANEL && animate) {
+                mCustomPanel.startAnimation(getAnimation(true));
+                mActivityPanel.startAnimation(getAnimation(false));
+            }
+        } else {
+            if (NEXT_VISIBLE_PANEL == ACTIVITY_PANEL && animate) {
+                mActivityPanel.startAnimation(getAnimation(true));
+                mWeatherPanel.startAnimation(getAnimation(false));
+            } else if (NEXT_VISIBLE_PANEL == WEATHER_PANEL && animate) {
+                mWeatherPanel.startAnimation(getAnimation(true));
+                mCustomPanel.startAnimation(getAnimation(false));
+            } else if (NEXT_VISIBLE_PANEL == LOGO_PANEL && animate) {
+                mLogoPanel.startAnimation(getAnimation(true));
+                mActivityPanel.startAnimation(getAnimation(false));
+            } else if (NEXT_VISIBLE_PANEL == CUSTOM_PANEL && animate) {
+                mCustomPanel.startAnimation(getAnimation(true));
+                mLogoPanel.startAnimation(getAnimation(false));
+            }
         }
  
-        mWeatherPanel.setListening(NEXT_VISIBLE_PANEL == WEATHER_PANEL);
-        mActivityPanel.setListening(NEXT_VISIBLE_PANEL == ACTIVITY_PANEL);
         NEXT_VISIBLE_PANEL += 1;
-        if (NEXT_VISIBLE_PANEL == 4) {
-            NEXT_VISIBLE_PANEL = 0;
+        if (!mShowLogoPanel) {
+            if (NEXT_VISIBLE_PANEL == 3) {
+                NEXT_VISIBLE_PANEL = 0;
+            }
+        } else {
+            if (NEXT_VISIBLE_PANEL == 4) {
+                NEXT_VISIBLE_PANEL = 0;
+            }
         }
+    }
+
+    public int getNextVisiblePanel() {
+        return NEXT_VISIBLE_PANEL;
     }
 
     private static Animation getAnimation(boolean isIn) {
@@ -243,6 +265,10 @@ public class ExpansionView extends RelativeLayout {
         } else {
             mLayoutChanger.setVisibility(View.GONE);
         }
+    }
+
+    public void showLogoPanel(boolean showLogoPanel) {
+        mShowLogoPanel = showLogoPanel;
     }
 
     public void showShortcutPanel(boolean showShortcuts) {

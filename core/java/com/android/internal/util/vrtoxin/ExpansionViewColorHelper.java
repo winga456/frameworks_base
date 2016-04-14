@@ -99,6 +99,22 @@ public class ExpansionViewColorHelper {
                 Settings.System.PANEL_SHORTCUTS_RIPPLE_COLOR, WHITE);
     }
 
+    public static int getBatteryTextColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.EXPANSION_VIEW_BATTERY_TEXT_COLOR, BLACK);
+    }
+
+    public static int getBatteryIconColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.EXPANSION_VIEW_BATTERY_ICON_COLOR, WHITE);
+    }
+
+    public static int getExpansionViewActivityPanelTextColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.EXPANSION_VIEW_ACTIVITY_PANEL_TEXT_COLOR,
+                WHITE);
+    }
+
     public static int getExpansionViewTextColor(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
                 Settings.System.EXPANSION_VIEW_TEXT_COLOR,

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.systemui.vrtoxin;
+package com.android.systemui.vrtoxin.expansionview.panels;
 
 import android.content.Context;
 import android.content.Intent;
@@ -51,7 +51,7 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class WeatherBarContainer extends FrameLayout implements
+public class ExpansionViewWeatherPanel extends FrameLayout implements
         WeatherController.Callback {
 
     private final Context mContext;
@@ -68,11 +68,11 @@ public class WeatherBarContainer extends FrameLayout implements
 
     protected Vibrator mVibrator;
 
-    public WeatherBarContainer(Context context) {
+    public ExpansionViewWeatherPanel(Context context) {
         this(context, null);
     }
 
-    public WeatherBarContainer(Context context, AttributeSet attrs) {
+    public ExpansionViewWeatherPanel(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
     }

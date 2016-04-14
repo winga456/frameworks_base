@@ -1,4 +1,5 @@
 <!--
+  ~ Copyright (C) 2016 Darkkat
   ~ Copyright (C) 2016 Brett Rogers (rogersb11)
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,13 +14,13 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License
   -->
-
-<com.android.systemui.vrtoxin.ExpansionViewActivityPanel
+ 
+<com.android.systemui.vrtoxin.expansionview.panels.ExpansionViewActivityPanel
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/expansion_view_activity_panel"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
-
+ 
     <TextView
             android:id="@+id/expansion_view_wifi_label"
             android:layout_width="wrap_content"
@@ -31,7 +32,7 @@
             android:gravity="top"
             android:textColor="#ffffff"
             android:textSize="16sp"/>
-
+ 
     <TextView
             android:id="@+id/expansion_view_carrier_label"
             android:layout_width="wrap_content"
@@ -45,5 +46,66 @@
             android:textSize="16sp"
             android:singleLine="true"
             android:ellipsize="end"/>
-
-</com.android.systemui.vrtoxin.ExpansionViewActivityPanel>
+ 
+    <LinearLayout android:id="@+id/expansion_view_battery_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/status_bar_header_height"
+        android:layout_below="@id/expansion_view_wifi_label"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="8dp"
+        android:paddingEnd="4dp" >
+        <FrameLayout
+            android:id="@+id/expansion_view_battery_icon_layout"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/expansion_view_wifi_label"
+            android:layout_marginLeft="16dp"
+            android:padding="10dp">
+ 
+        <com.android.systemui.BatteryMeterView
+                android:id="@+id/expansion_view_battery_icon"
+                android:layout_height="30dp"
+                android:layout_width="22dp"
+                android:layout_gravity="center" />
+ 
+        </FrameLayout>
+        <TextView android:id="@+id/expansion_view_battery_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/header_battery_margin_expanded"
+            android:paddingEnd="@dimen/battery_level_padding_end"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/battery_level_text_size"
+            android:importantForAccessibility="noHideDescendants"/>
+    </LinearLayout>
+ 
+    <com.android.systemui.vrtoxin.expansionview.panels.ExpansionViewTraffic
+        android:id="@+id/expansion_view_traffic"
+        android:layout_below="@id/expansion_view_carrier_label"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:paddingBottom="6dp"
+        android:gravity="center">
+ 
+        <TextView
+            android:id="@+id/expansion_view_traffic_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?android:attr/textColorSecondary"
+            android:fontFamily="sans-serif-condensed"
+            android:singleLine="false" />
+ 
+        <ImageView
+            android:id="@+id/expansion_view_traffic_icon"
+            android:layout_width="16dp"
+            android:layout_height="24dp"
+            android:scaleType="centerCrop"
+            android:singleLine="false" />
+ 
+    </com.android.systemui.vrtoxin.expansionview.panels.ExpansionViewTraffic>
+ 
+</com.android.systemui.vrtoxin.expansionview.panels.ExpansionViewActivityPanel>

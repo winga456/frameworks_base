@@ -2577,6 +2577,7 @@ public class NotificationStackScrollLayout extends ViewGroup
         } else if (mPhoneStatusBar.getBarState() == StatusBarState.KEYGUARD) {
             mEmptyShadeView.setVisibility(GONE);
         } else {
+            mDismissView.setVisibility(GONE);
             mEmptyShadeView.setVisibility(VISIBLE);
         }
     }

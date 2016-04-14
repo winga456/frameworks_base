@@ -63,6 +63,7 @@ import com.android.systemui.DejankUtils;
 import com.android.systemui.EventLogConstants;
 import com.android.systemui.EventLogTags;
 import com.android.systemui.R;
+import com.android.systemui.vrtoxin.expansionview.ExpansionViewController;
 import com.android.systemui.vrtoxin.UserContentObserver;
 import com.android.systemui.qs.QSContainer;
 import com.android.systemui.qs.QSPanel;
@@ -113,6 +114,7 @@ public class NotificationPanelView extends PanelView implements
     private QuickAccessBar mQSBar;
     private QSPanel mQsPanel;
     private KeyguardStatusView mKeyguardStatusView;
+    private ExpansionViewController mExpansionViewController;
     private ObservableScrollView mScrollView;
     private TextView mClockView;
     private View mReserveNotificationSpace;
@@ -396,6 +398,9 @@ public class NotificationPanelView extends PanelView implements
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         mSettingsObserver.observe();
+        if (mExpansionViewController != null) {
+            mExpansionViewController.setObserving(true);
+        }
 
         mNotificationStackScroller.setOnHeightChangedListener(this);
         mNotificationStackScroller.setOverscrollTopChangedListener(this);
@@ -410,6 +415,9 @@ public class NotificationPanelView extends PanelView implements
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mSettingsObserver.unobserve();
+        if (mExpansionViewController != null) {
+            mExpansionViewController.setObserving(false);
+        }
 
         mNotificationStackScroller.setOnHeightChangedListener(null);
         mNotificationStackScroller.setOverscrollTopChangedListener(null);
@@ -1908,6 +1916,9 @@ public class NotificationPanelView extends PanelView implements
         mHeader.setListening(listening);
         mKeyguardStatusBar.setListening(listening);
         mQsContainer.setListening(listening);
+        if (mExpansionViewController != null) {
+            mExpansionViewController.setListening(listening);
+        }
     }
 
     @Override
@@ -2692,5 +2703,9 @@ public class NotificationPanelView extends PanelView implements
         if (mQsPanel != null) {
             mQsPanel.setColors();
         }
+    }
+
+    public void setExpansionViewController(ExpansionViewController controller) {
+        mExpansionViewController = controller;
     }
 }

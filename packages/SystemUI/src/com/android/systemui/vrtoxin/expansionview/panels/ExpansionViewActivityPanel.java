@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2014 The Android Open Source Project
+ * Copyright (C) 2015 Darkkat
+ * Copyright (C) 2016 Brett Rogers (rogersb11)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +15,7 @@
  * limitations under the License
  */
 
-package com.android.systemui.vrtoxin;
+package com.android.systemui.vrtoxin.expansionview.panels;
 
 import android.content.Context;
 import android.content.Intent;
@@ -34,24 +35,31 @@ import android.widget.TextView;
 import com.android.internal.util.vrtoxin.DeviceUtils;
 import com.android.internal.util.vrtoxin.ExpansionViewColorHelper;
 
+import com.android.systemui.BatteryMeterView;
 import com.android.systemui.vrtoxin.NetworkTrafficController;
 import com.android.systemui.statusbar.phone.ActivityStarter;
+import com.android.systemui.statusbar.policy.BatteryController;
 import com.android.systemui.statusbar.policy.NetworkController;
 import com.android.systemui.statusbar.policy.NetworkController.IconState;
 import com.android.systemui.statusbar.policy.SignalCallbackAdapter;
 import com.android.systemui.R;
 
-public class ExpansionViewActivityPanel extends RelativeLayout {
+public class ExpansionViewActivityPanel extends RelativeLayout implements BatteryController.BatteryStateChangeCallback {
 
     private final Context mContext;
     private final boolean mSupportsMobileData;
 
     private final SignalCallback mSignalCallback = new SignalCallback();
     private ActivityStarter mActivityStarter;
+    private BatteryController mBatteryController;
+    private BatteryMeterView mBatteryMeterView;
     private NetworkController mNetworkController;
 
+    private TextView mBatteryLevel;
     private TextView mCarrierLabel;
     private TextView mWifiLabel;
+    private View mNetworkTraffic;
+    private View mBatteryLayout;
 
     private String mCarrierDescription = null;
     private String mWifiDescription = null;
@@ -72,8 +80,12 @@ public class ExpansionViewActivityPanel extends RelativeLayout {
         mSupportsMobileData = DeviceUtils.deviceSupportsMobileData(mContext);
     }
 
-    public void setUp(ActivityStarter starter, NetworkController nc) {
+    public void setUp(ActivityStarter starter, NetworkController nc, BatteryController bc) {
         mActivityStarter = starter;
+        mBatteryController = bc;
+        if (mBatteryMeterView != null) {
+            mBatteryMeterView.setBatteryController(bc);
+        }
         mNetworkController = nc;
     }
 
@@ -82,8 +94,33 @@ public class ExpansionViewActivityPanel extends RelativeLayout {
         super.onFinishInflate();
 
         mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
+        mBatteryMeterView = (BatteryMeterView) findViewById(R.id.expansion_view_battery_icon);
+        mBatteryLayout = findViewById(R.id.expansion_view_battery_layout);
+        mBatteryLevel = (TextView) findViewById(R.id.expansion_view_battery_level);
         mCarrierLabel = (TextView) findViewById(R.id.expansion_view_carrier_label);
         mWifiLabel = (TextView) findViewById(R.id.expansion_view_wifi_label);
+        mNetworkTraffic = findViewById(R.id.expansion_view_traffic);
+
+        mBatteryLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mExpansionViewVibrate) {
+                    vibrate(20);
+                }
+                startBatteryActivity();
+            }
+        });
+
+        mBatteryLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (mExpansionViewVibrate) {
+                    vibrate(20);
+                }
+                startBatteryLongClickActivity();
+            return true;
+            }
+        });
 
         mCarrierLabel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,6 +139,17 @@ public class ExpansionViewActivityPanel extends RelativeLayout {
                     vibrate(20);
                 }
                 startCarrierLongActivity();
+            return true;
+            }
+        });
+
+        mNetworkTraffic.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (mExpansionViewVibrate) {
+                    vibrate(20);
+                }
+                startTrafficLongClickActivity();
             return true;
             }
         });
@@ -134,8 +182,10 @@ public class ExpansionViewActivityPanel extends RelativeLayout {
         }
         mListening = listening;
         if (mListening) {
+            mBatteryController.addStateChangedCallback(this);
             mNetworkController.addSignalCallback(mSignalCallback);
         } else {
+            mBatteryController.removeStateChangedCallback(this);
             mNetworkController.removeSignalCallback(mSignalCallback);
         }
     }
@@ -190,10 +240,18 @@ public class ExpansionViewActivityPanel extends RelativeLayout {
                 (RippleDrawable) mContext.getDrawable(R.drawable.ripple_drawable_rectangle).mutate();
         RippleDrawable rippleBackground =
                 (RippleDrawable) mContext.getDrawable(R.drawable.ripple_drawable_oval).mutate();
+        RippleDrawable trafficBackground =
+                (RippleDrawable) mContext.getDrawable(R.drawable.ripple_drawable).mutate();
+        RippleDrawable batteryBackground =
+                (RippleDrawable) mContext.getDrawable(R.drawable.ripple_drawable).mutate();
         final int color = ExpansionViewColorHelper.getNormalRippleColor(mContext);
+        batteryBackground.setColor(ColorStateList.valueOf(color));
+        trafficBackground.setColor(ColorStateList.valueOf(color));
         wifiBackground.setColor(ColorStateList.valueOf(color));
         carrierBackground.setColor(ColorStateList.valueOf(color));
+        mBatteryLayout.setBackground(batteryBackground);
         mCarrierLabel.setBackground(carrierBackground);
+        mNetworkTraffic.setBackground(trafficBackground);
         mWifiLabel.setBackground(wifiBackground);
     }
 
@@ -243,6 +301,61 @@ public class ExpansionViewActivityPanel extends RelativeLayout {
         }
     };
 
+    @Override
+    public void onBatteryLevelChanged(int level, boolean pluggedIn, boolean charging) {
+        // could not care less
+    }
+
+    @Override
+    public void onPowerSaveChanged() {
+        // could not care less
+    }
+
+    public void setBatteryIndicator(int indicator) {
+        mBatteryMeterView.updateBatteryIndicator(indicator);
+    }
+
+    public void setBatteryTextVisibility(boolean show) {
+        mBatteryMeterView.setTextVisibility(show);
+    }
+
+    public void setBatteryCircleDots(int interval, int length) {
+        mBatteryMeterView.updateCircleDots(interval, length);
+    }
+
+    public void setBatteryShowChargeAnimation(boolean show) {
+        mBatteryMeterView.setShowChargeAnimation(show);
+    }
+
+    public void setBatteryCutOutBatteryText(boolean cutOut) {
+        mBatteryMeterView.setCutOutText(cutOut);
+    }
+
+    public void setBatteryIconColor(int color) {
+        mBatteryMeterView.setBatteryColors(color);
+    }
+
+    public void setBatteryIconColor() {
+        final int iconColor =  ExpansionViewColorHelper.getBatteryIconColor(mContext);
+        mBatteryMeterView.setBatteryColors(iconColor);
+    }
+
+    public void setBatteryTextColor(int color) {
+        mBatteryMeterView.setTextColor(color);
+    }
+
+    private void startBatteryActivity() {
+        mActivityStarter.startActivity(new Intent(Intent.ACTION_POWER_USAGE_SUMMARY),
+                true /* dismissShade */);
+    }
+
+    private void startBatteryLongClickActivity() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setClassName("com.android.settings",
+            "com.android.settings.Settings$ExpansionViewBatterySettingsSettingsActivity");
+        mActivityStarter.startActivity(intent, true /* dismissShade */);
+    }
+
     private void startCarrierActivity() {
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.setClassName("com.android.settings",
@@ -254,6 +367,13 @@ public class ExpansionViewActivityPanel extends RelativeLayout {
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.setClassName("com.android.settings",
             "com.android.settings.Settings$DataUsageSummaryActivity");
+        mActivityStarter.startActivity(intent, true /* dismissShade */);
+    }
+
+    private void startTrafficLongClickActivity() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setClassName("com.android.settings",
+            "com.android.settings.Settings$ExpansionViewTrafficSettingsActivity");
         mActivityStarter.startActivity(intent, true /* dismissShade */);
     }
 

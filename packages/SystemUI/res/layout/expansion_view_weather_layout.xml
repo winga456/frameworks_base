@@ -16,7 +16,7 @@
      limitations under the License.
 -->
 
-<com.android.systemui.vrtoxin.WeatherBarContainer
+<com.android.systemui.vrtoxin.expansionview.panels.ExpansionViewWeatherPanel
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/expansion_view_weather_container"
         android:layout_width="match_parent"
@@ -44,4 +44,4 @@
         android:paddingBottom="@dimen/weather_bar_padding_top_bottom"
         android:gravity="center_vertical" />
 
-</com.android.systemui.vrtoxin.WeatherBarContainer>
+</com.android.systemui.vrtoxin.expansionview.panels.ExpansionViewWeatherPanel>
