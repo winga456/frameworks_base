@@ -341,4 +341,7 @@
   <java-symbol type="drawable" name="dexopt_logo_text_shadow1" />
   <java-symbol type="drawable" name="dexopt_logo_text_shadow2" />
 
+  <!-- Notifications -->
+  <java-symbol type="id" name="big_picture_action_list_layout" />
+
 </resources>

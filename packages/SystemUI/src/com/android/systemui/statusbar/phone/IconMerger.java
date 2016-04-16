@@ -30,7 +30,7 @@ public class IconMerger extends LinearLayout {
 
     private int mIconSize;
     private int mClockLocation;
-    private View mMoreView;
+    protected View mMoreView;
 
     public IconMerger(Context context, AttributeSet attrs) {
         super(context, attrs);

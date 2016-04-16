@@ -44,9 +44,11 @@ import android.content.pm.ResolveInfo;
 import android.content.pm.UserInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.content.res.ColorStateList;
 import android.content.ServiceConnection;
 import android.database.ContentObserver;
 import android.graphics.Color;
+import android.graphics.drawable.RippleDrawable;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuff.Mode;
@@ -411,12 +413,11 @@ public abstract class BaseStatusBar extends SystemUI implements
                     if (uri.equals(Settings.System.getUriFor(
                             Settings.System.NOTIFICATION_MEDIA_BG_MODE))
                         || uri.equals(Settings.System.getUriFor(
-                            Settings.System.NOTIFICATION_BG_COLOR))) {
+                            Settings.System.NOTIFICATION_BG_COLOR))
+                        || uri.equals(Settings.System.getUriFor(
+                            Settings.System.NOTIFICATION_RIPPLE_COLOR))) {
                         UpdateNotificationBgColors(entry);
                         UpdateNotificationIconColors(entry);
-                    } else if (uri.equals(Settings.System.getUriFor(
-                            Settings.System.NOTIFICATION_TEXT_COLOR))) {
-                        UpdateNotificationTextColors(entry);
                     } else if (uri.equals(Settings.System.getUriFor(
                             Settings.System.NOTIFICATION_APP_ICON_COLOR_MODE))
                         || uri.equals(Settings.System.getUriFor(
@@ -426,6 +427,9 @@ public abstract class BaseStatusBar extends SystemUI implements
                         || uri.equals(Settings.System.getUriFor(
                             Settings.System.NOTIFICATION_APP_ICON_BG_COLOR))) {
                         UpdateNotificationIconColors(entry);
+                    } else if (uri.equals(Settings.System.getUriFor(
+                            Settings.System.NOTIFICATION_TEXT_COLOR))) {
+                        UpdateNotificationTextColors(entry);
                     }
                 }
             }
@@ -791,10 +795,13 @@ public abstract class BaseStatusBar extends SystemUI implements
                 Settings.System.getUriFor(Settings.System.NOTIFICATION_APP_ICON_BG_COLOR), false,
                 mNotificationColorSettingsObserver);
         mContext.getContentResolver().registerContentObserver(
-                Settings.System.getUriFor(Settings.System.NOTIFICATION_TEXT_COLOR), false,
+                Settings.System.getUriFor(Settings.System.NOTIFICATION_RIPPLE_COLOR), false,
                 mNotificationColorSettingsObserver);
         mContext.getContentResolver().registerContentObserver(
                 Settings.System.getUriFor(Settings.System.NOTIFICATION_ICON_COLOR), false,
+                mNotificationColorSettingsObserver);
+        mContext.getContentResolver().registerContentObserver(
+                Settings.System.getUriFor(Settings.System.NOTIFICATION_TEXT_COLOR), false,
                 mNotificationColorSettingsObserver);
 
         mBarService = IStatusBarService.Stub.asInterface(
@@ -1144,9 +1151,9 @@ public abstract class BaseStatusBar extends SystemUI implements
         return vetoButton;
     }
 
-
-    protected void applyColorsAndBackgrounds(StatusBarNotification sbn,
-            NotificationData.Entry entry) {
+    private void UpdateNotificationBgColors(NotificationData.Entry entry) {
+        final StatusBarNotification sbn = entry.notification;
+        final ActivatableNotificationView anv = (ActivatableNotificationView) entry.row;
 
         if (entry.getContentView().getId()
                 != com.android.internal.R.id.status_bar_latest_event_content) {
@@ -1165,6 +1172,520 @@ public abstract class BaseStatusBar extends SystemUI implements
                                 R.color.notification_material_background_media_default_color)
                         : color);
             }
+        }
+
+        if (entry.icon != null) {
+            entry.icon.setTag(R.id.icon_is_pre_L, entry.targetSdk < Build.VERSION_CODES.LOLLIPOP);
+        }
+
+        if (anv != null) {
+            anv.updateSettings();
+            final View expandedView = entry.getExpandedContentView();
+            final View headsUpView = entry.getHeadsUpContentView();
+            final int dividerColor = NotificationColorHelper.getActionDividerColor(anv.getBgColor());
+
+            if (expandedView != null) {
+                final View expandedActionDivider = expandedView.findViewById(
+                    com.android.internal.R.id.action_divider);
+                final View expandedOverflowDivider = expandedView.findViewById(
+                    com.android.internal.R.id.overflow_divider);
+                if (expandedActionDivider != null) {
+                    expandedActionDivider.setBackgroundColor(dividerColor);
+                }
+                if (expandedOverflowDivider != null) {
+                    expandedOverflowDivider.setBackgroundColor(dividerColor);
+                }
+            }
+
+            if (headsUpView != null) {
+                final View headsUpActionDivider = headsUpView.findViewById(
+                    com.android.internal.R.id.action_divider);
+                final View headsUpOverflowDivider = headsUpView.findViewById(
+                    com.android.internal.R.id.overflow_divider);
+                if (headsUpActionDivider != null) {
+                    headsUpActionDivider.setBackgroundColor(dividerColor);
+                }
+                if (headsUpOverflowDivider != null) {
+                    headsUpOverflowDivider.setBackgroundColor(dividerColor);
+                }
+            }
+        }
+    }
+
+    private void UpdateNotificationOverflowBgColors() {
+        if (mKeyguardIconOverflowContainer != null) {
+            mKeyguardIconOverflowContainer.updateSettings();
+        }
+    }
+
+    private void UpdateNotificationIconColors(NotificationData.Entry entry) {
+        final StatusBarNotification sbn = entry.notification;
+        final View privateView = entry.getContentView();
+        final View publicView = entry.getPublicContentView();
+        final View expandedView = entry.getExpandedContentView();
+        final View headsUpView = entry.getHeadsUpContentView();
+
+        final int notificationColor = sbn.getNotification().color;
+        final int appIconBgColor =
+                NotificationColorHelper.getAppIconBgColor(mContext, notificationColor);
+        final int appIconBgAlpha =
+                NotificationColorHelper.getAppIconBgAlpha(mContext, notificationColor);
+        int iconColor;
+        final int textColor = NotificationColorHelper.getCustomTextColor(mContext);
+
+        if (privateView != null) {
+            final ImageView icon = (ImageView) privateView.findViewById(
+                    com.android.internal.R.id.icon);
+            final ImageView rightIcon = (ImageView) privateView.findViewById(
+                    com.android.internal.R.id.right_icon);
+            final ImageView profileBadge2 = (ImageView) privateView.findViewById(
+                    com.android.internal.R.id.profile_badge_line2);
+            final ImageView profileBadge3 = (ImageView) privateView.findViewById(
+                    com.android.internal.R.id.profile_badge_line3);
+            final LinearLayout mediaActions =
+                    (LinearLayout) privateView.findViewById(com.android.internal.R.id.media_actions);
+
+            if (icon != null) {
+                iconColor = NotificationColorHelper.getIconColor(mContext, icon.getDrawable());
+                setNotificationAppIconColors(icon, iconColor, appIconBgColor, appIconBgAlpha);
+            }
+            if (rightIcon != null) {
+                iconColor = NotificationColorHelper.getIconColor(mContext, rightIcon.getDrawable());
+                setNotificationAppIconColors(rightIcon, iconColor, appIconBgColor, appIconBgAlpha);
+            }
+            if (profileBadge2 != null) {
+                iconColor = NotificationColorHelper.getIconColor(mContext, profileBadge2.getDrawable());
+                setNotificationAppIconColors(profileBadge2, iconColor, appIconBgColor, appIconBgAlpha);
+            }
+            if (profileBadge3 != null) {
+                iconColor = NotificationColorHelper.getIconColor(mContext, profileBadge3.getDrawable());
+                setNotificationAppIconColors(profileBadge3, iconColor, appIconBgColor, appIconBgAlpha);
+            }
+            if (mediaActions != null) {
+                final int mediaActionsCount = mediaActions.getChildCount();
+                for (int index=0; index<mediaActionsCount; index++) {
+                    final ImageView mediaAction = (ImageView) mediaActions.getChildAt(index);
+                    if (mediaAction != null) {
+                        iconColor = NotificationColorHelper.getCustomIconColor(mContext);
+                        setNotificationRippleColor(mediaAction);
+                        mediaAction.setColorFilter(iconColor, Mode.SRC_IN);
+                    }
+                }
+            }
+        }
+        if (publicView != null) {
+            final ImageView publicIcon =
+                    (ImageView) publicView.findViewById(R.id.icon);
+            final ImageView publicProfileBadge3 = (ImageView) publicView.findViewById(
+                    R.id.profile_badge_line3);
+            final ImageView publicInternalIcon = (ImageView) publicView.findViewById(
+                    com.android.internal.R.id.icon);
+            final ImageView publicInternalProfileBadge3 = (ImageView) publicView.findViewById(
+                    com.android.internal.R.id.profile_badge_line3);
+
+            if (publicIcon != null) {
+                iconColor = NotificationColorHelper.getIconColor(mContext, publicIcon.getDrawable());
+                setNotificationAppIconColors(publicIcon, iconColor, appIconBgColor, appIconBgAlpha);
+            }
+            if (publicProfileBadge3 != null) {
+                iconColor = NotificationColorHelper.getIconColor(mContext, publicProfileBadge3.getDrawable());
+                setNotificationAppIconColors(publicProfileBadge3, iconColor, appIconBgColor, appIconBgAlpha);
+            }
+            if (publicInternalIcon != null) {
+                iconColor = NotificationColorHelper.getIconColor(mContext, publicInternalIcon.getDrawable());
+                setNotificationAppIconColors(publicInternalIcon, iconColor, appIconBgColor, appIconBgAlpha);
+            }
+            if (publicInternalProfileBadge3 != null) {
+                iconColor = NotificationColorHelper.getIconColor(mContext, publicInternalProfileBadge3.getDrawable());
+                setNotificationAppIconColors(publicInternalProfileBadge3, iconColor, appIconBgColor, appIconBgAlpha);
+            }
+        }
+        if (expandedView != null) {
+            final ImageView expandedIcon =
+                     (ImageView) expandedView.findViewById(com.android.internal.R.id.icon);
+            final ImageView expandedRightIcon = (ImageView) expandedView.findViewById(
+                    com.android.internal.R.id.right_icon);
+            final ImageView expandedProfileBadgeLarge = (ImageView) expandedView.findViewById(
+                    com.android.internal.R.id.profile_badge_large_template);
+            final ImageView expandedProfileBadge2 = (ImageView) expandedView.findViewById(
+                    com.android.internal.R.id.profile_badge_line2);
+            final ImageView expandedProfileBadge3 = (ImageView) expandedView.findViewById(
+                    com.android.internal.R.id.profile_badge_line3);
+            final View expandedActionListLayout = expandedView.findViewById(
+                    com.android.internal.R.id.big_picture_action_list_layout);
+            final LinearLayout expandedActions =
+                    (LinearLayout) expandedView.findViewById(com.android.internal.R.id.actions);
+            final LinearLayout expandedMediaActions =
+                    (LinearLayout) expandedView.findViewById(com.android.internal.R.id.media_actions);
+
+            if (expandedIcon != null) {
+                iconColor = NotificationColorHelper.getIconColor(mContext, expandedIcon.getDrawable());
+                setNotificationAppIconColors(expandedIcon, iconColor, appIconBgColor, appIconBgAlpha);
+            }
+            if (expandedRightIcon != null) {
+                iconColor = NotificationColorHelper.getIconColor(mContext, expandedRightIcon.getDrawable());
+                setNotificationAppIconColors(expandedRightIcon, iconColor, appIconBgColor, appIconBgAlpha);
+            }
+            if (expandedProfileBadgeLarge != null) {
+                iconColor = NotificationColorHelper.getIconColor(mContext, expandedProfileBadgeLarge.getDrawable());
+                setNotificationAppIconColors(expandedProfileBadgeLarge, iconColor, appIconBgColor, appIconBgAlpha);
+            }
+            if (expandedProfileBadge2 != null) {
+                iconColor = NotificationColorHelper.getIconColor(mContext, expandedProfileBadge2.getDrawable());
+                setNotificationAppIconColors(expandedProfileBadge2, iconColor, appIconBgColor, appIconBgAlpha);
+            }
+            if (expandedProfileBadge3 != null) {
+                iconColor = NotificationColorHelper.getIconColor(mContext, expandedProfileBadge3.getDrawable());
+                setNotificationAppIconColors(expandedProfileBadge3, iconColor, appIconBgColor, appIconBgAlpha);
+            }
+            if (expandedActionListLayout != null) {
+                if (expandedActionListLayout.getBackground() != null) {
+                    iconColor = NotificationColorHelper.getCustomIconColor(mContext);
+                    expandedActionListLayout.setBackgroundColor(NotificationColorHelper
+                        .getActionListLayoutBgColor(iconColor, textColor));
+                }
+            }
+            if (expandedActions != null) {
+                final int expandedActionsCount = expandedActions.getChildCount();
+                for (int index=0; index<expandedActionsCount; index++) {
+                    final TextView expandedAction = (TextView) expandedActions.getChildAt(index);
+                    if (expandedAction != null) {
+                        iconColor = NotificationColorHelper.getCustomIconColor(mContext);
+                        setNotificationRippleColor(expandedAction);
+                        setNotificationActionIconColor(expandedAction, iconColor);
+                    }
+                }
+            }
+            if (expandedMediaActions != null) {
+                final int expandedMediaActionsCount = expandedMediaActions.getChildCount();
+                for (int index=0; index<expandedMediaActionsCount; index++) {
+                    final ImageView expandedMediaAction = (ImageView) expandedMediaActions.getChildAt(index);
+                    if (expandedMediaAction != null) {
+                        iconColor = NotificationColorHelper.getCustomIconColor(mContext);
+                        setNotificationRippleColor(expandedMediaAction);
+                        expandedMediaAction.setColorFilter(iconColor, Mode.SRC_IN);
+                    }
+                }
+            }
+        }
+
+        if (headsUpView != null) {
+            final ImageView headsUpIcon =
+                     (ImageView) headsUpView.findViewById(com.android.internal.R.id.icon);
+            final ImageView headsUpRightIcon = (ImageView) headsUpView.findViewById(
+                    com.android.internal.R.id.right_icon);
+            final ImageView headsUpProfileBadgeLarge = (ImageView) headsUpView.findViewById(
+                    com.android.internal.R.id.profile_badge_large_template);
+            final ImageView headsUpProfileBadge2 = (ImageView) headsUpView.findViewById(
+                    com.android.internal.R.id.profile_badge_line2);
+            final ImageView headsUpProfileBadge3 = (ImageView) headsUpView.findViewById(
+                    com.android.internal.R.id.profile_badge_line3);
+            final View headsUpActionListLayout = headsUpView.findViewById(
+                    com.android.internal.R.id.big_picture_action_list_layout);
+            final LinearLayout headsUpActions =
+                    (LinearLayout) headsUpView.findViewById(com.android.internal.R.id.actions);
+            final LinearLayout headsUpMediaActions =
+                    (LinearLayout) headsUpView.findViewById(com.android.internal.R.id.media_actions);
+
+            if (headsUpIcon != null) {
+                iconColor = NotificationColorHelper.getIconColor(mContext, headsUpIcon.getDrawable());
+                setNotificationAppIconColors(headsUpIcon, iconColor, appIconBgColor, appIconBgAlpha);
+            }
+            if (headsUpRightIcon != null) {
+                iconColor = NotificationColorHelper.getIconColor(mContext, headsUpRightIcon.getDrawable());
+                setNotificationAppIconColors(headsUpRightIcon, iconColor, appIconBgColor, appIconBgAlpha);
+            }
+            if (headsUpProfileBadgeLarge != null) {
+                iconColor = NotificationColorHelper.getIconColor(mContext, headsUpProfileBadgeLarge.getDrawable());
+                setNotificationAppIconColors(headsUpProfileBadgeLarge, iconColor, appIconBgColor, appIconBgAlpha);
+            }
+            if (headsUpProfileBadge2 != null) {
+                iconColor = NotificationColorHelper.getIconColor(mContext, headsUpProfileBadge2.getDrawable());
+                setNotificationAppIconColors(headsUpProfileBadge2, iconColor, appIconBgColor, appIconBgAlpha);
+            }
+            if (headsUpProfileBadge3 != null) {
+                iconColor = NotificationColorHelper.getIconColor(mContext, headsUpProfileBadge3.getDrawable());
+                setNotificationAppIconColors(headsUpProfileBadge3, iconColor, appIconBgColor, appIconBgAlpha);
+            }
+            if (headsUpActionListLayout != null) {
+                if (headsUpActionListLayout.getBackground() != null) {
+                    iconColor = NotificationColorHelper.getCustomIconColor(mContext);
+                    headsUpActionListLayout.setBackgroundColor(NotificationColorHelper
+                        .getActionListLayoutBgColor(iconColor, textColor));
+                }
+            }
+            if (headsUpActions != null) {
+                final int headsUpActionsCount = headsUpActions.getChildCount();
+                for (int index=0; index<headsUpActionsCount; index++) {
+                    final TextView headsUpAction = (TextView) headsUpActions.getChildAt(index);
+                    if (headsUpAction != null) {
+                        iconColor = NotificationColorHelper.getCustomIconColor(mContext);
+                        setNotificationRippleColor(headsUpAction);
+                        setNotificationActionIconColor(headsUpAction, iconColor);
+                    }
+                }
+            }
+            if (headsUpMediaActions != null) {
+                final int headsUpMediaActionsCount = headsUpMediaActions.getChildCount();
+                for (int index=0; index<headsUpMediaActionsCount; index++) {
+                    final ImageView headsUpMediaAction = (ImageView) headsUpMediaActions.getChildAt(index);
+                    if (headsUpMediaAction != null) {
+                        iconColor = NotificationColorHelper.getCustomIconColor(mContext);
+                        setNotificationRippleColor(headsUpMediaAction);
+                        headsUpMediaAction.setColorFilter(iconColor, Mode.SRC_IN);
+                    }
+                }
+            }
+        }
+
+        if (mKeyguardIconOverflowContainer != null) {
+            mKeyguardIconOverflowContainer.setMoreIconColor();
+        }
+    }
+
+    private void UpdateNotificationTextColors(NotificationData.Entry entry) {
+        final View privateView = entry.getContentView();
+        final View publicView = entry.getPublicContentView();
+        final View expandedView = entry.getExpandedContentView();
+        final View headsUpView = entry.getHeadsUpContentView();
+
+        final int iconColor = NotificationColorHelper.getCustomIconColor(mContext);
+        final int textColor = NotificationColorHelper.getCustomTextColor(mContext);
+
+        if (privateView != null) {
+            final TextView title = (TextView) privateView.findViewById(com.android.internal.R.id.title);
+            final TextView text = (TextView) privateView.findViewById(com.android.internal.R.id.text);
+            final TextView info = (TextView) privateView.findViewById(com.android.internal.R.id.info);
+            final TextView text2 = (TextView) privateView.findViewById(com.android.internal.R.id.text2);
+            final View chronometer = privateView.findViewById(com.android.internal.R.id.chronometer);
+            final View time = privateView.findViewById(com.android.internal.R.id.time);
+
+            setNotificationTextColor(title, textColor, 255);
+            setNotificationTextColor(text, textColor, 179);
+            setNotificationTextColor(info, textColor, 179);
+            setNotificationTextColor(text2, textColor, 179);
+            if (chronometer instanceof Chronometer) {
+                setNotificationTextColor((TextView) chronometer, textColor, 179);
+            }
+            if (time instanceof DateTimeView) {
+                setNotificationTextColor((TextView) time, textColor, 179);
+            }
+        }
+        if (publicView != null) {
+            final TextView publicTitle = (TextView) publicView.findViewById(R.id.title);
+            final TextView publicInternalTitle = (TextView) publicView.findViewById(
+                    com.android.internal.R.id.title);
+            final TextView publicText = (TextView) publicView.findViewById(R.id.text);
+            final TextView publicInternalText = (TextView) publicView.findViewById(
+                    com.android.internal.R.id.text);
+            final View publicTime = (TextView) publicView.findViewById(R.id.time);
+            final View publicInternalTime = (TextView) publicView.findViewById(
+                    com.android.internal.R.id.time);
+
+            setNotificationTextColor(publicTitle, textColor, 255);
+            setNotificationTextColor(publicInternalTitle, textColor, 255);
+            setNotificationTextColor(publicText, textColor, 96);
+            setNotificationTextColor(publicInternalText, textColor, 96);
+            if (publicTime instanceof DateTimeView) {
+                setNotificationTextColor((TextView) publicTime, textColor, 179);
+            }
+            if (publicInternalTime instanceof DateTimeView) {
+                setNotificationTextColor((TextView) publicInternalTime, textColor, 179);
+            }
+
+        }
+        if (expandedView != null) {
+            final TextView expandedTitle = (TextView) expandedView.findViewById(
+                    com.android.internal.R.id.title);
+            final TextView expandedText = (TextView) expandedView.findViewById(
+                    com.android.internal.R.id.text);
+            final TextView expandedInfo = (TextView) expandedView.findViewById(
+                    com.android.internal.R.id.info);
+            final TextView expandedText2 = (TextView) expandedView.findViewById(
+                    com.android.internal.R.id.text2);
+            final View expandedChronometer = expandedView.findViewById(
+                    com.android.internal.R.id.chronometer);
+            final View expandedTime = expandedView.findViewById(
+                    com.android.internal.R.id.time);
+            final TextView expandedBigText = (TextView) expandedView.findViewById(
+                    com.android.internal.R.id.big_text);
+            final TextView expandedInbox0 = (TextView) expandedView.findViewById(
+                    com.android.internal.R.id.inbox_text0);
+            final TextView expandedInbox1 = (TextView) expandedView.findViewById(
+                    com.android.internal.R.id.inbox_text1);
+            final TextView expandedInbox2 = (TextView) expandedView.findViewById(
+                    com.android.internal.R.id.inbox_text2);
+            final TextView expandedInbox3 = (TextView) expandedView.findViewById(
+                    com.android.internal.R.id.inbox_text3);
+            final TextView expandedInbox4 = (TextView) expandedView.findViewById(
+                    com.android.internal.R.id.inbox_text4);
+            final TextView expandedInbox5 = (TextView) expandedView.findViewById(
+                    com.android.internal.R.id.inbox_text5);
+            final TextView expandedInbox6 = (TextView) expandedView.findViewById(
+                    com.android.internal.R.id.inbox_text6);
+            final TextView expandedInboxMore = (TextView) expandedView.findViewById(
+                    com.android.internal.R.id.inbox_more);
+            final View expandedActionListLayout = expandedView.findViewById(
+                    com.android.internal.R.id.big_picture_action_list_layout);
+            final LinearLayout expandedActions = (LinearLayout) expandedView.findViewById(
+                    com.android.internal.R.id.actions);
+
+            setNotificationTextColor(expandedTitle, textColor, 255);
+            setNotificationTextColor(expandedText, textColor, 179);
+            setNotificationTextColor(expandedInfo, textColor, 179);
+            setNotificationTextColor(expandedText2, textColor, 179);
+            if (expandedChronometer instanceof Chronometer) {
+                setNotificationTextColor((TextView) expandedChronometer, textColor, 179);
+            }
+            if (expandedTime instanceof DateTimeView) {
+                setNotificationTextColor((TextView) expandedTime, textColor, 179);
+            }
+            setNotificationTextColor(expandedBigText, textColor, 179);
+            setNotificationTextColor(expandedInbox0, textColor, 179);
+            setNotificationTextColor(expandedInbox1, textColor, 179);
+            setNotificationTextColor(expandedInbox2, textColor, 179);
+            setNotificationTextColor(expandedInbox3, textColor, 179);
+            setNotificationTextColor(expandedInbox4, textColor, 179);
+            setNotificationTextColor(expandedInbox5, textColor, 179);
+            setNotificationTextColor(expandedInbox6, textColor, 179);
+            setNotificationTextColor(expandedInboxMore, textColor, 179);
+            if (expandedActionListLayout != null) {
+                if (expandedActionListLayout.getBackground() != null) {
+                    expandedActionListLayout.setBackgroundColor(NotificationColorHelper
+                        .getActionListLayoutBgColor(iconColor, textColor));
+                }
+            }
+            if (expandedActions != null) {
+                final int expandedActionsCount = expandedActions.getChildCount();
+                for (int index=0; index<expandedActionsCount; index++) {
+                    final TextView expandedAction = (TextView) expandedActions.getChildAt(index);
+                    if (expandedAction != null) {
+                        setNotificationTextColor(expandedAction, textColor, 255);
+                    }
+                }
+            }
+        }
+        if (headsUpView != null) {
+            final TextView headsUpTitle = (TextView) headsUpView.findViewById(
+                    com.android.internal.R.id.title);
+            final TextView headsUpText = (TextView) headsUpView.findViewById(
+                    com.android.internal.R.id.text);
+            final TextView headsUpInfo = (TextView) headsUpView.findViewById(
+                    com.android.internal.R.id.info);
+            final TextView headsUpText2 = (TextView) headsUpView.findViewById(
+                    com.android.internal.R.id.text2);
+            final View headsUpChronometer = headsUpView.findViewById(
+                    com.android.internal.R.id.chronometer);
+            final View headsUpTime = headsUpView.findViewById(
+                    com.android.internal.R.id.time);
+            final TextView headsUpBigText = (TextView) headsUpView.findViewById(
+                    com.android.internal.R.id.big_text);
+            final TextView headsUpInbox0 = (TextView) headsUpView.findViewById(
+                    com.android.internal.R.id.inbox_text0);
+            final TextView headsUpInbox1 = (TextView) headsUpView.findViewById(
+                    com.android.internal.R.id.inbox_text1);
+            final TextView headsUpInbox2 = (TextView) headsUpView.findViewById(
+                    com.android.internal.R.id.inbox_text2);
+            final TextView headsUpInbox3 = (TextView) headsUpView.findViewById(
+                    com.android.internal.R.id.inbox_text3);
+            final TextView headsUpInbox4 = (TextView) headsUpView.findViewById(
+                    com.android.internal.R.id.inbox_text4);
+            final TextView headsUpInbox5 = (TextView) headsUpView.findViewById(
+                    com.android.internal.R.id.inbox_text5);
+            final TextView headsUpInbox6 = (TextView) headsUpView.findViewById(
+                    com.android.internal.R.id.inbox_text6);
+            final TextView headsUpInboxMore = (TextView) headsUpView.findViewById(
+                    com.android.internal.R.id.inbox_more);
+            final View headsUpActionListLayout = headsUpView.findViewById(
+                    com.android.internal.R.id.big_picture_action_list_layout);
+            final LinearLayout headsUpActions = (LinearLayout) headsUpView.findViewById(
+                    com.android.internal.R.id.actions);
+
+            setNotificationTextColor(headsUpTitle, textColor, 255);
+            setNotificationTextColor(headsUpText, textColor, 179);
+            setNotificationTextColor(headsUpInfo, textColor, 179);
+            setNotificationTextColor(headsUpText2, textColor, 179);
+            if (headsUpChronometer instanceof Chronometer) {
+                setNotificationTextColor((TextView) headsUpChronometer, textColor, 179);
+            }
+            if (headsUpTime instanceof DateTimeView) {
+                setNotificationTextColor((TextView) headsUpTime, textColor, 179);
+            }
+            setNotificationTextColor(headsUpBigText, textColor, 179);
+            setNotificationTextColor(headsUpInbox0, textColor, 179);
+            setNotificationTextColor(headsUpInbox1, textColor, 179);
+            setNotificationTextColor(headsUpInbox2, textColor, 179);
+            setNotificationTextColor(headsUpInbox3, textColor, 179);
+            setNotificationTextColor(headsUpInbox4, textColor, 179);
+            setNotificationTextColor(headsUpInbox5, textColor, 179);
+            setNotificationTextColor(headsUpInbox6, textColor, 179);
+            setNotificationTextColor(headsUpInboxMore, textColor, 179);
+            if (headsUpActionListLayout != null) {
+                if (headsUpActionListLayout.getBackground() != null) {
+                    headsUpActionListLayout.setBackgroundColor(NotificationColorHelper
+                        .getActionListLayoutBgColor(iconColor, textColor));
+                }
+            }
+            if (headsUpActions != null) {
+                final int headsUpActionsCount = headsUpActions.getChildCount();
+                for (int index=0; index<headsUpActionsCount; index++) {
+                    final TextView headsUpAction =  (TextView) headsUpActions.getChildAt(index);
+                    if (headsUpAction != null) {
+                        setNotificationTextColor(headsUpAction, textColor, 255);
+                    }
+                }
+            }
+        }
+    }
+
+    private void setNotificationAppIconColors(ImageView iv, int iconColor, int appIconBgColor,
+            int appIconBgAlpha) {
+        if (iv != null) {
+            if (iconColor != 0) {
+                iv.setColorFilter(iconColor, Mode.MULTIPLY);
+            } else {
+                iv.setColorFilter(null);
+            }
+            if (iv.getBackground() != null) {
+                if (appIconBgColor == Notification.COLOR_DEFAULT) {
+                    iv.getBackground().setColorFilter(null);
+                } else {
+                    iv.getBackground().setColorFilter(appIconBgColor, Mode.SRC_ATOP);
+
+                }
+                iv.getBackground().setAlpha(appIconBgAlpha);
+            }
+        }
+    }
+
+    private void setNotificationRippleColor(View v) {
+        if (v.getBackground() instanceof RippleDrawable) {
+            ((RippleDrawable) v.getBackground()).setColor(
+                ColorStateList.valueOf(NotificationColorHelper.getRippleColor(mContext)));
+        }
+    }
+
+    private void setNotificationActionIconColor(TextView tv, int iconColor) {
+        if (tv != null) {
+            Drawable[] drawables = tv.getCompoundDrawablesRelative();
+            for (int i = 0; i < drawables.length; i++) {
+                if (drawables[i] != null) {
+                    drawables[i].setColorFilter(ColorHelper.getColorFilter(iconColor));
+                }
+            }
+            tv.setCompoundDrawablesRelative(drawables[0], drawables[1],
+                    drawables[2], drawables[3]);
+        }
+    }
+
+    private void setNotificationTextColor(TextView tv, int customColor, int alpha) {
+        if (tv != null) {
+            int textColor = (alpha << 24) | (customColor & 0x00ffffff);
+            if (tv.getText() instanceof Spanned) {
+                String s = ((Spanned) tv.getText()).toString();
+                tv.setText(s);
+            } 
+            tv.setTextColor(textColor);
         }
     }
 
@@ -1285,22 +1806,25 @@ public abstract class BaseStatusBar extends SystemUI implements
         final int customTextColor = NotificationColorHelper.getCustomTextColor(mContext);
         final int iconColor = NotificationColorHelper.getIconColor(mContext, pkgicon);
         final int customIconColor = NotificationColorHelper.getCustomIconColor(mContext);
-        final int bgLegacyColor = NotificationColorHelper.getLegacyBgColor(mContext, notificationColor);
-        final int bgLegacyAlpha = NotificationColorHelper.getLegacyBgAlpha(mContext, notificationColor);
-        setNotificationAppIconColors(pkgIcon, iconColor, bgLegacyColor, bgLegacyAlpha);
+        final int appIconBgColor = NotificationColorHelper.getAppIconBgColor(mContext, notificationColor);
+        final int appIconBgAlpha = NotificationColorHelper.getAppIconBgAlpha(mContext, notificationColor);
+        setNotificationAppIconColors(pkgIcon, iconColor, appIconBgColor, appIconBgAlpha);
         DateTimeView timestampText = (DateTimeView) row.findViewById(R.id.timestamp);
         timestampText.setTime(sbn.getPostTime());
         setNotificationTextColor((TextView) timestampText, customTextColor, 179);
         TextView appnameText = (TextView) row.findViewById(R.id.pkgname);
         appnameText.setText(appname);
         setNotificationTextColor(appnameText, customTextColor, 255);
-        final View floatButton = guts.findViewById(R.id.notification_float_item);
-        ((ImageView) floatButton).setColorFilter(customIconColor, Mode.MULTIPLY);
-        final View settingsButton = guts.findViewById(R.id.notification_inspect_item);
-        ((ImageView) settingsButton).setColorFilter(customIconColor, Mode.MULTIPLY);
-        final View appSettingsButton
-                = guts.findViewById(R.id.notification_inspect_app_provided_settings);
-        ((ImageView) appSettingsButton).setColorFilter(customIconColor, Mode.MULTIPLY);
+        final ImageView floatButton = (ImageView) guts.findViewById(R.id.notification_float_item);
+        floatButton.setColorFilter(customIconColor, Mode.MULTIPLY);
+        setNotificationRippleColor(floatButton);
+        final ImageView settingsButton = (ImageView) guts.findViewById(R.id.notification_inspect_item);
+        settingsButton.setColorFilter(customIconColor, Mode.MULTIPLY);
+        setNotificationRippleColor(settingsButton);
+        final ImageView appSettingsButton
+                = (ImageView) guts.findViewById(R.id.notification_inspect_app_provided_settings);
+        appSettingsButton.setColorFilter(customIconColor, Mode.MULTIPLY);
+        setNotificationRippleColor(appSettingsButton);
         if (appUid >= 0) {
             final int appUidF = appUid;
             settingsButton.setOnClickListener(new View.OnClickListener() {
@@ -1975,10 +2499,9 @@ public abstract class BaseStatusBar extends SystemUI implements
         entry.row.setOnActivatedListener(this);
         entry.row.setExpandable(bigContentViewLocal != null);
 
-        applyColorsAndBackgrounds(sbn, entry);
         UpdateNotificationBgColors(entry);
-        UpdateNotificationTextColors(entry);
         UpdateNotificationIconColors(entry);
+        UpdateNotificationTextColors(entry);
 
         // Restore previous flags.
         if (hasUserChangedExpansion) {
@@ -2146,238 +2669,6 @@ public abstract class BaseStatusBar extends SystemUI implements
                 row.setOnClickListener(this);
             } else {
                 row.setOnClickListener(null);
-            }
-        }
-    }
-
-    private void UpdateNotificationOverflowBgColors() {
-        if (mKeyguardIconOverflowContainer != null) {
-            mKeyguardIconOverflowContainer.updateSettings();
-        }
-    }
-
-    private void UpdateNotificationBgColors(NotificationData.Entry entry) {
-        final ActivatableNotificationView anv = (ActivatableNotificationView) entry.row;
-
-        if (anv != null) {
-            anv.updateSettings();
-        }
-    }
-
-    private void UpdateNotificationTextColors(NotificationData.Entry entry) {
-        final View expanded = entry.expanded;
-        final View expandedPublic = entry.getPublicContentView();
-        final View expandedBig = entry.getBigContentView();
-
-        final int textColor = NotificationColorHelper.getCustomTextColor(mContext);
-
-        if (expanded != null) {
-            final TextView title = (TextView) expanded.findViewById(com.android.internal.R.id.title);
-            final TextView text = (TextView) expanded.findViewById(com.android.internal.R.id.text);
-            final TextView info = (TextView) expanded.findViewById(com.android.internal.R.id.info);
-            final TextView text2 = (TextView) expanded.findViewById(com.android.internal.R.id.text2);
-            final View chronometer = expanded.findViewById(com.android.internal.R.id.chronometer);
-            final View time = expanded.findViewById(com.android.internal.R.id.time);
-            setNotificationTextColor(title, textColor, 255);
-            setNotificationTextColor(text, textColor, 179);
-            setNotificationTextColor(info, textColor, 179);
-            setNotificationTextColor(text2, textColor, 179);
-            if (chronometer instanceof Chronometer) {
-                setNotificationTextColor((TextView) chronometer, textColor, 179);
-            }
-            if (time instanceof DateTimeView) {
-                setNotificationTextColor((TextView) time, textColor, 179);
-            }
-        }
-        if (expandedPublic != null) {
-            final TextView publicTitle = (TextView) expandedPublic.findViewById(R.id.title);
-            final TextView publicText = (TextView) expandedPublic.findViewById(R.id.text);
-            final View publicTime = expandedPublic.findViewById(R.id.time);
-            setNotificationTextColor(publicTitle, textColor, 255);
-            setNotificationTextColor(publicText, textColor, 96);
-            if (publicTime instanceof DateTimeView) {
-                setNotificationTextColor((TextView) publicTime, textColor, 179);
-            }
-        }
-        if (expandedBig != null) {
-            final TextView bigTitle = (TextView) expandedBig.findViewById(com.android.internal.R.id.title);
-            final TextView bigText = (TextView) expandedBig.findViewById(com.android.internal.R.id.text);
-            final TextView bigInfo = (TextView) expandedBig.findViewById(com.android.internal.R.id.info);
-            final TextView bigText2 = (TextView) expandedBig.findViewById(com.android.internal.R.id.text2);
-            final View bigChronometer = expandedBig.findViewById(com.android.internal.R.id.chronometer);
-            final View bigTime = expandedBig.findViewById(com.android.internal.R.id.time);
-            final TextView bigBigText = (TextView) expandedBig.findViewById(com.android.internal.R.id.big_text);
-            final TextView inboxText0 = (TextView) expandedBig.findViewById(com.android.internal.R.id.inbox_text0);
-            final TextView inboxText1 = (TextView) expandedBig.findViewById(com.android.internal.R.id.inbox_text1);
-            final TextView inboxText2 = (TextView) expandedBig.findViewById(com.android.internal.R.id.inbox_text2);
-            final TextView inboxText3 = (TextView) expandedBig.findViewById(com.android.internal.R.id.inbox_text3);
-            final TextView inboxText4 = (TextView) expandedBig.findViewById(com.android.internal.R.id.inbox_text4);
-            final TextView inboxText5 = (TextView) expandedBig.findViewById(com.android.internal.R.id.inbox_text5);
-            final TextView inboxText6 = (TextView) expandedBig.findViewById(com.android.internal.R.id.inbox_text6);
-            final TextView inboxMore = (TextView) expandedBig.findViewById(com.android.internal.R.id.inbox_more);
-            final LinearLayout actions = (LinearLayout) expandedBig.findViewById(com.android.internal.R.id.actions);
-            setNotificationTextColor(bigTitle, textColor, 255);
-            setNotificationTextColor(bigText, textColor, 179);
-            setNotificationTextColor(bigInfo, textColor, 179);
-            setNotificationTextColor(bigText2, textColor, 179);
-            if (bigChronometer instanceof Chronometer) {
-                setNotificationTextColor((TextView) bigChronometer, textColor, 179);
-            }
-            if (bigTime instanceof DateTimeView) {
-                setNotificationTextColor((TextView) bigTime, textColor, 179);
-            }
-            setNotificationTextColor(bigBigText, textColor, 179);
-            setNotificationTextColor(inboxText0, textColor, 179);
-            setNotificationTextColor(inboxText1, textColor, 179);
-            setNotificationTextColor(inboxText2, textColor, 179);
-            setNotificationTextColor(inboxText3, textColor, 179);
-            setNotificationTextColor(inboxText4, textColor, 179);
-            setNotificationTextColor(inboxText5, textColor, 179);
-            setNotificationTextColor(inboxText6, textColor, 179);
-            setNotificationTextColor(inboxMore, textColor, 179);
-            if (actions != null) {
-                final int actionsCount = actions.getChildCount();
-                for (int index=0; index<actionsCount; index++) {
-                    final TextView action =  (TextView) actions.getChildAt(index);
-                    if (action != null) {
-                        setNotificationTextColor(action, textColor, 255);
-                    }
-                }
-            }
-        }
-    }
-
-    private void UpdateNotificationIconColors(NotificationData.Entry entry) {
-        final StatusBarNotification sbn = entry.notification;
-        final View expanded = entry.expanded;
-        final View expandedPublic = entry.getPublicContentView();
-        final View expandedBig = entry.getBigContentView();
-
-        final int notificationColor = sbn.getNotification().color;
-        int iconColor;
-        final int bgLegacyColor = NotificationColorHelper.getLegacyBgColor(mContext, notificationColor);
-        final int bgLegacyAlpha = NotificationColorHelper.getLegacyBgAlpha(mContext, notificationColor);
-
-        if (expanded != null) {
-            final ImageView icon =
-                    (ImageView) expanded.findViewById(com.android.internal.R.id.icon);
-            final LinearLayout mediaActions =
-                    (LinearLayout) expanded.findViewById(com.android.internal.R.id.media_actions);
-            if (icon != null) {
-                iconColor = NotificationColorHelper.getIconColor(mContext, icon.getDrawable());
-                setNotificationAppIconColors(icon, iconColor, bgLegacyColor, bgLegacyAlpha);
-            }
-            if (mediaActions != null) {
-                final int mediaActionsCount = mediaActions.getChildCount();
-                for (int index=0; index<mediaActionsCount; index++) {
-                    final ImageView mediaAction =  (ImageView) mediaActions.getChildAt(index);
-                    if (mediaAction != null) {
-                        iconColor = NotificationColorHelper.getCustomIconColor(mContext);
-                        mediaAction.setColorFilter(iconColor, Mode.SRC_IN);
-                    }
-                }
-            }
-        }
-        if (expandedPublic != null) {
-            final ImageView iconPublic =
-                    (ImageView) expandedPublic.findViewById(R.id.icon);
-            final LinearLayout mediaActionsPublic =
-                    (LinearLayout) expandedPublic.findViewById(com.android.internal.R.id.media_actions);
-            if (iconPublic != null) {
-                iconColor = NotificationColorHelper.getIconColor(mContext, iconPublic.getDrawable());
-                setNotificationAppIconColors(iconPublic, iconColor, bgLegacyColor, bgLegacyAlpha);
-            }
-            if (mediaActionsPublic != null) {
-                final int mediaActionsPublicCount = mediaActionsPublic.getChildCount();
-                for (int index=0; index<mediaActionsPublicCount; index++) {
-                    final ImageView mediaActionPublic =  (ImageView) mediaActionsPublic.getChildAt(index);
-                    if (mediaActionPublic != null) {
-                        iconColor = NotificationColorHelper.getCustomIconColor(mContext);
-                        mediaActionPublic.setColorFilter(iconColor, Mode.SRC_IN);
-                    }
-                }
-            }
-        }
-        if (expandedBig != null) {
-            final ImageView iconBig =
-                     (ImageView) expandedBig.findViewById(com.android.internal.R.id.icon);
-            final ImageView actionDivider =
-                    (ImageView) expandedBig.findViewById(com.android.internal.R.id.action_divider);
-            final ImageView overflowDivider =
-                    (ImageView) expandedBig.findViewById(com.android.internal.R.id.overflow_divider);
-            final LinearLayout actions =
-                    (LinearLayout) expandedBig.findViewById(com.android.internal.R.id.actions);
-            final LinearLayout mediaActionsBig =
-                    (LinearLayout) expandedBig.findViewById(com.android.internal.R.id.media_actions);
-            if (iconBig != null) {
-                iconColor = NotificationColorHelper.getIconColor(mContext, iconBig.getDrawable());
-                setNotificationAppIconColors(iconBig, iconColor, bgLegacyColor, bgLegacyAlpha);
-            }
-            if (actions != null) {
-                final int actionsCount = actions.getChildCount();
-                for (int index=0; index<actionsCount; index++) {
-                    final TextView action =  (TextView) actions.getChildAt(index);
-                    if (action != null) {
-                        iconColor = NotificationColorHelper.getCustomIconColor(mContext);
-                        setNotificationActionIconColor(action, iconColor);
-                    }
-                }
-            }
-            if (mediaActionsBig != null) {
-                final int mediaActionsBigCount = mediaActionsBig.getChildCount();
-                for (int index=0; index<mediaActionsBigCount; index++) {
-                    final ImageView mediaActionBig =  (ImageView) mediaActionsBig.getChildAt(index);
-                    if (mediaActionBig != null) {
-                        iconColor = NotificationColorHelper.getCustomIconColor(mContext);
-                        mediaActionBig.setColorFilter(iconColor, Mode.SRC_IN);
-                    }
-                }
-            }
-        }
-    }
-
-    private void setNotificationTextColor(TextView tv, int customColor, int alpha) {
-        if (tv != null) {
-            int textColor = (alpha << 24) | (customColor & 0x00ffffff);
-            CharSequence text = tv.getText();
-            if (mNotificationColorUtil == null) {
-                mNotificationColorUtil = NotificationColorUtil.getInstance(mContext);
-                tv.setText(mNotificationColorUtil.processCharSequenceColors(textColor, text));
-            }
-            tv.setTextColor(textColor);
-        }
-    }
-
-    private void setNotificationAppIconColors(ImageView iv, int iconColor, int bgLegacyColor,
-            int bgLegacyAlpha) {
-        if (iv != null) {
-            if (iv.getDrawable() != null) {
-                if (iconColor != 0) {
-                    iv.setColorFilter(iconColor, Mode.MULTIPLY);
-                } else {
-                    iv.setColorFilter(null);
-                }
-            }
-            if (iv.getBackground() != null) {
-                if (bgLegacyColor == Notification.COLOR_DEFAULT) {
-                    iv.getBackground().setColorFilter(null);
-                } else {
-                    iv.getBackground().setColorFilter(bgLegacyColor, Mode.SRC_ATOP);
-
-                }
-                iv.getBackground().setAlpha(bgLegacyAlpha);
-            }
-        }
-    }
-
-    private void setNotificationActionIconColor(TextView tv, int iconColor) {
-        if (tv != null) {
-            Drawable[] drawables = tv.getCompoundDrawablesRelative();
-            Drawable d = drawables[0];
-            if (d != null) {
-                d.mutate();
-                d.setColorFilter(ColorHelper.getColorFilter(iconColor));
-                tv.setCompoundDrawablesRelative(d, null, null, null);
             }
         }
     }
@@ -2743,8 +3034,8 @@ public abstract class BaseStatusBar extends SystemUI implements
         }
 
         setAreThereNotifications();
-        UpdateNotificationTextColors(entry);
         UpdateNotificationIconColors(entry);
+        UpdateNotificationTextColors(entry);
     }
 
     protected abstract void updateHeadsUp(String key, Entry entry, boolean shouldInterrupt,

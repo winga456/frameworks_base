@@ -26,9 +26,19 @@ import com.android.internal.util.NotificationColorUtil;
 import com.android.internal.util.vrtoxin.ColorHelper;
 
 public class NotificationColorHelper {
+    final static int BLACK                  = 0xff1b1f23;
+    final static int WHITE                  = 0xffffffff;
+    final static int TRANSLUCENT_WHITE      = 0x4dffffff;
+    final static int DEFAULT_MEDIA_BG       = 0xff424242;
+    final static int ACTION_LIST_BG_GREY    = 0xcc808080;
+    final static int ACTION_LIST_BG_DARK    = 0xcc111111;
+    final static int ACTION_LIST_BG_LIGHT   = 0xcceeeeee;
+    final static int SPEED_BUMP_LINE_DARK   = 0x6f222222;
+    final static int SPEED_BUMP_LINE_LIGHT  = 0x6fdddddd;
+    final static int ACTION_DIVIDER_LIGHT   = 0x31000000;
+    final static int ACTION_DIVIDER_DARK    = 0x31ffffff;
 
     public static int getNotificationMediaBgColor(Context context, int bgColor) {
-        final int DEFAULT_MEDIA_BG = 0xff424242;
         if (getMediaBgMode(context) == 0) {
             return bgColor;
         } else if (getMediaBgMode(context) == 1) {
@@ -39,9 +49,9 @@ public class NotificationColorHelper {
         }
     }
 
-    public static int getLegacyBgColor(Context context, int notificationColor) {
+    public static int getAppIconBgColor(Context context, int notificationColor) {
         if (colorizeIconBackground(context, notificationColor)) {
-           return (255 << 24) | (getCustomLegacyBgColor(context) & 0x00ffffff);
+           return (255 << 24) | (getCustomAppIconBgColor(context) & 0x00ffffff);
         } else if (notificationColor != Notification.COLOR_DEFAULT) {
             return notificationColor;
         } else {
@@ -53,14 +63,20 @@ public class NotificationColorHelper {
         }
     }
 
-    public static int getLegacyBgAlpha(Context context, int notificationColor) {
+    public static int getAppIconBgAlpha(Context context, int notificationColor) {
         if (colorizeIconBackground(context, notificationColor)) {
-            return Color.alpha(getCustomLegacyBgColor(context));
+            return Color.alpha(getCustomAppIconBgColor(context));
         } else if (notificationColor != Notification.COLOR_DEFAULT) {
             return 255;
         } else {
             return 77;
         }
+    }
+
+    public static int getRippleColor(Context context) {
+        final int color = Settings.System.getInt(context.getContentResolver(),
+                Settings.System.NOTIFICATION_RIPPLE_COLOR, WHITE);
+        return (51 << 24) | (color & 0x00ffffff);
     }
 
     public static int getIconColor(Context context, Drawable icon) {
@@ -71,19 +87,37 @@ public class NotificationColorHelper {
         }
     }
 
-    public static int getdividerColor(Context context) {
-        if (ColorHelper.isColorDark(getCustomNotificationBgColor(context))) {
-            return 0x6f222222;
+    public static int getActionListLayoutBgColor(int iconColor, int textColor) {
+        int color;
+        if (ColorHelper.isColorDark(iconColor) != ColorHelper.isColorDark(textColor)) {
+            color = ACTION_LIST_BG_GREY;
         } else {
-            return 0x6fdddddd;
+            color = ColorHelper.isColorDark(iconColor)
+                    ? ACTION_LIST_BG_LIGHT : ACTION_LIST_BG_DARK;
+        }
+        return color;
+    }
+    public static int getSpeedBumpLineColor(Context context) {
+        if (ColorHelper.isColorDark(getCustomNotificationBgColor(context))) {
+            return SPEED_BUMP_LINE_DARK;
+        } else {
+            return SPEED_BUMP_LINE_LIGHT;
+        }
+    }
+
+    public static int getActionDividerColor(int bgColor) {
+        if (ColorHelper.isColorDark(bgColor)) {
+            return ACTION_DIVIDER_DARK;
+        } else {
+            return ACTION_DIVIDER_LIGHT;
         }
     }
 
     private static boolean colorizeIconBackground(Context context, int notificationColor) {
-        final int legacyBgMode = getLegacyBgMode(context);
-        if (legacyBgMode == 0) {
+        final int appIconBgMode = getAppIconBgMode(context);
+        if (appIconBgMode == 0) {
             return false;
-        } else if (legacyBgMode == 1) {
+        } else if (appIconBgMode == 1) {
             return notificationColor == Notification.COLOR_DEFAULT;
         } else {
             return true;
@@ -113,7 +147,7 @@ public class NotificationColorHelper {
                 Settings.System.NOTIFICATION_MEDIA_BG_MODE, 0);
     }
 
-    private static int getLegacyBgMode(Context context) {
+    private static int getAppIconBgMode(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
                 Settings.System.NOTIFICATION_APP_ICON_BG_MODE, 0);
     }
@@ -125,21 +159,21 @@ public class NotificationColorHelper {
 
     public static int getCustomNotificationBgColor(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
-                Settings.System.NOTIFICATION_BG_COLOR, 0xff000000);
+                Settings.System.NOTIFICATION_BG_COLOR, BLACK);
     }
 
-    private static int getCustomLegacyBgColor(Context context) {
+    private static int getCustomAppIconBgColor(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
-                Settings.System.NOTIFICATION_APP_ICON_BG_COLOR, 0xff00ff00);
-    }
-
-    public static int getCustomTextColor(Context context) {
-        return Settings.System.getInt(context.getContentResolver(),
-                Settings.System.NOTIFICATION_TEXT_COLOR, 0xffffffff);
+                Settings.System.NOTIFICATION_APP_ICON_BG_COLOR, TRANSLUCENT_WHITE);
     }
 
     public static int getCustomIconColor(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
-                Settings.System.NOTIFICATION_ICON_COLOR, 0xffffffff);
+                Settings.System.NOTIFICATION_ICON_COLOR, WHITE);
+    }
+
+    public static int getCustomTextColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.NOTIFICATION_TEXT_COLOR, WHITE);
     }
 }

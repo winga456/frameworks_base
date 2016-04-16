@@ -24,7 +24,6 @@ import android.util.AttributeSet;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 
-import com.android.internal.util.vrtoxin.ColorHelper;
 import com.android.internal.util.vrtoxin.NotificationColorHelper;
 
 import com.android.systemui.R;
@@ -174,7 +173,7 @@ public class SpeedBumpView extends ExpandableView {
 
     private void updateDividerColor() {
         if (mLine != null) {
-            mLine.setBackgroundColor(NotificationColorHelper.getdividerColor(mContext));
+            mLine.setBackgroundColor(NotificationColorHelper.getSpeedBumpLineColor(mContext));
         }
     }
 }

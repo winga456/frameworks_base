@@ -19,7 +19,7 @@ package com.android.systemui.statusbar;
 import android.app.Notification;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.graphics.PorterDuff;
+import android.graphics.PorterDuff.Mode;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.widget.ImageView;
@@ -60,8 +60,8 @@ public class NotificationOverflowIconsView extends IconMerger {
         StatusBarIconView v = new StatusBarIconView(getContext(), "",
                 notification.notification.getNotification());
         v.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        addView(v, mIconSize, mIconSize);
         v.set(notification.icon.getStatusBarIcon());
+        addView(v, mIconSize, mIconSize);
         applyColor(notification.notification.getNotification(), v);
         updateMoreText();
     }
@@ -69,9 +69,9 @@ public class NotificationOverflowIconsView extends IconMerger {
     private void applyColor(Notification notification, StatusBarIconView view) {
         StatusBarIcon sbi = view.getStatusBarIcon();
         Drawable icon = StatusBarIconView.getIcon(getContext(), sbi);
-        final int tintColor = NotificationColorHelper.getIconColor(getContext(), icon);
-        if (tintColor != 0) {
-            view.setColorFilter(tintColor, PorterDuff.Mode.MULTIPLY);
+        final int iconColor = NotificationColorHelper.getIconColor(getContext(), icon);
+        if (iconColor != 0) {
+            view.setColorFilter(iconColor, Mode.MULTIPLY);
         } else {
             view.setColorFilter(null);
         }
@@ -79,8 +79,8 @@ public class NotificationOverflowIconsView extends IconMerger {
 
     private void updateMoreText() {
         final int textColor = NotificationColorHelper.getCustomIconColor(getContext());
-        final int bgColor = NotificationColorHelper.getLegacyBgColor(getContext(), 0);
-        final int bgAlpha = NotificationColorHelper.getLegacyBgAlpha(getContext(), 0);
+        final int bgColor = NotificationColorHelper.getAppIconBgColor(getContext(), 0);
+        final int bgAlpha = NotificationColorHelper.getAppIconBgAlpha(getContext(), 0);
         mMoreText.setText(
                 getResources().getString(R.string.keyguard_more_overflow_text, getChildCount()));
         mMoreText.setTextColor(textColor);
@@ -88,10 +88,20 @@ public class NotificationOverflowIconsView extends IconMerger {
             if (bgColor == Notification.COLOR_DEFAULT) {
                 mMoreText.getBackground().setColorFilter(null);
             } else {
-                mMoreText.getBackground().setColorFilter(bgColor, PorterDuff.Mode.SRC_ATOP);
+                mMoreText.getBackground().setColorFilter(bgColor, Mode.SRC_ATOP);
 
             }
             mMoreText.getBackground().setAlpha(bgAlpha);
+        }
+    }
+
+    public void setMoreIconColor() {
+        int iconColor = NotificationColorHelper.getIconColor(getContext(),
+                ((ImageView) mMoreView).getDrawable());
+        if (iconColor != 0) {
+            ((ImageView) mMoreView).setColorFilter(iconColor, Mode.MULTIPLY);
+        } else {
+            ((ImageView) mMoreView).setColorFilter(null);
         }
     }
 }

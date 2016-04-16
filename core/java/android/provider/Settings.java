@@ -5735,6 +5735,12 @@ public final class Settings {
         public static final String NOTIFICATION_TEXT_COLOR = "notification_text_color";
 
         /**
+         * Color of the notification ripple
+         * @hide
+         */
+        public static final String NOTIFICATION_RIPPLE_COLOR = "notification_ripple_color";
+
+        /**
          * Color of notification icon
          * @hide
          */
