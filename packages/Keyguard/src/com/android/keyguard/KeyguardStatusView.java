@@ -811,6 +811,7 @@ public class KeyguardStatusView extends GridLayout implements
 
         if (mDateView != null) {
             mDateView.setTextColor(color);
+
         }
     }
 
