@@ -5088,25 +5088,6 @@ public final class Settings {
         public static final String STATUSBAR_CLOCK_DATE_POSITION = "statusbar_clock_date_position";
 
         /**
-         * Wether to hide the center clock on the status bar when the custom number of notifications is reached
-         * @hide
-         */
-        public static final String STATUS_BAR_CENTER_CLOCK_HIDE = "status_bar_center_clock_hide";
-
-        /**
-         * Hide the Center clock on the status bar when the notification icons will reach this number
-         * 1: 1 notification icon (always)
-         * 2: 2 notification icons
-         * 3: 3 notification icons
-         * 4: 4 notification icons
-         * 5: 5 notification icons
-         * 6: 6 notification icons
-         * default: 3
-         * @hide
-         */
-        public static final String STATUS_BAR_CENTER_CLOCK_NUMBER_OF_NOTIFICATION_ICONS = "status_bar_center_clock_number_of_notification_icons";
-
-        /**
          * Settings for clock font size
          * @hide
          */

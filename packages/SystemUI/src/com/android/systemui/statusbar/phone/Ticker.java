@@ -18,10 +18,13 @@ package com.android.systemui.statusbar.phone;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.DrawableContainer;
+import android.graphics.drawable.VectorDrawable;
 import android.graphics.Typeface;
+import android.graphics.PorterDuff.Mode;
 import android.os.Handler;
 import android.os.UserHandle;
 import android.provider.Settings;
@@ -38,7 +41,7 @@ import android.widget.TextView;
 
 import com.android.internal.statusbar.StatusBarIcon;
 import com.android.internal.util.vrtoxin.FontHelper;
-import com.android.internal.util.vrtoxin.StatusBarColorHelper;
+import com.android.internal.util.vrtoxin.ImageHelper;
 import com.android.internal.util.NotificationColorUtil;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.StatusBarIconView;
@@ -56,8 +59,7 @@ public abstract class Ticker {
     private ImageSwitcher mIconSwitcher;
     private TextSwitcher mTextSwitcher;
     private float mIconScale;
-    private ColorStateList mIconTint = null;
-    private int mTextColor = 0xffffffff;
+    private int mTickerTextColor;
     private int mTickerFontSize = 14;
     private int mTickerFontStyle = FontHelper.FONT_NORMAL;
 
@@ -182,10 +184,15 @@ public abstract class Ticker {
         mIconSwitcher.setScaleY(mIconScale);
 
         mTextSwitcher = (TextSwitcher)sb.findViewById(R.id.tickerText);
+        mTextSwitcher.setInAnimation(
+                    AnimationUtils.loadAnimation(context, com.android.internal.R.anim.push_up_in));
+        mTextSwitcher.setOutAnimation(
+                    AnimationUtils.loadAnimation(context, com.android.internal.R.anim.push_up_out));
 
         // Copy the paint style of one of the TextSwitchers children to use later for measuring
         TextView text = (TextView)mTextSwitcher.getChildAt(0);
         mPaint = text.getPaint();
+        updateTextColor();
         updateTickerSize();
         updateTickerFontStyle();
     }
@@ -214,6 +221,9 @@ public abstract class Ticker {
                         n.getNotification().tickerText));
         final CharSequence text = n.getNotification().tickerText;
         final Segment newSegment = new Segment(n, icon, text);
+        int iconColor = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_TICKER_ICON_COLOR,
+                0xffffffff);
 
         // If there's already a notification schedule for this package and id, remove it.
         for (int i=0; i<mSegments.size(); i++) {
@@ -232,14 +242,30 @@ public abstract class Ticker {
 
             mIconSwitcher.setAnimateFirstView(false);
             mIconSwitcher.reset();
-            mIconSwitcher.setColoredImageDrawable(seg.icon, mIconTint);
+            if (seg.icon != null) {
+                if (seg.icon instanceof AnimationDrawable) {
+                    ((DrawableContainer)seg.icon).setColorFilter(iconColor,
+                           Mode.MULTIPLY);
+                    mIconSwitcher.setImageDrawable(seg.icon);
+                } else if (seg.icon instanceof VectorDrawable) {
+                    seg.icon.setColorFilter(iconColor,
+                       Mode.MULTIPLY);
+                    mIconSwitcher.setImageDrawable(seg.icon);
+                } else {
+                    mIconSwitcher.setImageBitmap(ImageHelper
+                            .getColoredBitmap(seg.icon, iconColor));
+                    }
+            } else {
+                    mIconSwitcher.setImageDrawable(seg.icon);
+            }
 
             mTextSwitcher.setAnimateFirstView(false);
             mTextSwitcher.reset();
             mTextSwitcher.setText(seg.getText());
             updateTickerSize();
+            updateTextColor();
             updateTickerFontStyle();
-            mTextSwitcher.setTextColor(mTextColor);
+            mTextSwitcher.setTextColor(mTickerTextColor);
             mTextSwitcher.setTextSize(mTickerFontSize);
 
             tickerStarting();
@@ -282,7 +308,8 @@ public abstract class Ticker {
             CharSequence text = seg.getText();
             mTextSwitcher.setCurrentText(text);
             updateTickerSize();
-            mTextSwitcher.setTextColor(mTextColor);
+            updateTextColor();
+            mTextSwitcher.setTextColor(mTickerTextColor);
             mTextSwitcher.setTextSize(mTickerFontSize);
         }
     }
@@ -296,7 +323,7 @@ public abstract class Ticker {
                     // this makes the icon slide in for the first one for a given
                     // notification even if there are two notifications with the
                     // same icon in a row
-                    mIconSwitcher.setColoredImageDrawable(seg.icon, mIconTint);
+                    mIconSwitcher.setImageDrawable(seg.icon);
                 }
                 CharSequence text = seg.advance();
                 if (text == null) {
@@ -305,7 +332,8 @@ public abstract class Ticker {
                 }
                 mTextSwitcher.setText(text);
                 updateTickerSize();
-                mTextSwitcher.setTextColor(mTextColor);
+                updateTextColor();
+                mTextSwitcher.setTextColor(mTickerTextColor);
                 mTextSwitcher.setTextSize(mTickerFontSize);
 
                 scheduleAdvance();
@@ -417,14 +445,15 @@ public abstract class Ticker {
         mTickerFontSize = Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.STATUS_BAR_TICKER_FONT_SIZE, 14,
                 UserHandle.USER_CURRENT);
+
     }
 
-    public void setIconColorTint(ColorStateList tint) {
-        mIconTint = tint;
-    }
+    public void updateTextColor() {
+        ContentResolver resolver = mContext.getContentResolver();
 
-    public void setTextColor(int color) {
-        mTextColor = color;
+        mTickerTextColor = Settings.System.getInt(resolver,
+                Settings.System.STATUS_BAR_TICKER_TEXT_COLOR,
+                0xffffffff);
     }
 }
 
