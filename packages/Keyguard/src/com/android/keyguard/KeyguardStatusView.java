@@ -65,6 +65,10 @@ public class KeyguardStatusView extends GridLayout implements
     private TextClock mDateView;
     private TextClock mClockView;
     private int mLCFontSize = 88;
+    private View mAmbientDisplayWeatherLayout;
+    private TextView mAmbientDisplayWeatherLT;
+    private TextView mAmbientDisplayWeatherC;
+    private ImageView mAmbientDisplayWeatherIcon;
     private TextView mAmbientDisplayBatteryView;
     private TextView mOwnerInfo;
     private int mOwnerSize = 14;
@@ -198,6 +202,10 @@ public class KeyguardStatusView extends GridLayout implements
         mClockView = (TextClock) findViewById(R.id.clock_view);
         mDateView.setShowCurrentUserTime(true);
         mClockView.setShowCurrentUserTime(true);
+        mAmbientDisplayWeatherLayout = findViewById(R.id.ambient_display_weather_layout);
+        mAmbientDisplayWeatherLT = (TextView) findViewById(R.id.ambient_display_weather_location_temp);
+        mAmbientDisplayWeatherIcon = (ImageView) findViewById(R.id.ambient_display_weather_icon);
+        mAmbientDisplayWeatherC = (TextView) findViewById(R.id.ambient_display_weather_condition);
         mAmbientDisplayBatteryView = (TextView) findViewById(R.id.ambient_display_battery_view);
         mOwnerInfo = (TextView) findViewById(R.id.owner_info);
         mWeatherView = findViewById(R.id.keyguard_weather_view);
@@ -246,6 +254,10 @@ public class KeyguardStatusView extends GridLayout implements
             mDateView = (TextClock) findViewById(R.id.date_view);
             mDateView.setVisibility(View.GONE);
         }
+    }
+
+    public void setWeatherController(WeatherController controller) {
+        mWeatherController = controller;
     }
 
     public void refreshTime() {
@@ -449,6 +461,9 @@ public class KeyguardStatusView extends GridLayout implements
         }
         if (showBattery()) {
             refreshBatteryInfo();
+        }
+        if (showWeather()) {
+            refreshWeatherInfo();
         }
     }
 
@@ -856,15 +871,39 @@ public class KeyguardStatusView extends GridLayout implements
         }
     }
 
-    public void setDozing(boolean dozing) {
-        if (dozing && showBattery()) {
-            refreshBatteryInfo();
-            if (mAmbientDisplayBatteryView.getVisibility() != View.VISIBLE) {
-                mAmbientDisplayBatteryView.setVisibility(View.VISIBLE);
-            }
+    private void refreshWeatherInfo() {
+        if (mWeatherController == null) {
+            mAmbientDisplayWeatherLayout.setVisibility(View.GONE);
+            return;
+        }
+
+        WeatherController.WeatherInfo info = mWeatherController.getWeatherInfo();
+        if (info.temp != null && info.condition != null && info.conditionDrawableMonochrome != null) {
+            String locationTemp = (showWeatherLocation() ? info.city + ", " : "") + info.temp;
+            Drawable icon = info.conditionDrawableMonochrome;
+            mAmbientDisplayWeatherLT.setText(locationTemp);
+            mAmbientDisplayWeatherC.setText(info.condition);
+            mAmbientDisplayWeatherLT.setTextColor(mPrimaryTextColor);
+            mAmbientDisplayWeatherC.setTextColor(mPrimaryTextColor);
+            icon.setTintList(ColorStateList.valueOf(mIconColor));
+            mAmbientDisplayWeatherIcon.setImageDrawable(icon);
         } else {
-            if (mAmbientDisplayBatteryView.getVisibility() != View.GONE) {
-                mAmbientDisplayBatteryView.setVisibility(View.GONE);
+            mAmbientDisplayWeatherLT.setText("");
+            mAmbientDisplayWeatherC.setText("");
+            mAmbientDisplayWeatherIcon.setImageDrawable(null);
+            mAmbientDisplayWeatherLayout.setVisibility(View.GONE);
+        }
+    }
+
+    public void setDozing(boolean dozing) {
+        mAmbientDisplayBatteryView.setVisibility(dozing && showBattery() ? View.VISIBLE : View.GONE);
+        mAmbientDisplayWeatherLayout.setVisibility(dozing && showWeather() ? View.VISIBLE : View.GONE);
+        if (dozing) {
+            if (showBattery()) {
+                refreshBatteryInfo();
+            }
+            if (showWeather()) {
+                refreshWeatherInfo();
             }
         }
     }
@@ -872,7 +911,17 @@ public class KeyguardStatusView extends GridLayout implements
     private boolean showBattery() {
         return Settings.System.getInt(getContext().getContentResolver(),
                 Settings.System.AMBIENT_DISPLAY_SHOW_BATTERY, 1) == 1;
-    } 
+    }
+
+    private boolean showWeather() {
+        return Settings.System.getInt(getContext().getContentResolver(),
+                Settings.System.AMBIENT_DISPLAY_SHOW_WEATHER, 0) == 1;
+    }
+
+    private boolean showWeatherLocation() {
+        return Settings.System.getInt(getContext().getContentResolver(),
+                Settings.System.AMBIENT_DISPLAY_SHOW_WEATHER_LOCATION, 1) == 1;
+    }
 
     // DateFormat.getBestDateTimePattern is extremely expensive, and refresh is called often.
     // This is an optimization to ensure we only recompute the patterns when the inputs change.

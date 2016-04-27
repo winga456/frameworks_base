@@ -7159,6 +7159,18 @@ public final class Settings {
         public static final String LOCK_SCREEN_SHOW_CURRENT = "lock_screen_show_current";
 
         /**
+         * Whether to show the weather on ambient display
+         * @hide
+         */
+        public static final String AMBIENT_DISPLAY_SHOW_WEATHER = "ambient_display_show_weather";
+
+        /**
+         * Whether to show the weather location on ambient display
+         * @hide
+         */
+        public static final String AMBIENT_DISPLAY_SHOW_WEATHER_LOCATION = "ambient_display_show_weather_location";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *

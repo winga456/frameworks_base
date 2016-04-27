@@ -1807,7 +1807,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 (ViewStub) mStatusBarWindow.findViewById(R.id.keyguard_user_switcher),
                 mKeyguardStatusBar, mNotificationPanel, mUserSwitcherController);
 
-
         // Set up the quick settings tile panel
         mQSPanel = (QSPanel) mStatusBarWindow.findViewById(R.id.quick_settings_panel);
         if (mQSPanel != null) {
@@ -1840,6 +1839,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         ExpansionViewController expansionViewController = new ExpansionViewController(mContext, expansionViewContainer);
         expansionViewController.setUp(this, mNetworkController, mBatteryController, mWeatherController);
         mNotificationPanel.setExpansionViewController(expansionViewController);
+
+        // Ambient weather controller
+        mKeyguardStatusView.setWeatherController(mWeatherController);
 
         // User info. Trigger first load.
         mHeader.setUserInfoController(mUserInfoController);
