@@ -40,7 +40,8 @@ public class AwesomeAnimationHelper {
     public final static int ANIMATION_GROW_SHRINK_BOTTOM = 11;
     public final static int ANIMATION_GROW_SHRINK_LEFT = 12;
     public final static int ANIMATION_GROW_SHRINK_RIGHT = 13;
-    public final static int ANIMATION_RANDOM = 14;
+    public final static int ANIMATION_ENTER_FROM_BACK = 14;
+    public final static int ANIMATION_RANDOM = 15;
 
     public static final int INTERPOLATOR_NONE = 0;
     public static final int INTERPOLATOR_ACCELERATE = 1;
@@ -69,6 +70,7 @@ public class AwesomeAnimationHelper {
         animList.add(ANIMATION_GROW_SHRINK_BOTTOM);
         animList.add(ANIMATION_GROW_SHRINK_LEFT);
         animList.add(ANIMATION_GROW_SHRINK_RIGHT);
+        animList.add(ANIMATION_ENTER_FROM_BACK);
         animList.add(ANIMATION_RANDOM);
         int length = animList.size();
         int[] anim = new int[length];
@@ -80,8 +82,8 @@ public class AwesomeAnimationHelper {
 
     public static int[] getSystemAnimations(int mAnim, boolean enterOnly, boolean reverseExit) {
         if(mAnim == ANIMATION_RANDOM){
-            mAnim = (new Random()).nextInt(14);
-            // Random number from 0 to 13
+            mAnim = (new Random()).nextInt(15);
+            // Random number from 0 to 14
         }
         int[] anim = new int[2];
         switch (mAnim) {
@@ -137,6 +139,10 @@ public class AwesomeAnimationHelper {
                 anim[0] = reverseExit ? com.android.internal.R.anim.shrink_fade_out_ribbon : com.android.internal.R.anim.shrink_fade_out_from_bottom_ribbon;
                 anim[1] = com.android.internal.R.anim.grow_fade_in_from_bottom_ribbon;
                 break;
+            case ANIMATION_ENTER_FROM_BACK:
+                anim[0] = reverseExit ? com.android.internal.R.anim.last_app_out : com.android.internal.R.anim.last_app_out;
+                anim[1] = com.android.internal.R.anim.last_app_in;
+                break;
         }
         if (enterOnly) anim[0] = com.android.internal.R.anim.no_animation;
         return anim;
@@ -190,6 +196,9 @@ public class AwesomeAnimationHelper {
                 break;
             default:
                 value = res.getString(com.android.internal.R.string.action_null);
+                break;
+            case ANIMATION_ENTER_FROM_BACK:
+                value = res.getString(com.android.internal.R.string.animation_last_app);
                 break;
 
         }
