@@ -169,8 +169,9 @@ public class ExpansionViewWeatherPanel extends FrameLayout implements
             calendar.roll(Calendar.DAY_OF_WEEK, true);
 
             ImageView currentImage = (ImageView) currentItem.findViewById(R.id.weather_image);
-            currentImage.setImageDrawable(
-                    ExpansionViewWeatherHelper.getCurrentConditionDrawable(mContext, info));
+            Drawable icon = ExpansionViewWeatherHelper.getCurrentConditionDrawable(mContext, info)
+                    .getConstantState().newDrawable();
+            currentImage.setImageDrawable(icon);
             if (ExpansionViewWeatherHelper.getIconType(mContext) == 0) {
                 currentImage.setColorFilter(iconColor, Mode.MULTIPLY);
             }
@@ -198,7 +199,9 @@ public class ExpansionViewWeatherPanel extends FrameLayout implements
                 calendar.roll(Calendar.DAY_OF_WEEK, true);
 
                 ImageView image = (ImageView) forecastItem.findViewById(R.id.weather_image);
-                image.setImageDrawable(ExpansionViewWeatherHelper.getForcastConditionDrawable(mContext, d));
+                Drawable icon = WeatherHelper.getForcastConditionDrawable(mContext, d)
+                        .getConstantState().newDrawable();
+                image.setImageDrawable(icon);
                 if (ExpansionViewWeatherHelper.getIconType(mContext) == 0) {
                     image.setColorFilter(iconColor, Mode.MULTIPLY);
                 }
