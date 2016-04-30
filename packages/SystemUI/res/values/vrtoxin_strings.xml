@@ -229,9 +229,9 @@
     <string name="no">No</string>
 
     <!-- Slim Shortcut Actions -->
-    <string name="shortcut_picker">VRToxin Shortcuts</string>
+    <string name="shortcut_picker">Cyanide Shortcuts</string>
     <string name="shortcut_screenshot">Screenshot</string>
-    <string name="shortcut_chamber">VRToxin Dungeon</string>
+    <string name="shortcut_chamber">Cyanide Dungeon</string>
     <string name="chamber_disabled">The poison is contained</string>
     <string name="chamber_title">Input Settings string</string>
     <string name="chamber_message">Input a Settings string that is either an on and off (checkbox) function or possibly a list-preference. For example, doze_enabled or similar. Settings can be found in the Settings.java file. WARNING: This process is dangerous!</string>

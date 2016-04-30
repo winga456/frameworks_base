@@ -358,7 +358,7 @@
         <activity
             android:name="com.android.systemui.CreateShortcut"
             android:label="@string/shortcut_picker"
-            android:icon="@*android:drawable/ic_shortcut_action_theme_switch"
+            android:icon="@drawable/ic_qs_vrtoxin"
             android:configChanges="orientation|keyboardHidden|screenSize" >
             <intent-filter>
                 <action android:name="android.intent.action.CREATE_SHORTCUT" />
