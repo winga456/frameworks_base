@@ -39,7 +39,7 @@
     <!-- Dexopt dialog -->
     <color name="dexopt_background">#ff21272b</color>
     <color name="dexopt_primary_text">#ffffffff</color>
-    <color name="dexopt_secondary_text">#ffffffff</color>
-    <color name="dexopt_progress_tint">#ffffffff</color>
+    <color name="dexopt_secondary_text">#b3ffffff</color>
+    <color name="dexopt_progress_tint">#ff607d8b</color>
 
 </resources>

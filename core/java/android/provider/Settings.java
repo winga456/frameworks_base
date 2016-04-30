@@ -6159,16 +6159,26 @@ public final class Settings {
         public static final String SAFE_HEADSET_VOLUME = "safe_headset_volume";
 
         /**
-         * Color of the progress bar for the boot dialog
+         * Whether to use a progress dialog for the boot dialog
          * @hide
          */
-        public static final String BOOT_DIALOG_PROGRESS_BAR_COLOR = "boot_dialog_progress_bar_color";
+        public static final String BOOT_DIALOG_SHOW_PROGRESS_DIALOG = "boot_dialog_show_progress_dialog";
 
         /**
-         * Color of the unused progress bar for the boot dialog
+         * How to colorize the app text of the boot dialog
+         * 0 = Use a custom color
+         * 1 = Use a random color
+         * 2 = Use the gloabal boot dialog text color
+         * default: 0
          * @hide
          */
-        public static final String BOOT_DIALOG_PROGRESS_BAR_INACTIVE_COLOR = "boot_dialog_progress_bar_inactive_color";
+        public static final String BOOT_DIALOG_APP_TEXT_COLOR_MODE = "boot_dialog_app_text_color_mode";
+
+        /**
+         * Background color of the boot dialog
+         * @hide
+         */
+        public static final String BOOT_DIALOG_BACKGROUND_COLOR = "boot_dialog_background_color";
 
         /**
          * Text color of the boot dialog
@@ -6180,7 +6190,7 @@ public final class Settings {
          * Custom app text color of boot dialog
          * @hide
          */
-        public static final String BOOT_DIALOG_PACKAGE_TEXT_COLOR = "boot_dialog_package_text_color";
+        public static final String BOOT_DIALOG_APP_TEXT_COLOR = "boot_dialog_app_text_color";
 
         /**
          * Whether to mute annoying notifications
