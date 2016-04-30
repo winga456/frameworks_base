@@ -373,9 +373,10 @@
             android:icon="@*android:drawable/ic_shortcut_action_theme_switch"
             android:theme="@android:style/Theme.NoDisplay"
             android:excludeFromRecents="true"
-            android:launchMode="singleInstance" >
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.android.systemui.SHORTCUT" />
                 <category android:name="com.android.systemui.SHORTCUT_COS" />
             </intent-filter>
         </activity>

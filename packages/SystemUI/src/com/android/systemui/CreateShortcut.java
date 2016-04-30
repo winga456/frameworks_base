@@ -74,6 +74,8 @@ public class CreateShortcut extends LauncherActivity {
                 Settings.Secure.CHAMBER_OF_SECRETS, 0,
                 UserHandle.USER_CURRENT) == 1) {
             targetIntent.addCategory("com.android.systemui.SHORTCUT_COS");
+        } else {
+            targetIntent.addCategory("com.android.systemui.SHORTCUT");
         }
         targetIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return targetIntent;
@@ -104,10 +106,10 @@ public class CreateShortcut extends LauncherActivity {
 
     private int returnIconResId(String c) {
         if (c.equals("ChamberOfSecrets")) {
-            return R.drawable.ic_shortcut_chamberofsecrets;
+            return R.drawable.ic_qs_vrtoxin;
         } else {
             // Oh-Noes, you found a wild derp.
-            return R.drawable.ic_shortcut_null;
+            return R.drawable.ic_sysbar_null;
         }
     }
 
