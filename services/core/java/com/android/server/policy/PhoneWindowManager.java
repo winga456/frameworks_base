@@ -7852,11 +7852,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     // Only display the current package name if the main message says "Optimizing app N of M".
                     // We don't want to do this when the message says "Starting apps" or "Finishing boot", etc.
                     final String appColor = BootDialogColorHelper.getAppTextColor(mContext);
-                    mBootMsgDialog.setMessage(Html.fromHtml("Powered By VRToxin<br>" + msg +
+                    mBootMsgDialog.setMessage(Html.fromHtml("Cyanide Infused<br>" + msg +
                                                             "<br><b><font color=\"" + appColor + "\">"
                                                             + currentPackageName + "</font></b>" + "<br><br>Please do not power off or remove from power source."));
                 } else {
-                    mBootMsgDialog.setMessage("Powered By VRToxin\n\n" + msg
+                    mBootMsgDialog.setMessage("Cyanide Infused\n\n" + msg
                     + "\n\nPlease do not power off or remove from power source.");
                 }
                 mBootMsgDialog.setMessageTextColor(BootDialogColorHelper.getSecondaryTextColor(mContext));
