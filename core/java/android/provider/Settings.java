@@ -7232,6 +7232,24 @@ public final class Settings {
         public static final String KEYGUARD_STATUSBAR_CLOCK_DATE_FORMAT = "keyguard_statusbar_clock_date_format";
 
         /**
+         * Setting for clock color
+         * @hide
+         */
+        public static final String KEYGUARD_STATUSBAR_CLOCK_COLOR = "keyguard_statusbar_clock_color";
+
+        /**
+         * Settings for clock font style
+         * @hide
+         */
+        public static final String KEYGUARD_STATUSBAR_CLOCK_FONT_STYLE = "keyguard_statusbar_clock_font_style";
+
+        /**
+         * Settings for clock font size
+         * @hide
+         */
+        public static final String KEYGUARD_STATUSBAR_CLOCK_FONT_SIZE = "keyguard_statusbar_clock_font_size";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *

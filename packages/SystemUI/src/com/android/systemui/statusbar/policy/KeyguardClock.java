@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.database.ContentObserver;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.UserHandle;
@@ -38,7 +39,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.android.systemui.R;
-import com.android.systemui.statusbar.phone.StatusBarIconController;
+
+import com.android.internal.util.vrtoxin.FontHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -81,12 +83,12 @@ public class KeyguardClock extends TextView {
     protected int mKeyguardClockDateStyle = KEYGUARD_CLOCK_DATE_STYLE_REGULAR;
     protected int mKeyguardClockStyle = KEYGUARD_STYLE_CLOCK_RIGHT;
     protected boolean mShowKeyguardClock;
-    private int mKeyguardClockAndDateWidth;
+    private int mKeyguardClockFontStyle = FontHelper.FONT_NORMAL;
+    private int mKeyguardClockFontSize = 14;
 
     private int mKeyguardAmPmStyle;
 
     private SettingsObserver mSettingsObserver;
-    private StatusBarIconController mIconController;
 
     protected class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
@@ -95,12 +97,6 @@ public class KeyguardClock extends TextView {
 
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
-            resolver.registerContentObserver(Settings.System
-                    .getUriFor(Settings.System.KEYGUARD_STATUS_BAR_CLOCK),
-                    false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System
-                    .getUriFor(Settings.System.KEYGUARD_STATUSBAR_CLOCK_AM_PM_STYLE),
-                    false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System
                     .getUriFor(Settings.System.KEYGUARD_STATUSBAR_CLOCK_STYLE), false,
                     this, UserHandle.USER_ALL);
@@ -112,6 +108,18 @@ public class KeyguardClock extends TextView {
                     this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System
                     .getUriFor(Settings.System.KEYGUARD_STATUSBAR_CLOCK_DATE_FORMAT), false,
+                    this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.KEYGUARD_STATUSBAR_CLOCK_FONT_STYLE), false,
+                    this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.KEYGUARD_STATUSBAR_CLOCK_FONT_SIZE), false,
+                    this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.KEYGUARD_STATUSBAR_CLOCK_COLOR), false,
+                    this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.KEYGUARD_STATUS_BAR_CLOCK), false,
                     this, UserHandle.USER_ALL);
             updateSettings();
         }
@@ -143,10 +151,6 @@ public class KeyguardClock extends TextView {
         }
     }
 
-    public void setIconController(StatusBarIconController iconController) {
-        mIconController = iconController;
-    }
-
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -175,6 +179,7 @@ public class KeyguardClock extends TextView {
             mSettingsObserver = new SettingsObserver(new Handler());
         }
         mSettingsObserver.observe();
+        updateKeyguardClock();
         updateSettings();
     }
 
@@ -211,6 +216,48 @@ public class KeyguardClock extends TextView {
     };
 
     final void updateKeyguardClock() {
+        ContentResolver resolver = mContext.getContentResolver();
+
+        mKeyguardClockFontStyle = Settings.System.getIntForUser(resolver,
+                Settings.System.KEYGUARD_STATUSBAR_CLOCK_FONT_STYLE, FontHelper.FONT_NORMAL,
+                UserHandle.USER_CURRENT);
+        mKeyguardClockFontSize = Settings.System.getIntForUser(resolver,
+                Settings.System.KEYGUARD_STATUSBAR_CLOCK_FONT_SIZE, 14,
+                UserHandle.USER_CURRENT);
+        mShowKeyguardClock = Settings.System.getIntForUser(resolver,
+                Settings.System.KEYGUARD_STATUS_BAR_CLOCK, 0,
+                UserHandle.USER_CURRENT) == 1;
+
+        boolean is24hour = DateFormat.is24HourFormat(mContext);
+        int keyguardAmPmStyle = Settings.System.getIntForUser(resolver,
+                Settings.System.KEYGUARD_STATUSBAR_CLOCK_AM_PM_STYLE,
+                KEYGUARD_AM_PM_STYLE_GONE,
+                UserHandle.USER_CURRENT);
+        mKeyguardAmPmStyle = is24hour ? KEYGUARD_AM_PM_STYLE_GONE : keyguardAmPmStyle;
+        mKeyguardClockFormatString = "";
+
+        mKeyguardClockStyle = Settings.System.getIntForUser(resolver,
+                Settings.System.KEYGUARD_STATUSBAR_CLOCK_STYLE, KEYGUARD_STYLE_CLOCK_RIGHT,
+                UserHandle.USER_CURRENT);
+        mKeyguardClockDateDisplay = Settings.System.getIntForUser(resolver,
+                Settings.System.KEYGUARD_STATUSBAR_CLOCK_DATE_DISPLAY, KEYGUARD_CLOCK_DATE_DISPLAY_GONE,
+                UserHandle.USER_CURRENT);
+        mKeyguardClockDateStyle = Settings.System.getIntForUser(resolver,
+                Settings.System.KEYGUARD_STATUSBAR_CLOCK_DATE_STYLE, KEYGUARD_CLOCK_DATE_STYLE_REGULAR,
+                UserHandle.USER_CURRENT);
+
+        int defaultColor = mContext.getResources().getColor(R.color.status_bar_clock_color);
+        int clockColor = Settings.System.getIntForUser(resolver,
+                Settings.System.KEYGUARD_STATUSBAR_CLOCK_COLOR, defaultColor,
+                UserHandle.USER_CURRENT);
+        if (clockColor == Integer.MIN_VALUE) {
+            // flag to reset the color
+            clockColor = defaultColor;
+        }
+        setTextColor(clockColor);
+        getFontStyle(mKeyguardClockFontStyle);
+        setTextSize(mKeyguardClockFontSize);
+
         mCalendar.setTimeInMillis(System.currentTimeMillis());
         setText(getSmallTime());
     }
@@ -353,7 +400,88 @@ public class KeyguardClock extends TextView {
 
         if (mAttached) {
             updateKeyguardClockVisibility();
-            updateKeyguardClock();
+        }
+        updateKeyguardClock();
+    }
+
+    public void getFontStyle(int font) {
+        switch (font) {
+            case FontHelper.FONT_NORMAL:
+            default:
+                setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_ITALIC:
+                setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_BOLD:
+                setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_BOLD_ITALIC:
+                setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
+                break;
+            case FontHelper.FONT_LIGHT:
+                setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_LIGHT_ITALIC:
+                setTypeface(Typeface.create("sans-serif-light", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_THIN:
+                setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_THIN_ITALIC:
+                setTypeface(Typeface.create("sans-serif-thin", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_CONDENSED:
+                setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_CONDENSED_ITALIC:
+                setTypeface(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_CONDENSED_LIGHT:
+                setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_CONDENSED_LIGHT_ITALIC:
+                setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_CONDENSED_BOLD:
+                setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_CONDENSED_BOLD_ITALIC:
+                setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
+                break;
+            case FontHelper.FONT_MEDIUM:
+                setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_MEDIUM_ITALIC:
+                setTypeface(Typeface.create("sans-serif-medium", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_BLACK:
+                setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_BLACK_ITALIC:
+                setTypeface(Typeface.create("sans-serif-black", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT:
+                setTypeface(Typeface.create("cursive", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT_BOLD:
+                setTypeface(Typeface.create("cursive", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_COMINGSOON:
+                setTypeface(Typeface.create("casual", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_NOTOSERIF:
+                setTypeface(Typeface.create("serif", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_NOTOSERIF_ITALIC:
+                setTypeface(Typeface.create("serif", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD:
+                setTypeface(Typeface.create("serif", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD_ITALIC:
+                setTypeface(Typeface.create("serif", Typeface.BOLD_ITALIC));
+                break;
         }
     }
 
