@@ -129,6 +129,7 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
     TextView mDate;
 
     private int mRecentsFontStyle = FontHelper.FONT_NORMAL;
+    private int mRecentsFontSize = 14;
 
     public RecentsView(Context context) {
         super(context);
@@ -483,6 +484,7 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
         updateDateColor();
         updateTimeVisibility();
         updateRecentsFontStyle();
+        updateRecentsFontSize();
 
         boolean showClearAllRecents = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.SHOW_CLEAR_ALL_RECENTS, 1) == 1;
@@ -574,6 +576,7 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
         updateMemBarBgColor();
         updateMemBarColor();
         updateRecentsFontStyle();
+        updateRecentsFontSize();
         return true;
     }
 
@@ -593,6 +596,7 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
             updateMemBarBgColor();
             updateMemBarColor();
             updateRecentsFontStyle();
+            updateRecentsFontSize();
     }
 
     public long getTotalMemory() {
@@ -687,6 +691,7 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
         updateDateColor();
         updateTimeVisibility();
         updateRecentsFontStyle();
+        updateRecentsFontSize();
     }
 
     private void updateMemTextColor() {
@@ -794,6 +799,18 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
         if (mDate != null) {
             mDate.setTextColor(color);
         }
+    }
+
+    private void updateRecentsFontSize() {
+        ContentResolver resolver = mContext.getContentResolver();
+
+        mRecentsFontSize = Settings.System.getIntForUser(resolver,
+                Settings.System.RECENTS_FULL_SCREEN_CLOCK_DATE_SIZE, 14,
+                UserHandle.USER_CURRENT);
+
+        mClock.setTextSize(mRecentsFontSize);
+        mDate.setTextSize(mRecentsFontSize);
+        mMemText.setTextSize(mRecentsFontSize);
     }
 
     private void updateRecentsFontStyle() {

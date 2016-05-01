@@ -5862,6 +5862,12 @@ public final class Settings {
         public static final String RECENTS_FULL_SCREEN_DATE = "recents_full_screen_date";
 
         /**
+         * Font size of clock and date in full screen recents
+         * @hide
+         */
+        public static final String RECENTS_FULL_SCREEN_CLOCK_DATE_SIZE = "recents_full_screen_clock_date_size";
+
+        /**
          * Font style of memory bar text, clock and date in full screen recents
          * @hide
          */
