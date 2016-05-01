@@ -370,10 +370,62 @@
         <activity
             android:name="com.android.systemui.shortcuts.ChamberOfSecrets"
             android:label="@string/shortcut_chamber"
-            android:icon="@*android:drawable/ic_shortcut_action_theme_switch"
+            android:icon="@drawable/ic_qs_vrtoxin"
             android:theme="@android:style/Theme.NoDisplay"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.android.systemui.SHORTCUT" />
+                <category android:name="com.android.systemui.SHORTCUT_COS" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.android.systemui.shortcuts.Reboot"
+            android:label="@string/shortcut_reboot"
+            android:icon="@drawable/ic_qs_reboot"
+            android:theme="@android:style/Theme.NoDisplay"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.android.systemui.SHORTCUT" />
+                <category android:name="com.android.systemui.SHORTCUT_COS" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.android.systemui.shortcuts.Recovery"
+            android:label="@string/shortcut_recovery"
+            android:icon="@drawable/ic_qs_reboot_recovery"
+            android:theme="@android:style/Theme.NoDisplay"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.android.systemui.SHORTCUT" />
+                <category android:name="com.android.systemui.SHORTCUT_COS" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.android.systemui.shortcuts.Rotation"
+            android:label="@string/shortcut_rotation"
+            android:icon="@drawable/ic_qs_auto_rotate"
+            android:theme="@android:style/Theme.NoDisplay"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.android.systemui.SHORTCUT" />
+                <category android:name="com.android.systemui.SHORTCUT_COS" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.android.systemui.shortcuts.Torch"
+            android:label="@string/shortcut_torch"
+            android:icon="@drawable/ic_sysbar_torch"
+            android:theme="@android:style/Theme.NoDisplay"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="com.android.systemui.SHORTCUT" />

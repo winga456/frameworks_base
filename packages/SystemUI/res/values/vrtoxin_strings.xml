@@ -230,6 +230,10 @@
 
     <!-- Slim Shortcut Actions -->
     <string name="shortcut_picker">Cyanide Shortcuts</string>
+    <string name="shortcut_rotation">Rotation</string>
+    <string name="shortcut_reboot">Reboot</string>
+    <string name="shortcut_recovery">Recovery</string>
+    <string name="shortcut_toggle_title">Action to perform</string>
     <string name="shortcut_screenshot">Screenshot</string>
     <string name="shortcut_chamber">Cyanide Dungeon</string>
     <string name="chamber_disabled">The poison is contained</string>
@@ -248,6 +252,7 @@
     <string name="shortcut_volume">Volume Panel</string>
     <string name="shortcut_restart_ui">Restart SystemUI</string>
     <string name="shortcut_powermenu">Power Menu</string>
+    <string name="shortcut_torch">Torch</string>
 
     <!-- Off/On/Toggle -->
     <string name="off">Off</string>

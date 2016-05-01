@@ -99,14 +99,26 @@ public class CreateShortcut extends LauncherActivity {
         mIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, itemForPosition(position).label);
         if (className.equals("ChamberOfSecrets")) {
             showDialogSetting(DLG_SECRET);
+        } else if (className.equals("Immersive")
+                || className.equals("Torch")
+                || className.equals("Rotation")) {
+            showDialogSetting(DLG_TOGGLE);
         } else {
             finalizeIntent();
         }
     }
 
     private int returnIconResId(String c) {
-        if (c.equals("SleepScreen")) {
+        if (c.equals ("Rotation")) {
+            return R.drawable.ic_qs_auto_rotate;
+        } else if (c.equals("Torch")) {
+            return R.drawable.ic_sysbar_torch;
+        } else if (c.equals("SleepScreen")) {
             return R.drawable.ic_qs_sleep;
+        } else if (c.equals("Reboot")) {
+            return R.drawable.ic_qs_reboot;
+        } else if (c.equals("Recovery")) {
+            return R.drawable.ic_qs_reboot_recovery;
         } else if (c.equals("VolumePanel")) {
             return R.drawable.ic_qs_volume;
         } else if (c.equals("RestartUI")) {
