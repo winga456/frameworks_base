@@ -83,7 +83,7 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
     public final static int ACTIVITY_PANEL  = 2;
     public final static int LOGO_PANEL      = 3;
  
-    public static int NEXT_VISIBLE_PANEL = WEATHER_PANEL;
+    public static int NEXT_VISIBLE_PANEL = CUSTOM_PANEL;
 
     private boolean mListening = false;
 

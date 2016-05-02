@@ -167,7 +167,7 @@ public class ExpansionViewController {
 
     private void setExpansionViewShowLogoPanel() {
         final boolean logoPanel = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.EXPANSION_VIEW_SHOW_LOGO_PANEL, 0) == 1;
+                Settings.System.EXPANSION_VIEW_SHOW_LOGO_PANEL, 1) == 1;
 
         if (mExpansionViewCustomPanel != null) {
             mExpansionViewCustomPanel.showLogoPanel(logoPanel);
@@ -367,7 +367,7 @@ public class ExpansionViewController {
 
     private void setExpansionViewLayoutChanger() {
         final boolean showChanger = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.EXPANSION_VIEW_LAYOUT_CHANGER, 0) == 1;
+                Settings.System.EXPANSION_VIEW_LAYOUT_CHANGER, 1) == 1;
 
         if (mExpansionViewCustomPanel != null) {
             mExpansionViewCustomPanel.showLayoutChanger(showChanger);
@@ -400,7 +400,7 @@ public class ExpansionViewController {
 
     private void setExpansionViewVibration() {
         final boolean vibrate = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.EXPANSION_VIEW_VIBRATION, 1) == 1;
+                Settings.System.EXPANSION_VIEW_VIBRATION, 0) == 1;
 
         if (mExpansionViewCustomPanel != null) {
             mExpansionViewCustomPanel.vibrateOnClick(vibrate);
