@@ -156,12 +156,6 @@ public class StatusBarColorHelper {
                 BLACK);
     }
 
-    public static int getSettingsTitleTextColor(Context context) {
-        return Settings.System.getInt(context.getContentResolver(),
-                Settings.System.SETTINGS_TITLE_TEXT_COLOR,
-                WHITE);
-    }
-
     /*public static int getActionBarIconColor(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
                 Settings.System.ACTIONBAR_ICON_COLOR,

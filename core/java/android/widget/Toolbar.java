@@ -58,7 +58,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.android.internal.util.vrtoxin.FontHelper;
-import com.android.internal.util.vrtoxin.StatusBarColorHelper;
 
 /**
  * A standard toolbar for use within application content.
@@ -2063,14 +2062,9 @@ public class Toolbar extends ViewGroup {
         }
     }
 
-    /*public void updateIconColor() {
-        final int iconColor = StatusBarColorHelper.getActionBarIconColor(mContext);
-        mLogoView.setImageTintList(ColorStateList.valueOf(iconColor));
-        mNavButtonView.setImageTintList(ColorStateList.valueOf(iconColor));
-    }*/
-
     public void updateTextColor() {
-        final int textColor = StatusBarColorHelper.getSettingsTitleTextColor(mContext);
+        final int textColor = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.SETTINGS_TOOLBAR_TEXT_COLOR, 0xffffffff);
         if (mTitleTextView != null) {
             mTitleTextView.setTextColor(textColor);
         }

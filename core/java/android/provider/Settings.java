@@ -6658,6 +6658,12 @@ public final class Settings {
         public static final String SETTINGS_CATEGORY_TEXT_COLOR = "settings_category_text_color";
 
         /**
+         * Settings toolbar (header) text color
+         * @hide
+         */
+        public static final String SETTINGS_TOOLBAR_TEXT_COLOR = "settings_toolbar_text_color";
+
+        /**
          * Dash Switches
          * @hide
          */
