@@ -156,6 +156,15 @@ public class ExpansionViewController {
         }
     }
 
+    private void setExpansionViewShowActivityPanel() {
+        final boolean activityPanel = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.EXPANSION_VIEW_SHOW_ACTIVITY_PANEL, 1) == 1;
+
+        if (mExpansionViewCustomPanel != null) {
+            mExpansionViewCustomPanel.showActivityPanel(activityPanel);
+        }
+    }
+
     private void setExpansionViewShowLogoPanel() {
         final boolean logoPanel = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.EXPANSION_VIEW_SHOW_LOGO_PANEL, 0) == 1;
@@ -436,6 +445,9 @@ public class ExpansionViewController {
                     Settings.System.EXPANSION_VIEW_ACTIVITY_PANEL_TEXT_COLOR),
                     false, this, UserHandle.USER_ALL);
             mResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_SHOW_ACTIVITY_PANEL),
+                    false, this, UserHandle.USER_ALL);
+            mResolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.EXPANSION_VIEW_SHOW_LOGO_PANEL),
                     false, this, UserHandle.USER_ALL);
             mResolver.registerContentObserver(Settings.System.getUriFor(
@@ -523,6 +535,7 @@ public class ExpansionViewController {
         public void update() {
             setExpansionViewActivityPanelTextColor();
             setExpansionViewActivityPanelTextSize();
+            setExpansionViewShowActivityPanel();
             setExpansionViewShowLogoPanel();
             setExpansionViewShowShortcutBar();
             setExpansionViewShowText();
@@ -549,6 +562,9 @@ public class ExpansionViewController {
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.EXPANSION_VIEW_ACTIVITY_PANEL_TEXT_COLOR))) {
                 setExpansionViewActivityPanelTextColor();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_SHOW_ACTIVITY_PANEL))) {
+                setExpansionViewShowActivityPanel();
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.EXPANSION_VIEW_SHOW_LOGO_PANEL))) {
                 setExpansionViewShowLogoPanel();

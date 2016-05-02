@@ -71,7 +71,9 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
     private boolean mShowChanger = false;
     private boolean mShowShortcutPanel = false;
     private boolean mShowText = false;
+    private boolean mShowActivityPanel = false;
     private boolean mShowLogoPanel = false;
+    private boolean mLogoPanelDisabled = mShowLogoPanel && mShowActivityPanel;
 
     protected Vibrator mVibrator;
 
@@ -174,7 +176,15 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
         mWeatherPanel.setVisibility(NEXT_VISIBLE_PANEL == WEATHER_PANEL
                 ? View.VISIBLE : View.GONE);
  
-        if (!mShowLogoPanel) {
+        if (!mShowActivityPanel) {
+            if (NEXT_VISIBLE_PANEL == WEATHER_PANEL && animate) {
+                mWeatherPanel.startAnimation(getAnimation(true));
+                mCustomPanel.startAnimation(getAnimation(false));
+            } else if (NEXT_VISIBLE_PANEL == CUSTOM_PANEL && animate) {
+                mCustomPanel.startAnimation(getAnimation(true));
+                mWeatherPanel.startAnimation(getAnimation(false));
+            }
+        } else if (!mShowLogoPanel) {
             if (NEXT_VISIBLE_PANEL == ACTIVITY_PANEL && animate) {
                 mActivityPanel.startAnimation(getAnimation(true));
                 mWeatherPanel.startAnimation(getAnimation(false));
@@ -204,6 +214,15 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
         NEXT_VISIBLE_PANEL += 1;
         if (!mShowLogoPanel) {
             if (NEXT_VISIBLE_PANEL == 3) {
+                NEXT_VISIBLE_PANEL = 0;
+            }
+        } else {
+            if (NEXT_VISIBLE_PANEL == 4) {
+                NEXT_VISIBLE_PANEL = 0;
+            }
+        }
+        if (!mShowActivityPanel) {
+            if (NEXT_VISIBLE_PANEL == 2) {
                 NEXT_VISIBLE_PANEL = 0;
             }
         } else {
@@ -265,6 +284,10 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
         } else {
             mLayoutChanger.setVisibility(View.GONE);
         }
+    }
+
+    public void showActivityPanel(boolean showActivityPanel) {
+        mShowActivityPanel = showActivityPanel;
     }
 
     public void showLogoPanel(boolean showLogoPanel) {

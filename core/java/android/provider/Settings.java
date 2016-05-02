@@ -6688,6 +6688,12 @@ public final class Settings {
         public static final String EXPANSION_VIEW_ACTIVITY_PANEL_TEXT_SIZE = "expansion_view_activity_panel_text_size";
 
         /**
+         * Expansion View Activity Panel Visibility
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_SHOW_ACTIVITY_PANEL = "expansion_view_show_activity_panel";
+
+        /**
          * Expansion View Logo Panel Visibility
          * @hide
          */
