@@ -4260,8 +4260,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mStatusBarContents.setVisibility(View.GONE);
             mStatusBarContents.startAnimation(loadAnim(com.android.internal.R.anim.push_up_out,
                     null));
-            mCenterClock.setVisibility(View.GONE);
-            mCenterClock.startAnimation(loadAnim(com.android.internal.R.anim.push_up_out, null));
+            if (ClockController.mClockLocation == ClockController.STYLE_CLOCK_CENTER) {
+                mCenterClock.setVisibility(View.GONE);
+                mCenterClock.startAnimation(loadAnim(com.android.internal.R.anim.push_up_out, null));
+            }
             mTickerView.setVisibility(View.VISIBLE);
             mTickerView.startAnimation(loadAnim(com.android.internal.R.anim.push_up_in, null));
         }
@@ -4275,8 +4277,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mTickerView.setVisibility(View.GONE);
             mTickerView.startAnimation(loadAnim(com.android.internal.R.anim.push_down_out,
                         mTickingDoneListener));
-            mCenterClock.setVisibility(View.VISIBLE);
-            mCenterClock.startAnimation(loadAnim(com.android.internal.R.anim.push_down_in, null));
+            if (ClockController.mClockLocation == ClockController.STYLE_CLOCK_CENTER) {
+                mCenterClock.setVisibility(View.VISIBLE);
+                mCenterClock.startAnimation(loadAnim(com.android.internal.R.anim.push_down_in, null));
+            }
         }
 
         public void tickerHalting() {
@@ -4285,8 +4289,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 mStatusBarContents.setVisibility(View.VISIBLE);
                 mStatusBarContents
                         .startAnimation(loadAnim(com.android.internal.R.anim.fade_in, null));
-                mCenterClock.setVisibility(View.VISIBLE);
-                mCenterClock.startAnimation(loadAnim(com.android.internal.R.anim.fade_in, null));
+                if (ClockController.mClockLocation == ClockController.STYLE_CLOCK_CENTER) {
+                    mCenterClock.setVisibility(View.VISIBLE);
+                    mCenterClock.startAnimation(loadAnim(com.android.internal.R.anim.fade_in, null));
+                }
             }
             mTickerView.setVisibility(View.GONE);
             // we do not animate the ticker away at this point, just get rid of it (b/6992707)
