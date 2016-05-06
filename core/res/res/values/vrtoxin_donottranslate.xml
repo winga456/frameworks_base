@@ -17,6 +17,6 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <!-- Default name of the custom carrier label -->
-    <string name="default_custom_label" translatable="false">VRToxin</string>
+    <string name="default_custom_label" translatable="false">Cyanide</string>
 
 </resources>
