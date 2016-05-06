@@ -16,11 +16,13 @@
 
 package com.android.systemui.vrtoxin.expansionview.panels;
 
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
@@ -32,6 +34,7 @@ import android.os.UserHandle;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.util.AttributeSet;
+import android.util.SparseArray;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.View;
@@ -47,10 +50,13 @@ import com.android.systemui.R;
 
 import com.android.internal.util.vrtoxin.ExpansionViewColorHelper;
 
+import java.io.InputStream;
+
 public class ExpansionViewCustomPanel extends RelativeLayout {
 
     private static Context mContext;
     private static ContentResolver mResolver;
+    private static SparseArray<Drawable> mCache = new SparseArray<Drawable>();
     private ActivityStarter mActivityStarter;
 
     // Layouts
@@ -63,8 +69,11 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
 
     // Views
     private TextView mCustomText;
-    private ImageView mShadeRomLogo;
     private ImageView mLayoutChanger;
+
+    // Logo panel
+    private ImageView mShadeRomLogo;
+    private static final int DEFAULT_LOGO = R.drawable.cyanide_logo;
  
     // On/Off Switches
     private boolean mExpansionViewVibrate = false;
@@ -265,6 +274,37 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
                 Settings.System.EXPANSION_VIEW_BACKGROUND, 0) == 1;
         ((Drawable) getBackground()).setTint(backgroundColor);
         ((Drawable) getBackground()).setAlpha(showBackground ? 255 : 0);
+    }
+
+    public void updateBackgroundImage() {
+        final String customLogo = Settings.System.getString(mResolver,
+                Settings.System.EXPANSION_VIEW_CUSTOM_LOGO);
+        if (customLogo != null && !(new String("").equals(customLogo))) {
+            try {
+                InputStream input = mResolver.openInputStream(Uri.parse(customLogo));
+                mShadeRomLogo.setImageDrawable(Drawable.createFromStream(input, customLogo));
+            } catch (Exception ugh) {
+                mShadeRomLogo.setImageDrawable(getDefaultImage());
+            }
+        } else {
+            mShadeRomLogo.setImageDrawable(getDefaultImage());
+        }
+    }
+
+    private Drawable getDefaultImage() {
+        return loadOrFetch(DEFAULT_LOGO);
+    }
+
+    private static Drawable loadOrFetch(int resId) {
+        Drawable res = mCache.get(resId);
+
+        if (res == null) {
+            // We don't have this drawable cached, do it!
+            final Resources r = mContext.getResources();
+            res = r.getDrawable(resId);
+            mCache.put(resId, res);
+        }
+        return res;
     }
 
     public void setCustomText(String text) {

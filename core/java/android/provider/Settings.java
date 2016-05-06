@@ -6706,6 +6706,12 @@ public final class Settings {
         public static final String EXPANSION_VIEW_SHOW_LOGO_PANEL = "expansion_view_show_logo_panel";
 
         /**
+         * Expansion View Custom Logo
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_CUSTOM_LOGO = "expansion_view_custom_logo";
+
+        /**
          * Expansion View Text
          * @hide
          */

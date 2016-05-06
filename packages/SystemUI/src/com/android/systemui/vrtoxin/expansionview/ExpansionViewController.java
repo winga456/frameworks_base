@@ -174,6 +174,13 @@ public class ExpansionViewController {
         }
     }
 
+    private void setExpansionViewCustomLogoImage() {
+
+        if (mExpansionViewCustomPanel != null) {
+            mExpansionViewCustomPanel.updateBackgroundImage();
+        }
+    }
+
     private void setExpansionViewShowShortcutBar() {
         final boolean showShortcuts = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.EXPANSION_VIEW_PANEL_SHORTCUTS, 0) == 1;
@@ -451,6 +458,9 @@ public class ExpansionViewController {
                     Settings.System.EXPANSION_VIEW_SHOW_LOGO_PANEL),
                     false, this, UserHandle.USER_ALL);
             mResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_CUSTOM_LOGO),
+                    false, this, UserHandle.USER_ALL);
+            mResolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.EXPANSION_VIEW_PANEL_SHORTCUTS),
                     false, this, UserHandle.USER_ALL);
             mResolver.registerContentObserver(Settings.System.getUriFor(
@@ -537,6 +547,7 @@ public class ExpansionViewController {
             setExpansionViewActivityPanelTextSize();
             setExpansionViewShowActivityPanel();
             setExpansionViewShowLogoPanel();
+            setExpansionViewCustomLogoImage();
             setExpansionViewShowShortcutBar();
             setExpansionViewShowText();
             setExpansionViewTextColor();
@@ -568,6 +579,9 @@ public class ExpansionViewController {
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.EXPANSION_VIEW_SHOW_LOGO_PANEL))) {
                 setExpansionViewShowLogoPanel();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_CUSTOM_LOGO))) {
+                setExpansionViewCustomLogoImage();
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.EXPANSION_VIEW_PANEL_SHORTCUTS))) {
                 setExpansionViewShowShortcutBar();
