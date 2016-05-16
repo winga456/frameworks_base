@@ -52,31 +52,37 @@ public class DaylightHeaderProvider implements
     private static final int DRAWABLE_SUNRISE_1 = R.drawable.notifhead_sunrise_1;
     private static final int DRAWABLE_SUNRISE_HD = R.drawable.notifhead_sunrise_hd;
     private static final int DRAWABLE_SUNRISE_VRT = R.drawable.notifhead_sunrise_vrt;
+    private static final int DRAWABLE_SUNRISE_PW = R.drawable.notifhead_sunrise_pw;
     private static final int TIME_MORNING = 9;
     private static final int DRAWABLE_MORNING = R.drawable.notifhead_morning;
     private static final int DRAWABLE_MORNING_1 = R.drawable.notifhead_morning_1;
     private static final int DRAWABLE_MORNING_HD = R.drawable.notifhead_morning_hd;
     private static final int DRAWABLE_MORNING_VRT = R.drawable.notifhead_morning_vrt;
+    private static final int DRAWABLE_MORNING_PW = R.drawable.notifhead_morning_pw;
     private static final int TIME_NOON = 11;
     private static final int DRAWABLE_NOON = R.drawable.notifhead_noon;
     private static final int DRAWABLE_NOON_1 = R.drawable.notifhead_noon_1;
     private static final int DRAWABLE_NOON_HD = R.drawable.notifhead_noon_hd;
     private static final int DRAWABLE_NOON_VRT = R.drawable.notifhead_noon_vrt;
+    private static final int DRAWABLE_NOON_PW = R.drawable.notifhead_noon_pw;
     private static final int TIME_AFTERNOON = 13;
     private static final int DRAWABLE_AFTERNOON = R.drawable.notifhead_afternoon;
     private static final int DRAWABLE_AFTERNOON_1 = R.drawable.notifhead_afternoon_1;
     private static final int DRAWABLE_AFTERNOON_HD = R.drawable.notifhead_afternoon_hd;
     private static final int DRAWABLE_AFTERNOON_VRT = R.drawable.notifhead_afternoon_vrt;
+    private static final int DRAWABLE_AFTERNOON_PW = R.drawable.notifhead_afternoon_pw;
     private static final int TIME_SUNSET = 19;
     private static final int DRAWABLE_SUNSET = R.drawable.notifhead_sunset;
     private static final int DRAWABLE_SUNSET_1 = R.drawable.notifhead_sunset_1;
     private static final int DRAWABLE_SUNSET_HD = R.drawable.notifhead_sunset_hd;
     private static final int DRAWABLE_SUNSET_VRT = R.drawable.notifhead_sunset_vrt;
+    private static final int DRAWABLE_SUNSET_PW = R.drawable.notifhead_sunset_pw;
     private static final int TIME_NIGHT = 21;
     private static final int DRAWABLE_NIGHT = R.drawable.notifhead_night;
     private static final int DRAWABLE_NIGHT_1 = R.drawable.notifhead_night_1;
     private static final int DRAWABLE_NIGHT_HD = R.drawable.notifhead_night_hd;
     private static final int DRAWABLE_NIGHT_VRT = R.drawable.notifhead_night_vrt;
+    private static final int DRAWABLE_NIGHT_PW = R.drawable.notifhead_night_pw;
 
     // Special events
     // Christmas is on Dec 25th
@@ -85,12 +91,14 @@ public class DaylightHeaderProvider implements
     private static final int DRAWABLE_CHRISTMAS_1 = R.drawable.notifhead_christmas_1;
     private static final int DRAWABLE_CHRISTMAS_HD = R.drawable.notifhead_christmas_hd;
     private static final int DRAWABLE_CHRISTMAS_VRT = R.drawable.notifhead_sunset_vrt;
+    private static final int DRAWABLE_CHRISTMAS_PW = R.drawable.notifhead_christmas_pw;
     // New years eve is on Dec 31st
     private static final Calendar CAL_NEWYEARSEVE = Calendar.getInstance();
     private static final int DRAWABLE_NEWYEARSEVE = R.drawable.notifhead_newyearseve;
     private static final int DRAWABLE_NEWYEARSEVE_1 = R.drawable.notifhead_newyearseve_1;
     private static final int DRAWABLE_NEWYEARSEVE_HD = R.drawable.notifhead_newyearseve_hd;
     private static final int DRAWABLE_NEWYEARSEVE_VRT = R.drawable.notifhead_sunset_vrt;
+    private static final int DRAWABLE_NEWYEARSEVE_PW = R.drawable.notifhead_sunset_pw;
 
     // Default drawable (AOSP)
     private static final int DRAWABLE_DEFAULT = R.drawable.notification_header_bg;
@@ -163,6 +171,15 @@ public class DaylightHeaderProvider implements
                 return loadOrFetch(DRAWABLE_NEWYEARSEVE_VRT);
             }
         }
+        if (headerdefault == 3) {
+            if (isItToday(CAL_CHRISTMAS)) {
+                // Merry christmas!
+                return loadOrFetch(DRAWABLE_CHRISTMAS_PW);
+            } else if (isItToday(CAL_NEWYEARSEVE)) {
+                // Happy new year!
+                return loadOrFetch(DRAWABLE_NEWYEARSEVE_PW);
+            }
+        }
 
         // Now we check normal periods
         final int hour = now.get(Calendar.HOUR_OF_DAY);
@@ -225,6 +242,21 @@ public class DaylightHeaderProvider implements
                 return loadOrFetch(DRAWABLE_AFTERNOON_VRT);
             } else if (hour >= TIME_SUNSET && hour < TIME_NIGHT) {
                 return loadOrFetch(DRAWABLE_SUNSET_VRT);
+            }
+        }
+        if (headerdefault == 4) {
+            if (hour < TIME_SUNRISE || hour >= TIME_NIGHT) {
+                return loadOrFetch(DRAWABLE_NIGHT_PW);
+            } else if (hour >= TIME_SUNRISE && hour < TIME_MORNING) {
+                return loadOrFetch(DRAWABLE_SUNRISE_PW);
+            } else if (hour >= TIME_MORNING && hour < TIME_NOON) {
+                return loadOrFetch(DRAWABLE_MORNING_PW);
+            } else if (hour >= TIME_NOON && hour < TIME_AFTERNOON) {
+                return loadOrFetch(DRAWABLE_NOON_VRT);
+            } else if (hour >= TIME_AFTERNOON && hour < TIME_SUNSET) {
+                return loadOrFetch(DRAWABLE_AFTERNOON_PW);
+            } else if (hour >= TIME_SUNSET && hour < TIME_NIGHT) {
+                return loadOrFetch(DRAWABLE_SUNSET_PW);
             }
         }
 
