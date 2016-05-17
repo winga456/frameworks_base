@@ -171,7 +171,7 @@ public class DaylightHeaderProvider implements
                 return loadOrFetch(DRAWABLE_NEWYEARSEVE_VRT);
             }
         }
-        if (headerdefault == 3) {
+        if (headerdefault == 4) {
             if (isItToday(CAL_CHRISTMAS)) {
                 // Merry christmas!
                 return loadOrFetch(DRAWABLE_CHRISTMAS_PW);
@@ -252,7 +252,7 @@ public class DaylightHeaderProvider implements
             } else if (hour >= TIME_MORNING && hour < TIME_NOON) {
                 return loadOrFetch(DRAWABLE_MORNING_PW);
             } else if (hour >= TIME_NOON && hour < TIME_AFTERNOON) {
-                return loadOrFetch(DRAWABLE_NOON_VRT);
+                return loadOrFetch(DRAWABLE_NOON_PW);
             } else if (hour >= TIME_AFTERNOON && hour < TIME_SUNSET) {
                 return loadOrFetch(DRAWABLE_AFTERNOON_PW);
             } else if (hour >= TIME_SUNSET && hour < TIME_NIGHT) {
