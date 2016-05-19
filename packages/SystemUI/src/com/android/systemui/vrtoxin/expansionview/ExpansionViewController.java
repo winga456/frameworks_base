@@ -38,7 +38,7 @@ import com.android.internal.util.vrtoxin.DeviceUtils;
 import com.android.internal.util.vrtoxin.ExpansionViewColorHelper;
 import com.android.internal.util.vrtoxin.ExpansionViewTextHelper;
 import com.android.internal.util.vrtoxin.FontHelper;
-import com.android.internal.util.vrtoxin.WeatherController;
+import com.android.internal.util.vrtoxin.WeatherServiceController;
 // SystemUI Classes
 import com.android.systemui.vrtoxin.PanelShortcuts;
 import com.android.systemui.vrtoxin.expansionview.panels.ExpansionViewCustomPanel;
@@ -87,7 +87,7 @@ public class ExpansionViewController {
     }
 
     public void setUp(PhoneStatusBar statusBar, NetworkController network,
-            BatteryController battery, WeatherController weather) {
+            BatteryController battery, WeatherServiceController weather) {
         mExpansionViewCustomPanel.setUp(statusBar);
         mExpansionViewActivityPanel.setUp(statusBar, network, battery);
         mExpansionViewWeatherPanel.setUp(statusBar, weather);

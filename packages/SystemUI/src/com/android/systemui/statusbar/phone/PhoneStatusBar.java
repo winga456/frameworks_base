@@ -177,9 +177,8 @@ import com.android.systemui.statusbar.phone.UnlockMethodCache.OnUnlockMethodChan
 import com.android.systemui.statusbar.policy.AccessibilityController;
 import com.android.systemui.statusbar.policy.BatteryController;
 import com.android.systemui.statusbar.policy.BatteryController.BatteryStateChangeCallback;
-import com.android.internal.util.vrtoxin.WeatherController;
-import com.android.internal.util.vrtoxin.WeatherControllerImpl;
-import com.android.internal.util.vrtoxin.WeatherController.WeatherInfo;
+import com.android.internal.util.vrtoxin.WeatherServiceController;
+import com.android.internal.util.vrtoxin.WeatherServiceControllerImpl;
 import com.android.systemui.statusbar.policy.BluetoothControllerImpl;
 import com.android.systemui.statusbar.policy.CastControllerImpl;
 import com.android.systemui.statusbar.policy.Clock;
@@ -330,7 +329,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     KeyguardMonitor mKeyguardMonitor;
     AccessibilityController mAccessibilityController;
     FingerprintUnlockController mFingerprintUnlockController;
-    WeatherControllerImpl mWeatherController;
+    WeatherServiceControllerImpl mWeatherController;
     SuControllerImpl mSuController;
     MinitBatteryController mMinitBatteryController;
 
@@ -1790,18 +1789,18 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 mContext.getContentResolver(), Settings.System.STATUS_BAR_SHOW_WEATHER_TEMP, 0,
                 UserHandle.USER_CURRENT);
         if (mWeatherController == null) {
-            mWeatherController = new WeatherControllerImpl(mContext);
-            mWeatherController.addCallback(new WeatherController.Callback() {
+            mWeatherController = new WeatherServiceControllerImpl(mContext);
+            mWeatherController.addCallback(new WeatherServiceController.Callback() {
                 @Override
-                public void onWeatherChanged(WeatherInfo temp) {
-                    updateWeatherTextState(temp.temp, mWeatherTempColor, mWeatherTempSize, mWeatherTempFontStyle);
+                public void onWeatherChanged(WeatherServiceController.WeatherInfo info) {
+                    updateWeatherTextState(info.temp, mWeatherTempColor, mWeatherTempSize, mWeatherTempFontStyle);
                 }
             });
         }
         updateWeatherTextState(mWeatherController.getWeatherInfo().temp,
             mWeatherTempColor, mWeatherTempSize, mWeatherTempFontStyle);
 
-        mWeatherController = new WeatherControllerImpl(mContext);
+        mWeatherController = new WeatherServiceControllerImpl(mContext);
 
         mKeyguardUserSwitcher = new KeyguardUserSwitcher(mContext,
                 (ViewStub) mStatusBarWindow.findViewById(R.id.keyguard_user_switcher),

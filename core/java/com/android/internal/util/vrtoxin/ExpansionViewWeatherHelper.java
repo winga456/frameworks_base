@@ -17,17 +17,67 @@
 package com.android.internal.util.vrtoxin;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.provider.Settings;
 
-import com.android.internal.util.vrtoxin.WeatherController.DayForecast;
-import com.android.internal.util.vrtoxin.WeatherController.WeatherInfo;
+import com.android.internal.util.vrtoxin.WeatherServiceController.DayForecast;
+import com.android.internal.util.vrtoxin.WeatherServiceController.WeatherInfo;
 
 public class ExpansionViewWeatherHelper {
+    public static final int ICON_MONOCHROME = 0;
+    public static final int ICON_COLORED    = 1;
+    public static final int ICON_VCLOUDS    = 2;
 
-    private static final int ICON_MONOCHROME = 0;
-    private static final int ICON_COLORED    = 1;
-    private static final int ICON_VCLOUDS    = 2;
+    public static final int PACKAGE_ENABLED  = 0;
+    public static final int PACKAGE_DISABLED = 1;
+    public static final int PACKAGE_MISSING  = 2;
+
+    public static int getWeatherServiceAvailability(Context context) {
+        boolean isInstalled = false;
+        int availability = PACKAGE_MISSING;
+
+        PackageManager pm = context.getPackageManager();
+        try {
+            pm.getPackageInfo(WeatherServiceControllerImpl.PACKAGE_NAME,
+                    PackageManager.GET_ACTIVITIES);
+            isInstalled = true;
+        } catch (PackageManager.NameNotFoundException e) {
+            // Do nothing
+        }
+
+        if (isInstalled) {
+            final int enabledState = pm.getApplicationEnabledSetting(
+                    WeatherServiceControllerImpl.PACKAGE_NAME);
+            if (enabledState == PackageManager.COMPONENT_ENABLED_STATE_DISABLED
+                    || enabledState == PackageManager.COMPONENT_ENABLED_STATE_DISABLED_USER) {
+                availability = PACKAGE_DISABLED;
+            } else {
+                availability = PACKAGE_ENABLED;
+            }
+        }
+        return availability;
+    }
+
+    public static boolean isWeatherServiceAvailable(Context context) {
+        return getWeatherServiceAvailability(context)
+                == PACKAGE_ENABLED;
+    }
+
+    public static Intent getWeatherServiceAppDetailSettingsIntent() {
+        Intent i = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        i.setData(Uri.parse("package:" + WeatherServiceControllerImpl.PACKAGE_NAME));
+        return i;
+    }
+
+    public static Intent getWeatherServiceSettingsIntent() {
+        Intent settings = new Intent(Intent.ACTION_MAIN)
+                .setClassName(WeatherServiceControllerImpl.PACKAGE_NAME,
+                WeatherServiceControllerImpl.PACKAGE_NAME + ".SettingsActivity");
+        return settings;
+    }
 
     public static boolean showCurrent(Context context) {
         return Settings.System.getInt(context.getContentResolver(),

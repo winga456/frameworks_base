@@ -38,9 +38,9 @@ import android.widget.TextView;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.phone.PhoneStatusBar;
 
-import com.android.internal.util.vrtoxin.WeatherController;
-import com.android.internal.util.vrtoxin.WeatherController.DayForecast;
-import com.android.internal.util.vrtoxin.WeatherControllerImpl;
+import com.android.internal.util.vrtoxin.WeatherServiceController;
+import com.android.internal.util.vrtoxin.WeatherServiceController.DayForecast;
+import com.android.internal.util.vrtoxin.WeatherServiceControllerImpl;
 import com.android.internal.util.vrtoxin.ExpansionViewColorHelper;
 import com.android.internal.util.vrtoxin.ExpansionViewWeatherHelper;
 
@@ -52,11 +52,11 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 public class ExpansionViewWeatherPanel extends FrameLayout implements
-        WeatherController.Callback {
+        WeatherServiceController.Callback {
 
     private final Context mContext;
     private PhoneStatusBar mStatusBar;
-    private WeatherController mWeatherController;
+    private WeatherServiceController mWeatherController;
 
     private LinearLayout mWeatherBar;
     private TextView mNoWeather;
@@ -77,7 +77,7 @@ public class ExpansionViewWeatherPanel extends FrameLayout implements
         mContext = context;
     }
 
-    public void setUp(PhoneStatusBar statusBar, WeatherController weather) {
+    public void setUp(PhoneStatusBar statusBar, WeatherServiceController weather) {
         mStatusBar = statusBar;
         mWeatherController = weather;
     }
@@ -104,14 +104,14 @@ public class ExpansionViewWeatherPanel extends FrameLayout implements
                 if (mExpansionViewVibrate) {
                     vibrate(20);
                 }
-                startLockClockActivity();
+                startWeatherServiceActivity();
                 return true;
             }
         });
     }
 
     public void setListening(boolean listening) {
-        if (!isLockClockInstalled() || mWeatherController == null) {
+        if (mWeatherController == null) {
             return;
         }
         if (listening && !mListening) {
@@ -127,7 +127,7 @@ public class ExpansionViewWeatherPanel extends FrameLayout implements
     }
 
     @Override
-    public void onWeatherChanged(WeatherController.WeatherInfo info) {
+    public void onWeatherChanged(WeatherServiceController.WeatherInfo info) {
         if (info.temp != null && info.condition != null) {
             mWeatherAvailable = true;
         } else {
@@ -139,7 +139,7 @@ public class ExpansionViewWeatherPanel extends FrameLayout implements
         }
     }
 
-    private void updateWeather(WeatherController.WeatherInfo info) {
+    private void updateWeather(WeatherServiceController.WeatherInfo info) {
         if (!mWeatherAvailable) {
             mNoWeather.setVisibility(View.VISIBLE);
         } else {
@@ -147,7 +147,7 @@ public class ExpansionViewWeatherPanel extends FrameLayout implements
         }
     }
 
-    private void createItems(WeatherController.WeatherInfo info) {
+    private void createItems(WeatherServiceController.WeatherInfo info) {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         TimeZone myTimezone = TimeZone.getDefault();
         Calendar calendar = new GregorianCalendar(myTimezone);
@@ -186,7 +186,7 @@ public class ExpansionViewWeatherPanel extends FrameLayout implements
             isToday = true;
         }
 
-        ArrayList<DayForecast> forecasts = info.forecasts;
+        ArrayList<DayForecast> forecasts = (ArrayList) info.forecasts;
 
         for (DayForecast d : forecasts) {
             if (!isToday) {
@@ -220,7 +220,7 @@ public class ExpansionViewWeatherPanel extends FrameLayout implements
     }
 
     public void updateItems() {
-        if (mWeatherAvailable) {
+        if (mWeatherAvailable && mWeatherController != null) {
             createItems(mWeatherController.getWeatherInfo());
         }
     }
@@ -236,14 +236,14 @@ public class ExpansionViewWeatherPanel extends FrameLayout implements
     private void startForecastActivity() {
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setComponent(WeatherControllerImpl.COMPONENT_WEATHER_FORECAST);
+        intent.setComponent(WeatherServiceControllerImpl.COMPONENT_WEATHER_FORECAST);
         mStatusBar.startActivity(intent, true /* dismissShade */);
     }
 
-    private void startLockClockActivity() {
+    private void startWeatherServiceActivity() {
         Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setClassName("com.cyanogenmod.lockclock",
-            "com.cyanogenmod.lockclock.preference.Preferences");
+        intent.setClassName("net.cyanide.weather",
+            "net.cyanide.weather.SettingsActivity");
         mStatusBar.startActivity(intent, true /* dismissShade */);
     }
 
@@ -262,7 +262,7 @@ public class ExpansionViewWeatherPanel extends FrameLayout implements
         }
     }
 
-    private String getUpdateTime(WeatherController.WeatherInfo info) {
+    private String getUpdateTime(WeatherServiceController.WeatherInfo info) {
         if (info.timeStamp != null) {
             Date lastUpdate = new Date(info.timeStamp);
             StringBuilder sb = new StringBuilder();
@@ -272,17 +272,5 @@ public class ExpansionViewWeatherPanel extends FrameLayout implements
             String empty = "";
             return empty;
         }
-    }
-
-    private boolean isLockClockInstalled() {
-        PackageManager pm = mContext.getPackageManager();
-        boolean installed = false;
-        try {
-           pm.getPackageInfo("com.cyanogenmod.lockclock", PackageManager.GET_ACTIVITIES);
-           installed = true;
-        } catch (PackageManager.NameNotFoundException e) {
-           installed = false;
-        }
-        return installed;
     }
 }

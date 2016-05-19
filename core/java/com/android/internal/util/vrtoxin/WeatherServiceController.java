@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2015 The CyanogenMod Project
  *
- * Copyright (C) 2015 DarkKat
+ * Copyright (C) 2016 DarkKat
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,22 +20,21 @@ package com.android.internal.util.vrtoxin;
 
 import android.graphics.drawable.Drawable;
 
-import java.util.ArrayList;
+import java.util.List;
 
-public interface WeatherController {
+public interface WeatherServiceController {
     void addCallback(Callback callback);
     void removeCallback(Callback callback);
     void updateWeather();
     WeatherInfo getWeatherInfo();
 
     public interface Callback {
-        void onWeatherChanged(WeatherInfo temp);
+        void onWeatherChanged(WeatherInfo info);
     }
     public static class WeatherInfo {
         public String city = null;
         public String wind = null;
         public int conditionCode = 0;
-        public Drawable conditionDrawable = null;
         public Drawable conditionDrawableMonochrome = null;
         public Drawable conditionDrawableColored = null;
         public Drawable conditionDrawableVClouds = null;
@@ -43,30 +42,17 @@ public interface WeatherController {
         public String humidity = null;
         public String condition = null;
         public String timeStamp = null;
-        public ArrayList<DayForecast> forecasts = new ArrayList<DayForecast>();
+        public List<DayForecast> forecasts;
     }
 
     public static class DayForecast {
-        public final String low;
-        public final String high;
-        public final String condition;
-        public final int conditionCode;
-        public final Drawable conditionDrawable;
-        public final Drawable conditionDrawableMonochrome;
-        public final Drawable conditionDrawableColored;
-        public final Drawable conditionDrawableVClouds;
-
-        public DayForecast(String low, String high, String condition, int conditionCode,
-                Drawable conditionDrawable, Drawable conditionDrawableMonochrome,
-                Drawable conditionDrawableColored, Drawable conditionDrawableVClouds) {
-            this.low = low;
-            this.high = high;
-            this.condition = condition;
-            this.conditionCode = conditionCode;
-            this.conditionDrawable = conditionDrawable;
-            this.conditionDrawableMonochrome = conditionDrawableMonochrome;
-            this.conditionDrawableColored = conditionDrawableColored;
-            this.conditionDrawableVClouds = conditionDrawableVClouds;
-        }
+        public String low;
+        public String high;
+        public String condition;
+        public int conditionCode;
+        public Drawable conditionDrawable;
+        public Drawable conditionDrawableMonochrome;
+        public Drawable conditionDrawableColored;
+        public Drawable conditionDrawableVClouds;
     }
 }

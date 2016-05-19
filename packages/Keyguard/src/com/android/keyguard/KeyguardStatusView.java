@@ -44,8 +44,8 @@ import android.widget.TextClock;
 import android.widget.TextView;
 
 import com.android.internal.util.vrtoxin.FontHelper;
-import com.android.internal.util.vrtoxin.WeatherController;
-import com.android.internal.util.vrtoxin.WeatherControllerLSImpl;
+import com.android.internal.util.vrtoxin.WeatherServiceController;
+import com.android.internal.util.vrtoxin.WeatherServiceControllerImpl;
 import com.android.internal.util.vrtoxin.ImageHelper;
 import com.android.internal.widget.LockPatternUtils;
 
@@ -54,7 +54,7 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 public class KeyguardStatusView extends GridLayout implements
-        WeatherController.Callback {
+        WeatherServiceController.Callback {
     private static final boolean DEBUG = KeyguardConstants.DEBUG;
     private static final String TAG = "KeyguardStatusView";
 
@@ -84,7 +84,7 @@ public class KeyguardStatusView extends GridLayout implements
     private int mWeatherSize =16;
     private int mAlarmDateSize =14;
 
-    private WeatherController mWeatherController;
+    private WeatherServiceController mWeatherController;
 
     //On the first boot, keygard will start to receiver TIME_TICK intent.
     //And onScreenTurnedOff will not get called if power off when keyguard is not started.
@@ -177,7 +177,7 @@ public class KeyguardStatusView extends GridLayout implements
         super(context, attrs, defStyle);
         mAlarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         mLockPatternUtils = new LockPatternUtils(getContext());
-        mWeatherController = new WeatherControllerLSImpl(mContext);
+        mWeatherController = new WeatherServiceControllerImpl(mContext);
         updateClockColor();
         updateClockDateColor();
         updateOwnerInfoColor();
@@ -237,7 +237,7 @@ public class KeyguardStatusView extends GridLayout implements
         super.onConfigurationChanged(newConfig);
     }
 
-    public void setWeatherController(WeatherController controller) {
+    public void setWeatherController(WeatherServiceController controller) {
         mWeatherController = controller;
     }
 
@@ -327,7 +327,7 @@ public class KeyguardStatusView extends GridLayout implements
     }
 
     @Override
-    public void onWeatherChanged(WeatherController.WeatherInfo info) {
+    public void onWeatherChanged(WeatherServiceController.WeatherInfo info) {
         if (info.temp == null || info.condition == null) {
             mWeatherCity.setText(null);
             mWeatherConditionDrawable = null;
@@ -336,7 +336,7 @@ public class KeyguardStatusView extends GridLayout implements
             updateSettings(true);
         } else {
             mWeatherCity.setText(info.city);
-            mWeatherConditionDrawable = info.conditionDrawable;
+            mWeatherConditionDrawable = info.conditionDrawableMonochrome;
             mWeatherCurrentTemp.setText(info.temp);
             mWeatherConditionText.setText(info.condition);
             updateSettings(false);
@@ -886,7 +886,7 @@ public class KeyguardStatusView extends GridLayout implements
             return;
         }
 
-        WeatherController.WeatherInfo info = mWeatherController.getWeatherInfo();
+        WeatherServiceController.WeatherInfo info = mWeatherController.getWeatherInfo();
         if (info.temp != null && info.condition != null && info.conditionDrawableMonochrome != null) {
             String locationTemp = (showWeatherLocation() ? info.city + ", " : "") + info.temp;
             Drawable icon = info.conditionDrawableMonochrome.getConstantState().newDrawable();

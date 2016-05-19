@@ -59,8 +59,8 @@ import android.widget.Toast;
 import com.android.internal.util.vrtoxin.FontHelper;
 import com.android.internal.util.vrtoxin.SBEHeaderColorHelper;
 import com.android.internal.util.vrtoxin.QSColorHelper;
-import com.android.internal.util.vrtoxin.WeatherController;
-import com.android.internal.util.vrtoxin.WeatherControllerImpl;
+import com.android.internal.util.vrtoxin.WeatherServiceController;
+import com.android.internal.util.vrtoxin.WeatherServiceControllerImpl;
 import com.android.keyguard.KeyguardStatusView;
 import com.android.systemui.BatteryMeterView;
 import com.android.systemui.FontSizeUtils;
@@ -82,7 +82,7 @@ import java.text.NumberFormat;
  */
 public class StatusBarHeaderView extends RelativeLayout implements View.OnClickListener, View.OnLongClickListener,
         BatteryController.BatteryStateChangeCallback, NextAlarmController.NextAlarmChangeCallback,
-        EmergencyListener, WeatherController.Callback, StatusBarHeaderMachine.IStatusBarHeaderMachineObserver {
+        EmergencyListener, WeatherServiceController.Callback, StatusBarHeaderMachine.IStatusBarHeaderMachineObserver {
 
     private static final int STATUS_BAR_POWER_MENU_OFF = 0;
     private static final int STATUS_BAR_POWER_MENU_DEFAULT = 1;
@@ -149,7 +149,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     private ActivityStarter mActivityStarter;
     private BatteryController mBatteryController;
     private NextAlarmController mNextAlarmController;
-    private WeatherController mWeatherController;
+    private WeatherServiceController mWeatherController;
     private QSPanel mQSPanel;
 
     private final Rect mClipBounds = new Rect();
@@ -358,7 +358,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mNextAlarmController = nextAlarmController;
     }
 
-    public void setWeatherController(WeatherController weatherController) {
+    public void setWeatherController(WeatherServiceController weatherController) {
         mWeatherController = weatherController;
     }
 
@@ -536,7 +536,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     }
 
     @Override
-    public void onWeatherChanged(WeatherController.WeatherInfo info) {
+    public void onWeatherChanged(WeatherServiceController.WeatherInfo info) {
         if (info.temp == null || info.condition == null) {
             mWeatherLine1.setText(mContext.getString(R.string.weather_info_not_available));
             mWeatherLine2.setText(null);
@@ -805,7 +805,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     private void startForecastActivity() {
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setComponent(WeatherControllerImpl.COMPONENT_WEATHER_FORECAST);
+        intent.setComponent(WeatherServiceControllerImpl.COMPONENT_WEATHER_FORECAST);
         mActivityStarter.startActivity(intent, true /* dismissShade */);
     }
 
@@ -825,8 +825,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             mActivityStarter.startActivity(weatherLongShortcutIntent, true);
         } else {
             Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.setClassName("com.cyanogenmod.lockclock",
-                "com.cyanogenmod.lockclock.preference.Preferences");
+            intent.setClassName("net.cyanide.weather",
+            "net.cyanide.weather.SettingsActivity");
             mActivityStarter.startActivity(intent, true /* dismissShade */);
         }
     }
