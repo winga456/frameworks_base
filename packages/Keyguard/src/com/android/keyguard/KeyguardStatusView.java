@@ -81,6 +81,7 @@ public class KeyguardStatusView extends GridLayout implements
     private TextView noWeatherInfo;
     private boolean mShowWeather;
     private int mIconNameValue = 0;
+    private int IconNameValue;
     private int mWeatherSize =16;
     private int mAlarmDateSize =14;
 
@@ -336,7 +337,13 @@ public class KeyguardStatusView extends GridLayout implements
             updateSettings(true);
         } else {
             mWeatherCity.setText(info.city);
-            mWeatherConditionDrawable = info.conditionDrawableMonochrome;
+            if (IconNameValue == 0) {
+                mWeatherConditionDrawable = info.conditionDrawableMonochrome;
+            } else if (IconNameValue == 1) {
+                mWeatherConditionDrawable = info.conditionDrawableColored;
+            } else if (IconNameValue == 2) {
+                mWeatherConditionDrawable = info.conditionDrawableVClouds;
+            }
             mWeatherCurrentTemp.setText(info.temp);
             mWeatherConditionText.setText(info.condition);
             updateSettings(false);
@@ -366,7 +373,7 @@ public class KeyguardStatusView extends GridLayout implements
                 Settings.System.HIDE_LOCKSCREEN_DATE, 1, UserHandle.USER_CURRENT) == 1;
         boolean showLocation = Settings.System.getInt(resolver,
                     Settings.System.LOCK_SCREEN_SHOW_WEATHER_LOCATION, 1) == 1;
-        int iconNameValue = Settings.System.getInt(resolver,
+        IconNameValue = Settings.System.getInt(resolver,
                 Settings.System.LOCK_SCREEN_WEATHER_CONDITION_ICON, 0);
         boolean colorizeAllIcons = Settings.System.getInt(resolver,
                 Settings.System.LOCK_SCREEN_WEATHER_COLORIZE_ALL_ICONS, 0) == 1;
@@ -425,8 +432,8 @@ public class KeyguardStatusView extends GridLayout implements
 
         boolean isPrimary = UserHandle.getCallingUserId() == UserHandle.USER_OWNER;
 
-        if (mIconNameValue != iconNameValue) {
-            mIconNameValue = iconNameValue;
+        if (mIconNameValue != IconNameValue) {
+            mIconNameValue = IconNameValue;
             mWeatherController.updateWeather();
         }
         Drawable[] drawables = mAlarmStatusView.getCompoundDrawablesRelative();
@@ -439,7 +446,7 @@ public class KeyguardStatusView extends GridLayout implements
         mAlarmStatusView.setCompoundDrawablesRelative(alarmIcon, null, null, null);
         mWeatherConditionImage.setImageDrawable(null);
         Drawable weatherIcon = mWeatherConditionDrawable;
-        if (iconNameValue == 0 || colorizeAllIcons) {
+        if (IconNameValue == 0 || colorizeAllIcons) {
             Bitmap coloredWeatherIcon =
                     ImageHelper.getColoredBitmap(weatherIcon, iconColor);
             mWeatherConditionImage.setImageBitmap(coloredWeatherIcon);
