@@ -581,6 +581,13 @@ final class DefaultPermissionGrantPolicy {
                 grantRuntimePermissionsLPw(chromiumPackage, CONTACTS_PERMISSIONS, userId);
             }
 
+            // Weather Service
+            PackageParser.Package cyanideWeatherService = getDefaultProviderAuthorityPackageLPr(
+                    "net.cyanide.weather", userId);
+            if (cyanideWeatherService != null) {
+                grantRuntimePermissionsLPw(cyanideWeatherService, LOCATION_PERMISSIONS, userId);
+            }
+
             // Google Account
             PackageParser.Package googleaccountPackage = getDefaultProviderAuthorityPackageLPr(
                     "com.google.android.gsf.login", userId);
