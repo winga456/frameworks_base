@@ -536,6 +536,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.STATUS_BAR_CARRIER_SPOT),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CARRIER_FONT_SIZE),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.APP_SIDEBAR_POSITION),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -727,6 +730,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_CARRIER_SPOT))) {
                 updateCarrierLabelSpot();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_CARRIER_FONT_SIZE))) {
+                updateCarrierLabelSize();
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_WEATHER_TEMP_STYLE))
                     || uri.equals(Settings.System.getUriFor(
@@ -1038,78 +1044,103 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             case FontHelper.FONT_NORMAL:
             default:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+                mKeyguardStatusBar.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
                 break;
             case FontHelper.FONT_ITALIC:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
+                mKeyguardStatusBar.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
                 break;
             case FontHelper.FONT_BOLD:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+                mKeyguardStatusBar.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
                 break;
             case FontHelper.FONT_BOLD_ITALIC:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
+                mKeyguardStatusBar.setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
                 break;
             case FontHelper.FONT_LIGHT:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
+                mKeyguardStatusBar.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
                 break;
             case FontHelper.FONT_LIGHT_ITALIC:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-light", Typeface.ITALIC));
+                mKeyguardStatusBar.setTypeface(Typeface.create("sans-serif-light", Typeface.ITALIC));
                 break;
             case FontHelper.FONT_THIN:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
+                mKeyguardStatusBar.setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
                 break;
             case FontHelper.FONT_THIN_ITALIC:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-thin", Typeface.ITALIC));
+                mKeyguardStatusBar.setTypeface(Typeface.create("sans-serif-thin", Typeface.ITALIC));
                 break;
             case FontHelper.FONT_CONDENSED:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
+                mKeyguardStatusBar.setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
                 break;
             case FontHelper.FONT_CONDENSED_ITALIC:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
+                mKeyguardStatusBar.setTypeface(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
                 break;
             case FontHelper.FONT_CONDENSED_LIGHT:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
+                mKeyguardStatusBar.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
                 break;
             case FontHelper.FONT_CONDENSED_LIGHT_ITALIC:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
+                mKeyguardStatusBar.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
                 break;
             case FontHelper.FONT_CONDENSED_BOLD:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
+                mKeyguardStatusBar.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
                 break;
             case FontHelper.FONT_CONDENSED_BOLD_ITALIC:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
+                mKeyguardStatusBar.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
                 break;
             case FontHelper.FONT_MEDIUM:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+                mKeyguardStatusBar.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
                 break;
             case FontHelper.FONT_MEDIUM_ITALIC:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-medium", Typeface.ITALIC));
+                mKeyguardStatusBar.setTypeface(Typeface.create("sans-serif-medium", Typeface.ITALIC));
                 break;
             case FontHelper.FONT_BLACK:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
+                mKeyguardStatusBar.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
                 break;
             case FontHelper.FONT_BLACK_ITALIC:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("sans-serif-black", Typeface.ITALIC));
+                mKeyguardStatusBar.setTypeface(Typeface.create("sans-serif-black", Typeface.ITALIC));
                 break;
             case FontHelper.FONT_DANCINGSCRIPT:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("cursive", Typeface.NORMAL));
+                mKeyguardStatusBar.setTypeface(Typeface.create("cursive", Typeface.NORMAL));
                 break;
             case FontHelper.FONT_DANCINGSCRIPT_BOLD:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("cursive", Typeface.BOLD));
+                mKeyguardStatusBar.setTypeface(Typeface.create("cursive", Typeface.BOLD));
                 break;
             case FontHelper.FONT_COMINGSOON:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("casual", Typeface.NORMAL));
+                mKeyguardStatusBar.setTypeface(Typeface.create("casual", Typeface.NORMAL));
                 break;
             case FontHelper.FONT_NOTOSERIF:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("serif", Typeface.NORMAL));
+                mKeyguardStatusBar.setTypeface(Typeface.create("serif", Typeface.NORMAL));
                 break;
             case FontHelper.FONT_NOTOSERIF_ITALIC:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("serif", Typeface.ITALIC));
+                mKeyguardStatusBar.setTypeface(Typeface.create("serif", Typeface.ITALIC));
                 break;
             case FontHelper.FONT_NOTOSERIF_BOLD:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("serif", Typeface.BOLD));
+                mKeyguardStatusBar.setTypeface(Typeface.create("serif", Typeface.BOLD));
                 break;
             case FontHelper.FONT_NOTOSERIF_BOLD_ITALIC:
                 mStatusBarCarrierLabel.setTypeface(Typeface.create("serif", Typeface.BOLD_ITALIC));
+                mKeyguardStatusBar.setTypeface(Typeface.create("serif", Typeface.BOLD_ITALIC));
                 break;
         }
     }
@@ -2860,6 +2891,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         UpdateNotifPanelClearAllIconColor();
         setCarrierLabelFontStyle();
         updateCarrierLabelSpot();
+        updateCarrierLabelSize();
         setForceExpansionView();
     }
 
@@ -2940,6 +2972,22 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
         if (mKeyguardStatusBar != null) {
             mKeyguardStatusBar.updateCarrierLabelColor();
+        }
+    }
+
+    private void updateCarrierLabelSize() {
+        ContentResolver resolver = mContext.getContentResolver();
+
+         int mCarrierLabelFontSize = Settings.System.getIntForUser(resolver,
+                Settings.System.STATUS_BAR_CARRIER_FONT_SIZE, 14,
+                UserHandle.USER_CURRENT);
+
+        if (mStatusBarCarrierLabel != null) {
+            mStatusBarCarrierLabel.setTextSize(mCarrierLabelFontSize);
+        }
+        if (mKeyguardStatusBar != null) {
+            mKeyguardStatusBar.setTextSize(mCarrierLabelFontSize);
+
         }
     }
 

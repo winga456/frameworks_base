@@ -24,6 +24,7 @@ import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.graphics.drawable.Drawable;
 import android.graphics.PorterDuff.Mode;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.RemoteException;
@@ -86,7 +87,6 @@ public class KeyguardStatusBarView extends RelativeLayout
     private int mVRToxinLogo;
     private ImageView VRToxinLogo;
     private int mVRToxinLogoStyle;
-    private int mVRToxinLogoColor;
 
     private int mSystemIconsSwitcherHiddenExpandedMargin;
     private Interpolator mFastOutSlowInInterpolator;
@@ -94,20 +94,25 @@ public class KeyguardStatusBarView extends RelativeLayout
     private ContentObserver mObserver = new ContentObserver(new Handler()) {
         public void onChange(boolean selfChange, Uri uri) {
             showVRToxinLogo();
+            setVRToxinLogoStyle();
+            updateVisibilities();
         }
     };
 
     public KeyguardStatusBarView(Context context, AttributeSet attrs) {
         super(context, attrs);
         showVRToxinLogo();
+        setVRToxinLogoStyle();
     }
 
     private void showVRToxinLogo() {
         mVRToxinLogo = Settings.System.getIntForUser(getContext().getContentResolver(),
                 Settings.System.STATUS_BAR_VRTOXIN_LOGO_SHOW, 0, UserHandle.USER_CURRENT);
-        mVRToxinLogoStyle = Settings.System.getIntForUser(
-                mContext.getContentResolver(), Settings.System.STATUS_BAR_VRTOXIN_LOGO_STYLE, 0,
-                UserHandle.USER_CURRENT);
+    }
+
+    private void setVRToxinLogoStyle() {
+        mVRToxinLogoStyle = Settings.System.getIntForUser(getContext().getContentResolver(),
+                Settings.System.STATUS_BAR_VRTOXIN_LOGO_STYLE, 0, UserHandle.USER_CURRENT);
     }
 
     @Override
@@ -123,14 +128,11 @@ public class KeyguardStatusBarView extends RelativeLayout
         mKeyguardLeftClock = (TextView) findViewById(R.id.keyguard_left_clock);
         mKeyguardCenterClockLayout = (LinearLayout) findViewById(R.id.keyguard_center_clock_layout); 
         loadDimens();
-        if (mVRToxinLogoStyle == 0) {
-            VRToxinLogo = (ImageView) findViewById(R.id.left_vrtoxin_logo);
-        } else {
-            VRToxinLogo = (ImageView) findViewById(R.id.vrtoxin_logo);
-        }
+        VRToxinLogo = (ImageView) findViewById(R.id.left_vrtoxin_logo);
         mFastOutSlowInInterpolator = AnimationUtils.loadInterpolator(getContext(),
                 android.R.interpolator.fast_out_slow_in);
         updateUserSwitcher();
+        updateVisibilities();
     }
 
     @Override
@@ -138,9 +140,6 @@ public class KeyguardStatusBarView extends RelativeLayout
         super.onConfigurationChanged(newConfig);
 
         // Respect font size setting.
-        mCarrierLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                getResources().getDimensionPixelSize(
-                        com.android.internal.R.dimen.text_size_small_material));
         mBatteryLevel.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 getResources().getDimensionPixelSize(R.dimen.battery_level_text_size));
         mKeyguardClock.setTextSize(TypedValue.COMPLEX_UNIT_PX,
@@ -168,6 +167,8 @@ public class KeyguardStatusBarView extends RelativeLayout
         } else if (mMultiUserSwitch.getParent() == this && mKeyguardUserSwitcherShowing) {
             removeView(mMultiUserSwitch);
         }
+
+        updateVRToxinLogoStyle();
 
         if (VRToxinLogo != null) {
             if (mVRToxinLogo == 1) {
@@ -360,8 +361,41 @@ public class KeyguardStatusBarView extends RelativeLayout
         mCarrierLabel.updateCarrierText();
     }
 
+    public void updateCarrierLabelColor() {
+        mCarrierLabel.updateColor(false);
+    }
+
     public void setCarrierLabelVisibility(boolean show) {
         mCarrierLabel.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    public void setTextSize(int size) {
+        mCarrierLabel.setTextSize(size);
+    }
+
+    public void setTypeface(Typeface tf) {
+        mCarrierLabel.setTypeface(tf);
+    }
+
+    private void updateVRToxinLogoStyle() {
+        ContentResolver resolver = mContext.getContentResolver();
+
+        mVRToxinLogoStyle = Settings.System.getIntForUser(
+                resolver, Settings.System.STATUS_BAR_VRTOXIN_LOGO_STYLE, 0,
+                UserHandle.USER_CURRENT);
+        int logoColor =
+                Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.STATUS_BAR_VRTOXIN_LOGO_COLOR, 0xffffffff);
+
+        if (mVRToxinLogoStyle == 0) {
+            VRToxinLogo.setVisibility(View.GONE);
+            VRToxinLogo = (ImageView) findViewById(R.id.left_vrtoxin_logo);
+        }
+        if (mVRToxinLogoStyle == 1) {
+            VRToxinLogo.setVisibility(View.GONE);
+            VRToxinLogo = (ImageView) findViewById(R.id.vrtoxin_logo);
+        }
+        updateLogoColor(logoColor);
     }
 
     @Override
@@ -369,15 +403,18 @@ public class KeyguardStatusBarView extends RelativeLayout
         super.onAttachedToWindow();
         getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
                 "status_bar_vrtoxin_logo_show"), false, mObserver);
+        getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                "status_bar_vrtoxin_logo_style"), false, mObserver);
 
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
     }
 
     public void updateLogoColor(int color) {
         VRToxinLogo.setColorFilter(color, Mode.SRC_IN);
-    }
-
-    public void updateCarrierLabelColor() {
-        mCarrierLabel.updateColor(false);
     }
 
     public void updateBatteryLevelVisibility() {
