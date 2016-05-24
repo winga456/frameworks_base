@@ -84,6 +84,7 @@ public class KeyguardStatusView extends GridLayout implements
     private int IconNameValue;
     private int mWeatherSize =16;
     private int mAlarmDateSize =14;
+    private KeyguardRomLogo mRomLogo;
 
     private WeatherServiceController mWeatherController;
 
@@ -103,14 +104,7 @@ public class KeyguardStatusView extends GridLayout implements
             if (mEnableRefresh) {
                 refresh();
             }
-            updateClockColor();
-            updateClockDateColor();
-            updateOwnerInfoColor();
-            updateOwnerSize();
-            updateAlarmStatusColor();
-            updateClockSize();
-            updateWeatherSize();
-            updateAlarmDateSize();
+            updateCustom();
         }
 
         @Override
@@ -118,15 +112,7 @@ public class KeyguardStatusView extends GridLayout implements
             if (showing) {
                 if (DEBUG) Slog.v(TAG, "refresh statusview showing:" + showing);
                 refresh();
-                updateOwnerInfo();
-                updateClockColor();
-                updateClockDateColor();
-                updateOwnerInfoColor();
-                updateOwnerSize();
-                updateAlarmStatusColor();
-                updateClockSize();
-                updateWeatherSize();
-                updateAlarmDateSize();
+                updateCustom();
             }
         }
 
@@ -135,14 +121,7 @@ public class KeyguardStatusView extends GridLayout implements
             setEnableMarquee(true);
             mEnableRefresh = true;
             refresh();
-            updateClockColor();
-            updateClockDateColor();
-            updateOwnerInfoColor();
-            updateOwnerSize();
-            updateAlarmStatusColor();
-            updateClockSize();
-            updateWeatherSize();
-            updateAlarmDateSize();
+            updateCustom();
         }
 
         @Override
@@ -154,17 +133,24 @@ public class KeyguardStatusView extends GridLayout implements
         @Override
         public void onUserSwitchComplete(int userId) {
             refresh();
-            updateOwnerInfo();
-            updateClockColor();
-            updateClockDateColor();
-            updateOwnerInfoColor();
-            updateOwnerSize();
-            updateAlarmStatusColor();
-            updateClockSize();
-            updateWeatherSize();
-            updateAlarmDateSize();
+            updateCustom();
         }
     };
+
+    private void updateCustom() {
+        updateOwnerInfo();
+        updateClockColor();
+        updateClockDateColor();
+        updateOwnerInfoColor();
+        updateOwnerSize();
+        updateAlarmStatusColor();
+        updateClockSize();
+        updateWeatherSize();
+        updateAlarmDateSize();
+        updateLogoVisibility();
+        updateLogoColor();
+        updateLogoImage();
+    }
 
     public KeyguardStatusView(Context context) {
         this(context, null, 0);
@@ -179,14 +165,7 @@ public class KeyguardStatusView extends GridLayout implements
         mAlarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         mLockPatternUtils = new LockPatternUtils(getContext());
         mWeatherController = new WeatherServiceControllerImpl(mContext);
-        updateClockColor();
-        updateClockDateColor();
-        updateOwnerInfoColor();
-        updateOwnerSize();
-        updateAlarmStatusColor();
-        updateClockSize();
-        updateWeatherSize();
-        updateAlarmDateSize();
+        updateCustom();
     }
 
     private void setEnableMarquee(boolean enabled) {
@@ -209,6 +188,7 @@ public class KeyguardStatusView extends GridLayout implements
         mAmbientDisplayWeatherC = (TextView) findViewById(R.id.ambient_display_weather_condition);
         mAmbientDisplayBatteryView = (TextView) findViewById(R.id.ambient_display_battery_view);
         mOwnerInfo = (TextView) findViewById(R.id.owner_info);
+        mRomLogo = (KeyguardRomLogo) findViewById(R.id.keyguard_rom_logo_container);
         mWeatherView = findViewById(R.id.keyguard_weather_view);
         mWeatherCity = (TextView) findViewById(R.id.city);
         mWeatherConditionImage = (ImageView) findViewById(R.id.weather_image);
@@ -218,15 +198,7 @@ public class KeyguardStatusView extends GridLayout implements
         boolean shouldMarquee = KeyguardUpdateMonitor.getInstance(mContext).isDeviceInteractive();
         setEnableMarquee(shouldMarquee);
         refresh();
-        updateOwnerInfo();
-        updateClockColor();
-        updateClockDateColor();
-        updateOwnerInfoColor();
-        updateOwnerSize();
-        updateAlarmStatusColor();
-        updateClockSize();
-        updateWeatherSize();
-        updateAlarmDateSize();
+        updateCustom();
 
         // Disable elegant text height because our fancy colon makes the ymin value huge for no
         // reason.
@@ -362,7 +334,6 @@ public class KeyguardStatusView extends GridLayout implements
         int maxAllowedNotifications = Settings.System.getInt(resolver,
                 Settings.System.LOCK_SCREEN_MAX_NOTIFICATIONS, 6);
         boolean forceHideByNumberOfNotifications = false;
-
         mShowWeather = Settings.System.getInt(resolver,
                 Settings.System.LOCK_SCREEN_SHOW_WEATHER, 0) == 1;
         boolean showAlarm = Settings.System.getIntForUser(resolver,
@@ -884,6 +855,32 @@ public class KeyguardStatusView extends GridLayout implements
         }
         if (mDateView != null) {
             mDateView.setTextSize(mWeatherSize);
+        }
+    }
+
+    private void updateLogoVisibility() {
+        final boolean showLogo = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.KEYGUARD_LOGO_SHOW, 1) == 1;
+
+        if (mRomLogo != null) {
+            mRomLogo.showLogo(showLogo);
+        }
+    }
+
+    private void updateLogoColor() {
+        int color = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.KEYGUARD_LOGO_COLOR, 0xff1976D2);
+
+        if (mRomLogo != null) {
+            mRomLogo.setIconColor(color);
+
+        }
+    }
+
+    private void updateLogoImage() {
+
+        if (mRomLogo != null) {
+            mRomLogo.updateLogoImage();
         }
     }
 
