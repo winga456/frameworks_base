@@ -6699,28 +6699,10 @@ public final class Settings {
         public static final String EXPANSION_VIEW_ACTIVITY_PANEL_TEXT_SIZE = "expansion_view_activity_panel_text_size";
 
         /**
-         * Expansion View Activity Panel Visibility
-         * @hide
-         */
-        public static final String EXPANSION_VIEW_SHOW_ACTIVITY_PANEL = "expansion_view_show_activity_panel";
-
-        /**
-         * Expansion View Logo Panel Visibility
-         * @hide
-         */
-        public static final String EXPANSION_VIEW_SHOW_LOGO_PANEL = "expansion_view_show_logo_panel";
-
-        /**
          * Expansion View Custom Logo
          * @hide
          */
         public static final String EXPANSION_VIEW_CUSTOM_LOGO = "expansion_view_custom_logo";
-
-        /**
-         * Expansion View Text
-         * @hide
-         */
-        public static final String EXPANSION_VIEW_TEXT = "expansion_view_text";
 
         /**
          * Expansion View Text Color
@@ -6931,6 +6913,30 @@ public final class Settings {
          * @hide
          */
         public static final String EXPANSION_VIEW_NETWORK_TRAFFIC_COLOR = "expansion_view_network_traffic_color";
+
+        /**
+         * Expansion View Panel 1 Selection
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_PANEL_ONE = "expansion_view_panel_one";
+
+        /**
+         * Expansion View Panel 2 Selection
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_PANEL_TWO = "expansion_view_panel_two";
+
+        /**
+         * Expansion View Panel 3 Selection
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_PANEL_THREE = "expansion_view_panel_three";
+
+        /**
+         * Expansion View Panel 4 Selection
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_PANEL_FOUR = "expansion_view_panel_four";
 
         /**
          * Custom shortcuts for the empty shade view

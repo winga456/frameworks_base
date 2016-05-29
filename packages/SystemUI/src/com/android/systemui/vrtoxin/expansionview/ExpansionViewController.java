@@ -18,7 +18,6 @@ package com.android.systemui.vrtoxin.expansionview;
 
 import android.content.Context;
 import android.content.ContentResolver;
-import android.content.res.ColorStateList;
 import android.database.ContentObserver;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Typeface;
@@ -26,15 +25,9 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.UserHandle;
 import android.provider.Settings;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.android.internal.util.vrtoxin.DeviceUtils;
 import com.android.internal.util.vrtoxin.ExpansionViewColorHelper;
 import com.android.internal.util.vrtoxin.ExpansionViewTextHelper;
 import com.android.internal.util.vrtoxin.FontHelper;
@@ -64,10 +57,6 @@ public class ExpansionViewController {
     private PanelShortcuts mExpansionViewPanelShortcuts;
     private View mExpansionViewLogoPanel;
 
-    private boolean mExpansionViewVibrate;
-
-    private final boolean mSupportsMobileData;
-
     public ExpansionViewController(Context context, View expansionViewContainer) {
         mContext = context;
         mResolver = mContext.getContentResolver();
@@ -81,8 +70,6 @@ public class ExpansionViewController {
         mExpansionViewWeatherPanel = (ExpansionViewWeatherPanel) mExpansionViewContainer.findViewById(R.id.expansion_view_weather_container);
         mExpansionViewLogoPanel = mExpansionViewContainer.findViewById(R.id.expansion_view_logo_panel);
         mExpansionViewPanelShortcuts = (PanelShortcuts) mExpansionViewContainer.findViewById(R.id.shade_bar);
-
-        mSupportsMobileData = DeviceUtils.deviceSupportsMobileData(mContext);
 
     }
 
@@ -156,24 +143,6 @@ public class ExpansionViewController {
         }
     }
 
-    private void setExpansionViewShowActivityPanel() {
-        final boolean activityPanel = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.EXPANSION_VIEW_SHOW_ACTIVITY_PANEL, 1) == 1;
-
-        if (mExpansionViewCustomPanel != null) {
-            mExpansionViewCustomPanel.showActivityPanel(activityPanel);
-        }
-    }
-
-    private void setExpansionViewShowLogoPanel() {
-        final boolean logoPanel = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.EXPANSION_VIEW_SHOW_LOGO_PANEL, 1) == 1;
-
-        if (mExpansionViewCustomPanel != null) {
-            mExpansionViewCustomPanel.showLogoPanel(logoPanel);
-        }
-    }
-
     private void setExpansionViewCustomLogoImage() {
 
         if (mExpansionViewCustomPanel != null) {
@@ -187,15 +156,6 @@ public class ExpansionViewController {
 
         if (mExpansionViewCustomPanel != null) {
             mExpansionViewCustomPanel.showShortcutPanel(showShortcuts);
-        }
-    }
-
-    private void setExpansionViewShowText() {
-        final boolean text = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.EXPANSION_VIEW_TEXT, 1) == 1;
-
-        if (mExpansionViewCustomPanel != null) {
-            mExpansionViewCustomPanel.showText(text);
         }
     }
 
@@ -452,19 +412,10 @@ public class ExpansionViewController {
                     Settings.System.EXPANSION_VIEW_ACTIVITY_PANEL_TEXT_COLOR),
                     false, this, UserHandle.USER_ALL);
             mResolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.EXPANSION_VIEW_SHOW_ACTIVITY_PANEL),
-                    false, this, UserHandle.USER_ALL);
-            mResolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.EXPANSION_VIEW_SHOW_LOGO_PANEL),
-                    false, this, UserHandle.USER_ALL);
-            mResolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.EXPANSION_VIEW_CUSTOM_LOGO),
                     false, this, UserHandle.USER_ALL);
             mResolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.EXPANSION_VIEW_PANEL_SHORTCUTS),
-                    false, this, UserHandle.USER_ALL);
-            mResolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.EXPANSION_VIEW_TEXT),
                     false, this, UserHandle.USER_ALL);
             mResolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.EXPANSION_VIEW_TEXT_COLOR),
@@ -545,11 +496,8 @@ public class ExpansionViewController {
         public void update() {
             setExpansionViewActivityPanelTextColor();
             setExpansionViewActivityPanelTextSize();
-            setExpansionViewShowActivityPanel();
-            setExpansionViewShowLogoPanel();
             setExpansionViewCustomLogoImage();
             setExpansionViewShowShortcutBar();
-            setExpansionViewShowText();
             setExpansionViewTextColor();
             setExpansionViewIconColor();
             setExpansionViewFontStyle();
@@ -574,20 +522,11 @@ public class ExpansionViewController {
                     Settings.System.EXPANSION_VIEW_ACTIVITY_PANEL_TEXT_COLOR))) {
                 setExpansionViewActivityPanelTextColor();
             } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.EXPANSION_VIEW_SHOW_ACTIVITY_PANEL))) {
-                setExpansionViewShowActivityPanel();
-            } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.EXPANSION_VIEW_SHOW_LOGO_PANEL))) {
-                setExpansionViewShowLogoPanel();
-            } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.EXPANSION_VIEW_CUSTOM_LOGO))) {
                 setExpansionViewCustomLogoImage();
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.EXPANSION_VIEW_PANEL_SHORTCUTS))) {
                 setExpansionViewShowShortcutBar();
-            } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.EXPANSION_VIEW_TEXT))) {
-                setExpansionViewShowText();
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.EXPANSION_VIEW_TEXT_COLOR))) {
                 setExpansionViewTextColor();

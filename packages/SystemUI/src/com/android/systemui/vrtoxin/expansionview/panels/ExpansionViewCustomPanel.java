@@ -16,12 +16,10 @@
 
 package com.android.systemui.vrtoxin.expansionview.panels;
 
-import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.drawable.Drawable;
@@ -38,9 +36,7 @@ import android.util.SparseArray;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -59,40 +55,46 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
     private static SparseArray<Drawable> mCache = new SparseArray<Drawable>();
     private ActivityStarter mActivityStarter;
 
-    // Layouts
     private ExpansionViewActivityPanel mActivityPanel;
+    private ExpansionViewWeatherPanel mWeatherPanel;
     private View mCustomPanel;
     private View mLogoPanel;
     private View mShortcutBar;
     private View mShortcutBarContainer;
-    private ExpansionViewWeatherPanel mWeatherPanel;
 
-    // Views
-    private TextView mCustomText;
+    private View mPanelOne;
+    private View mPanelTwo;
+    private View mPanelThree;
+    private View mPanelFour;
+
     private ImageView mLayoutChanger;
-
-    // Logo panel
     private ImageView mShadeRomLogo;
-    private static final int DEFAULT_LOGO = R.drawable.cyanide_logo;
+    private TextView mCustomText;
+
+    protected Vibrator mVibrator;
  
-    // On/Off Switches
     private boolean mExpansionViewVibrate = false;
     private boolean mShowChanger = false;
     private boolean mShowShortcutPanel = false;
-    private boolean mShowText = false;
-    private boolean mShowActivityPanel = false;
-    private boolean mShowLogoPanel = false;
-    private boolean mLogoPanelDisabled = mShowLogoPanel && mShowActivityPanel;
 
-    protected Vibrator mVibrator;
+    private int panelOne;
+    private int panelTwo;
+    private int panelThree;
+    private int panelFour;
 
-    // Panels
-    public final static int CUSTOM_PANEL    = 0;
-    public final static int WEATHER_PANEL   = 1;
-    public final static int ACTIVITY_PANEL  = 2;
-    public final static int LOGO_PANEL      = 3;
+    public static int CUSTOM_PANEL;
+    public static int WEATHER_PANEL;
+    public static int ACTIVITY_PANEL;
+    public static int LOGO_PANEL;
+
+    public final static int PANEL_ONE     = 0;
+    public final static int PANEL_TWO     = 1;
+    public final static int PANEL_THREE   = 2;
+    public final static int PANEL_FOUR    = 3;
  
-    public static int NEXT_VISIBLE_PANEL = CUSTOM_PANEL;
+    public static int NEXT_VISIBLE_PANEL = PANEL_ONE;
+
+    private static final int DEFAULT_LOGO = R.drawable.cyanide_logo;
 
     private boolean mListening = false;
 
@@ -112,13 +114,13 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
 
     public void setUp(ActivityStarter starter) {
         mActivityStarter = starter;
+        updatePanelViews();
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
  
-        mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
         mActivityPanel = (ExpansionViewActivityPanel) findViewById(R.id.expansion_view_activity_panel);
         mCustomPanel = findViewById(R.id.expansion_view_custom_panel);
         mCustomText = (TextView) findViewById(R.id.custom_text);
@@ -127,6 +129,7 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
         mShadeRomLogo = (ImageView) findViewById(R.id.expansion_view_rom_logo);
         mShortcutBar = findViewById(R.id.expansion_view_shortcut_bar_container);
         mShortcutBarContainer = findViewById(R.id.expansion_view_shortcut_bar_container);
+        mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
         mWeatherPanel = (ExpansionViewWeatherPanel) findViewById(R.id.expansion_view_weather_container);
 
         mCustomText.setOnLongClickListener(new View.OnLongClickListener() {
@@ -175,74 +178,90 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
         changeView(false);
     }
 
-    public void changeView(boolean animate) {
-        mActivityPanel.setVisibility(NEXT_VISIBLE_PANEL == ACTIVITY_PANEL
-                ? View.VISIBLE : View.GONE);
-        mCustomPanel.setVisibility(NEXT_VISIBLE_PANEL == CUSTOM_PANEL
-                ? View.VISIBLE : View.GONE);
-        mLogoPanel.setVisibility(NEXT_VISIBLE_PANEL == LOGO_PANEL
-                ? View.VISIBLE : View.GONE);
-        mWeatherPanel.setVisibility(NEXT_VISIBLE_PANEL == WEATHER_PANEL
-                ? View.VISIBLE : View.GONE);
+    private void updatePanelViews() {
+        panelOne = Settings.System.getInt(
+                mResolver, Settings.System.EXPANSION_VIEW_PANEL_ONE, 1);
+        panelTwo = Settings.System.getInt(
+                mResolver, Settings.System.EXPANSION_VIEW_PANEL_TWO, 0);
+        panelThree = Settings.System.getInt(
+                mResolver, Settings.System.EXPANSION_VIEW_PANEL_THREE, 3);
+        panelFour = Settings.System.getInt(
+                mResolver, Settings.System.EXPANSION_VIEW_PANEL_FOUR, 2);
  
-        if (!mShowActivityPanel) {
-            if (NEXT_VISIBLE_PANEL == WEATHER_PANEL && animate) {
-                mWeatherPanel.startAnimation(getAnimation(true));
-                mCustomPanel.startAnimation(getAnimation(false));
-            } else if (NEXT_VISIBLE_PANEL == CUSTOM_PANEL && animate) {
-                mCustomPanel.startAnimation(getAnimation(true));
-                mWeatherPanel.startAnimation(getAnimation(false));
-            }
-        } else if (!mShowLogoPanel) {
-            if (NEXT_VISIBLE_PANEL == ACTIVITY_PANEL && animate) {
-                mActivityPanel.startAnimation(getAnimation(true));
-                mWeatherPanel.startAnimation(getAnimation(false));
-            } else if (NEXT_VISIBLE_PANEL == WEATHER_PANEL && animate) {
-                mWeatherPanel.startAnimation(getAnimation(true));
-                mCustomPanel.startAnimation(getAnimation(false));
-            } else if (NEXT_VISIBLE_PANEL == CUSTOM_PANEL && animate) {
-                mCustomPanel.startAnimation(getAnimation(true));
-                mActivityPanel.startAnimation(getAnimation(false));
-            }
-        } else {
-            if (NEXT_VISIBLE_PANEL == ACTIVITY_PANEL && animate) {
-                mActivityPanel.startAnimation(getAnimation(true));
-                mWeatherPanel.startAnimation(getAnimation(false));
-            } else if (NEXT_VISIBLE_PANEL == WEATHER_PANEL && animate) {
-                mWeatherPanel.startAnimation(getAnimation(true));
-                mCustomPanel.startAnimation(getAnimation(false));
-            } else if (NEXT_VISIBLE_PANEL == LOGO_PANEL && animate) {
-                mLogoPanel.startAnimation(getAnimation(true));
-                mActivityPanel.startAnimation(getAnimation(false));
-            } else if (NEXT_VISIBLE_PANEL == CUSTOM_PANEL && animate) {
-                mCustomPanel.startAnimation(getAnimation(true));
-                mLogoPanel.startAnimation(getAnimation(false));
-            }
+        if (panelOne == 0) {
+            mPanelOne = mCustomPanel;
+        } else if (panelOne == 1) {
+            mPanelOne = mWeatherPanel;
+        } else if (panelOne == 2) {
+            mPanelOne = mActivityPanel;
+        } else if (panelOne == 3) {
+            mPanelOne = mLogoPanel;
         }
  
-        NEXT_VISIBLE_PANEL += 1;
-        if (!mShowLogoPanel) {
-            if (NEXT_VISIBLE_PANEL == 3) {
-                NEXT_VISIBLE_PANEL = 0;
-            }
-        } else {
-            if (NEXT_VISIBLE_PANEL == 4) {
-                NEXT_VISIBLE_PANEL = 0;
-            }
+        if (panelTwo == 0) {
+            mPanelTwo = mCustomPanel;
+        } else if (panelTwo == 1) {
+            mPanelTwo = mWeatherPanel;
+        } else if (panelTwo == 2) {
+            mPanelTwo = mActivityPanel;
+        } else if (panelTwo == 3) {
+            mPanelTwo = mLogoPanel;
         }
-        if (!mShowActivityPanel) {
-            if (NEXT_VISIBLE_PANEL == 2) {
-                NEXT_VISIBLE_PANEL = 0;
-            }
-        } else {
-            if (NEXT_VISIBLE_PANEL == 4) {
-                NEXT_VISIBLE_PANEL = 0;
-            }
+ 
+        if (panelThree == 0) {
+            mPanelThree = mCustomPanel;
+        } else if (panelThree == 1) {
+            mPanelThree = mWeatherPanel;
+        } else if (panelThree == 2) {
+            mPanelThree = mActivityPanel;
+        } else if (panelThree == 3) {
+            mPanelThree = mLogoPanel;
+        }
+ 
+        if (panelFour == 0) {
+            mPanelFour = mCustomPanel;
+        } else if (panelFour == 1) {
+            mPanelFour = mWeatherPanel;
+        } else if (panelFour == 2) {
+            mPanelFour = mActivityPanel;
+        } else if (panelFour == 3) {
+            mPanelFour = mLogoPanel;
         }
     }
 
-    public int getNextVisiblePanel() {
-        return NEXT_VISIBLE_PANEL;
+    public void changeView(boolean animate) {
+        updatePanelViews();
+        boolean activityVisible = NEXT_VISIBLE_PANEL == PANEL_ONE && panelOne == 2 || NEXT_VISIBLE_PANEL == PANEL_TWO && panelTwo == 2 || NEXT_VISIBLE_PANEL == PANEL_THREE && panelThree == 2 || NEXT_VISIBLE_PANEL == PANEL_FOUR && panelFour == 2;
+        boolean customVisible = NEXT_VISIBLE_PANEL == PANEL_ONE && panelOne == 0 || NEXT_VISIBLE_PANEL == PANEL_TWO && panelTwo == 0 || NEXT_VISIBLE_PANEL == PANEL_THREE && panelThree == 0 || NEXT_VISIBLE_PANEL == PANEL_FOUR && panelFour == 0;
+        boolean logoVisible = NEXT_VISIBLE_PANEL == PANEL_ONE && panelOne == 3 || NEXT_VISIBLE_PANEL == PANEL_TWO && panelTwo == 3 || NEXT_VISIBLE_PANEL == PANEL_THREE && panelThree == 3 || NEXT_VISIBLE_PANEL == PANEL_FOUR && panelFour == 3;
+        boolean weatherVisible = NEXT_VISIBLE_PANEL == PANEL_ONE && panelOne == 1 || NEXT_VISIBLE_PANEL == PANEL_TWO && panelTwo == 1 || NEXT_VISIBLE_PANEL == PANEL_THREE && panelThree == 1 || NEXT_VISIBLE_PANEL == PANEL_FOUR && panelFour == 1;
+        mActivityPanel.setVisibility(activityVisible
+                ? View.VISIBLE : View.GONE);
+        mCustomPanel.setVisibility(customVisible
+                ? View.VISIBLE : View.GONE);
+        mLogoPanel.setVisibility(logoVisible
+                ? View.VISIBLE : View.GONE);
+        mWeatherPanel.setVisibility(weatherVisible
+                ? View.VISIBLE : View.GONE);
+
+        if (NEXT_VISIBLE_PANEL == PANEL_ONE && animate) {
+            mPanelOne.startAnimation(getAnimation(true));
+            mPanelFour.startAnimation(getAnimation(false));
+        } else if (NEXT_VISIBLE_PANEL == PANEL_TWO && animate) {
+            mPanelTwo.startAnimation(getAnimation(true));
+            mPanelOne.startAnimation(getAnimation(false));
+        } else if (NEXT_VISIBLE_PANEL == PANEL_THREE && animate) {
+            mPanelThree.startAnimation(getAnimation(true));
+            mPanelTwo.startAnimation(getAnimation(false));
+        } else if (NEXT_VISIBLE_PANEL == PANEL_FOUR && animate) {
+            mPanelFour.startAnimation(getAnimation(true));
+            mPanelThree.startAnimation(getAnimation(false));
+        }
+ 
+        NEXT_VISIBLE_PANEL += 1;
+        if (NEXT_VISIBLE_PANEL == 4) {
+            NEXT_VISIBLE_PANEL = 0;
+        }
     }
 
     private static Animation getAnimation(boolean isIn) {
@@ -326,14 +345,6 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
         }
     }
 
-    public void showActivityPanel(boolean showActivityPanel) {
-        mShowActivityPanel = showActivityPanel;
-    }
-
-    public void showLogoPanel(boolean showLogoPanel) {
-        mShowLogoPanel = showLogoPanel;
-    }
-
     public void showShortcutPanel(boolean showShortcuts) {
         mShowShortcutPanel = showShortcuts;
         if (mShowShortcutPanel) {
@@ -341,16 +352,6 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
         } else {
             mShortcutBar.setVisibility(View.GONE);
         }
-    }
-
-    public void showText(boolean text) {
-        mShowText = text;
-        if (mShowText) {
-            mCustomText.setVisibility(View.VISIBLE);
-        } else {
-            mCustomText.setVisibility(View.GONE);
-        }
-        //updateShortcutsLocation(mShowText);
     }
 
     public void setRippleColor() {
@@ -368,23 +369,6 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
         mLayoutChanger.setBackground(rippleBackground);
         mShadeRomLogo.setBackground(logoBackground);
     }
-
-    /*public void updateShortcutsLocation (boolean text) {
-        boolean canWeMoveUp = !text;
-
-        int paddingBottom = mContext.getResources().getDimensionPixelSize(
-                R.dimen.expansion_view_shortcut_panel_padding_bottom);
-        int paddingTop = canWeMoveUp
-                ? mContext.getResources().getDimensionPixelSize(
-                        R.dimen.expansion_view_shortcut_panel_padding_top)
-                : paddingBottom;
-
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mShortcutBarContainer.getLayoutParams();
-        lp.removeRule(canWeMoveUp ? RelativeLayout.ALIGN_BOTTOM : RelativeLayout.CENTER_VERTICAL);
-        lp.addRule(canWeMoveUp ? RelativeLayout.CENTER_VERTICAL : RelativeLayout.ALIGN_BOTTOM);
-        mShortcutBarContainer.setLayoutParams(lp);
-        mShortcutBarContainer.setPadding(0, paddingBottom, 0, paddingTop);
-    }*/
 
     public void setTextColor(int color) {
         mCustomText.setTextColor(color);
