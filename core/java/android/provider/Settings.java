@@ -5896,6 +5896,70 @@ public final class Settings {
         public static final String RECENTS_FULL_SCREEN_DATE_COLOR = "recents_full_screen_date_color";
 
         /**
+         * Recents button ripple color
+         * @hide
+         */
+        public static final String RECENTS_RIPPLE_COLOR = "recents_ripple_color";
+
+        /**
+         * Recents dark mode button ripple color
+         * @hide
+         */
+        public static final String RECENTS_DARK_MODE_RIPPLE_COLOR = "recents_dark_mode_ripple_color";
+
+        /**
+         * Recents task app icon color
+         * @hide
+         */
+        public static final String RECENTS_APP_ICON_COLOR = "recents_app_icon_color";
+
+        /**
+         * Whether to colorize recents app icons
+         * 0: never
+         * 1: if the icon is an greyscale icon
+         * 2: always
+         * default: 0
+         * @hide
+         */
+        public static final String RECENTS_APP_ICON_COLOR_MODE = "recents_app_icon_color_mode";
+
+        /**
+         * Recents task header bg color
+         * @hide
+         */
+        public static final String RECENTS_BG_COLOR = "recents_bg_color";
+
+        /**
+         * Recents task header dark mode bg color
+         * @hide
+         */
+        public static final String RECENTS_DARK_MODE_BG_COLOR = "recents_dark_mode_bg_color";
+
+        /**
+         * Recents task icon color
+         * @hide
+         */
+        public static final String RECENTS_ICON_COLOR = "recents_icon_color";
+
+        /**
+         * Recents task dark mode icon color
+         * @hide
+         */
+        public static final String RECENTS_DARK_MODE_ICON_COLOR = "recents_dark_mode_icon_color";
+
+        /**
+         * Recents task text color
+         * @hide
+         */
+        public static final String RECENTS_TEXT_COLOR = "recents_text_color";
+
+        /**
+         * Recents task dark mode text color
+         * @hide
+         */
+        public static final String RECENTS_DARK_MODE_TEXT_COLOR = "recents_dark_mode_text_color";
+
+        /**
          * Whether to display set of animations when prompting the power menu
          *
          * @hide

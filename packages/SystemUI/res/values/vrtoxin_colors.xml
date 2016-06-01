@@ -16,6 +16,8 @@
 -->
 <resources>
     
+    <color name="white">#ffffffff</color>
+
     <color name="qs_background_drawable_color">#FFFFFFFF</color>
 
     <!-- Pie controls -->

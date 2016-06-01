@@ -35,6 +35,7 @@ import android.provider.Settings;
 import android.graphics.Outline;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
@@ -55,6 +56,7 @@ import com.android.systemui.recents.model.RecentsTaskLoader;
 import com.android.systemui.recents.model.Task;
 
 import com.android.internal.util.vrtoxin.FontHelper;
+import com.android.internal.util.vrtoxin.RecentsColorHelper;
 
 
 /* The task bar view */
@@ -174,10 +176,10 @@ public class TaskViewHeader extends FrameLayout {
         mBackground = (RippleDrawable)
                 getContext().getDrawable(R.drawable.recents_task_view_header_bg);
         mBackground = (RippleDrawable) mBackground.mutate().getConstantState().newDrawable();
-        mBackground.setColor(ColorStateList.valueOf(0));
         mBackground.setDrawableByLayerId(mBackground.getId(0), mBackgroundColorDrawable);
         setBackground(mBackground);
         updateRecentsFontStyle();
+        updateColors();
     }
 
     @Override
@@ -253,6 +255,64 @@ public class TaskViewHeader extends FrameLayout {
         mFloatButton.setImageDrawable(t.useLightOnPrimaryColor ?
                 mLightFloatDrawable : mDarkFloatDrawable);
         updateRecentsFontStyle();
+        updateColors();
+    }
+
+    public void updateColors() {
+        final ColorStateList iconColor = RecentsColorHelper.getRecentsIconColorList(mContext);
+        final ColorStateList darkIconColor = RecentsColorHelper.getRecentsDarkModeIconColorList(mContext);
+        final ColorStateList textColor = RecentsColorHelper.getRecentsTextColorList(mContext);
+        final ColorStateList darkTextColor = RecentsColorHelper.getRecentsDarkModeTextColorList(mContext);
+        final ColorStateList bg = RecentsColorHelper.getRecentsBackgroundColorList(mContext);
+        final ColorStateList darkBg = RecentsColorHelper.getRecentsDarkModeBackgroundColorList(mContext);
+        Drawable drawable = (Drawable)mApplicationIcon.getDrawable();
+        final int appIconColor = RecentsColorHelper.getAppIconColor(getContext(), drawable);
+        if (appIconColor != 0) {
+            if (mApplicationIcon != null) mApplicationIcon.setColorFilter(appIconColor, Mode.MULTIPLY);
+        } else {
+            if (mApplicationIcon != null) mApplicationIcon.setColorFilter(null);
+        }
+        mDismissButton.setImageTintList(mCurrentPrimaryColorIsDark ?
+                iconColor : darkIconColor);
+        mPinButton.setImageTintList(mCurrentPrimaryColorIsDark ?
+                iconColor : darkIconColor);
+        mFloatButton.setImageTintList(mCurrentPrimaryColorIsDark ?
+                iconColor : darkIconColor);
+        mMoveTaskButton.setImageTintList(mCurrentPrimaryColorIsDark ?
+                iconColor : darkIconColor);
+        mActivityDescription.setTextColor(mCurrentPrimaryColorIsDark ?
+                textColor : darkTextColor);
+        mBackground.setColor(mCurrentPrimaryColorIsDark ?
+                bg : darkBg);
+        mBackgroundColorDrawable.setColor(mCurrentPrimaryColorIsDark ?
+                bg : darkBg);
+
+        setRippleColor();
+    }
+
+    public void setRippleColor() {
+        RippleDrawable dBackground =
+                (RippleDrawable) mContext.getDrawable(R.drawable.ripple_drawable_oval).mutate();
+        RippleDrawable fBackground =
+                (RippleDrawable) mContext.getDrawable(R.drawable.ripple_drawable_oval).mutate();
+        RippleDrawable mTBackground =
+                (RippleDrawable) mContext.getDrawable(R.drawable.ripple_drawable_oval).mutate();
+        RippleDrawable pBackground =
+                (RippleDrawable) mContext.getDrawable(R.drawable.ripple_drawable_oval).mutate();
+        RippleDrawable aBackground =
+                (RippleDrawable) mContext.getDrawable(R.drawable.ripple_drawable_oval).mutate();
+        final int color = RecentsColorHelper.getRecentsRippleColor(mContext);
+        final int darkColor = RecentsColorHelper.getRecentsDarkModeRippleColor(mContext);
+        dBackground.setColor(ColorStateList.valueOf(mCurrentPrimaryColorIsDark ? color : darkColor));
+        fBackground.setColor(ColorStateList.valueOf(mCurrentPrimaryColorIsDark ? color : darkColor));
+        mTBackground.setColor(ColorStateList.valueOf(mCurrentPrimaryColorIsDark ? color : darkColor));
+        pBackground.setColor(ColorStateList.valueOf(mCurrentPrimaryColorIsDark ? color : darkColor));
+        aBackground.setColor(ColorStateList.valueOf(mCurrentPrimaryColorIsDark ? color : darkColor));
+        mDismissButton.setBackground(dBackground);
+        mFloatButton.setBackground(fBackground);
+        mMoveTaskButton.setBackground(mTBackground);
+        mPinButton.setBackground(pBackground);
+        mApplicationIcon.setBackground(aBackground);
     }
 
     /** Unbinds the bar view from the task */

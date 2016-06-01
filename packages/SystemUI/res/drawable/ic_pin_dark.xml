@@ -14,7 +14,7 @@ android:viewportHeight="24">
 
 <path
 
-    android:fillColor="@color/recents_task_bar_dark_dismiss_color"
+    android:fillColor="@color/white"
 
     android:pathData="M 11.681641,1.6464844 c -0.02997,0 -0.07099,0.052132 -0.09375,0.1210937
 
