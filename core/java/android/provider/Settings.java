@@ -7394,6 +7394,24 @@ public final class Settings {
         public static final String ANIM_TILE_DURATION = "anim_tile_duration";
 
         /**
+         * Underline color of CyanideMods
+         * @hide
+         */
+        public static final String MODS_UNDERLINE_COLOR = "mods_underline_color";
+
+        /**
+         * Divider color of CyanideMods
+         * @hide
+         */
+        public static final String MODS_DIVIDER_COLOR = "mods_divider_color";
+
+        /**
+         * Divider color of CyanideMods
+         * @hide
+         */
+        public static final String MODS_TAB_TEXT_COLOR = "mods_tab_text_color";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
