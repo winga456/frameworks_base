@@ -59,6 +59,7 @@ import android.widget.TextView;
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.util.vrtoxin.ColorHelper;
 import com.android.internal.util.vrtoxin.FontHelper;
+import com.android.internal.util.vrtoxin.RecentsColorHelper;
 
 import com.android.systemui.R;
 import com.android.systemui.recents.Constants;
@@ -695,9 +696,7 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
     }
 
     private void updateMemTextColor() {
-        ContentResolver resolver = mContext.getContentResolver();
-        int color = Settings.System.getInt(resolver,
-                Settings.System.MEM_TEXT_COLOR, 0xffffffff);
+        final int color = RecentsColorHelper.getMemBarTextColor(mContext);
 
         if (mMemText != null) {
             mMemText.setTextColor(color);
@@ -705,9 +704,7 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
     }
 
     private void updateMemBarBgColor() {
-        ContentResolver resolver = mContext.getContentResolver();
-        int color = Settings.System.getInt(resolver,
-                Settings.System.MEMORY_BAR_COLOR, 0xffffffff);
+        final int color = RecentsColorHelper.getMemBarUsedColor(mContext);
 
         if (mMemBar != null) {
             mMemBar.setProgressBackgroundTintList(ColorStateList.valueOf(color));
@@ -715,9 +712,7 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
     }
 
     private void updateMemBarColor() {
-        ContentResolver resolver = mContext.getContentResolver();
-        int color = Settings.System.getInt(resolver,
-                Settings.System.MEMORY_BAR_USED_COLOR, 0xffffffff);
+        final int color = RecentsColorHelper.getMemBarColor(mContext);
 
         if (mMemBar != null) {
             mMemBar.setProgressTintList(ColorStateList.valueOf(color));
@@ -782,9 +777,7 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
     }
 
     private void updateClockColor() {
-        ContentResolver resolver = mContext.getContentResolver();
-        int color = Settings.System.getInt(resolver,
-                Settings.System.RECENTS_FULL_SCREEN_CLOCK_COLOR, 0xffffffff);
+        final int color = RecentsColorHelper.getRecentsDateColor(mContext);
 
         if (mClock != null) {
             mClock.setTextColor(color);
@@ -792,9 +785,7 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
     }
 
     private void updateDateColor() {
-        ContentResolver resolver = mContext.getContentResolver();
-        int color = Settings.System.getInt(resolver,
-                Settings.System.RECENTS_FULL_SCREEN_DATE_COLOR, 0xffffffff);
+        final int color = RecentsColorHelper.getRecentsClockColor(mContext);
 
         if (mDate != null) {
             mDate.setTextColor(color);

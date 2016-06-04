@@ -130,4 +130,29 @@ public class RecentsColorHelper {
         return Settings.System.getInt(context.getContentResolver(),
                 Settings.System.RECENTS_DARK_MODE_RIPPLE_COLOR, TRANSLUCENT_BLACK);
     }
+
+    public static int getRecentsClockColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.RECENTS_FULL_SCREEN_CLOCK_COLOR, WHITE);
+    }
+
+    public static int getRecentsDateColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.RECENTS_FULL_SCREEN_DATE_COLOR, WHITE);
+    }
+
+    public static int getMemBarTextColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.MEM_TEXT_COLOR, WHITE);
+    }
+
+    public static int getMemBarColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.MEMORY_BAR_COLOR, WHITE);
+    }
+
+    public static int getMemBarUsedColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.MEMORY_BAR_USED_COLOR, TRANSLUCENT_BLACK);
+    }
 }
