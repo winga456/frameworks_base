@@ -26,7 +26,6 @@ import android.os.Handler;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.android.internal.util.vrtoxin.ExpansionViewColorHelper;
 import com.android.internal.util.vrtoxin.ExpansionViewTextHelper;
@@ -53,7 +52,6 @@ public class ExpansionViewController {
     private ExpansionViewCustomPanel mExpansionViewCustomPanel;
     private ExpansionViewActivityPanel mExpansionViewActivityPanel;
     private ExpansionViewWeatherPanel mExpansionViewWeatherPanel;
-    private ImageView mLayoutChanger;
     private PanelShortcuts mExpansionViewPanelShortcuts;
     private View mExpansionViewLogoPanel;
 
@@ -332,15 +330,6 @@ public class ExpansionViewController {
         }
     }
 
-    private void setExpansionViewLayoutChanger() {
-        final boolean showChanger = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.EXPANSION_VIEW_LAYOUT_CHANGER, 1) == 1;
-
-        if (mExpansionViewCustomPanel != null) {
-            mExpansionViewCustomPanel.showLayoutChanger(showChanger);
-        }
-    }
-
     private void setExpansionViewWeatherPanelItems() {
         if (mExpansionViewWeatherPanel != null) {
             mExpansionViewWeatherPanel.updateItems();
@@ -383,6 +372,12 @@ public class ExpansionViewController {
 
         if (mExpansionViewWeatherPanel != null) {
             mExpansionViewWeatherPanel.vibrateOnClick(vibrate);
+        }
+    }
+
+    private void setExpansionViewPanelVisibility() {
+        if (mExpansionViewCustomPanel != null) {
+            mExpansionViewCustomPanel.updatePanelViews();
         }
     }
 
@@ -454,9 +449,6 @@ public class ExpansionViewController {
                     Settings.System.EXPANSION_VIEW_BACKGROUND_COLOR),
                     false, this);
             mResolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.EXPANSION_VIEW_LAYOUT_CHANGER),
-                    false, this);
-            mResolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.EXPANSION_VIEW_WEATHER_TEXT_SIZE),
                     false, this);
             mResolver.registerContentObserver(Settings.System.getUriFor(
@@ -486,6 +478,18 @@ public class ExpansionViewController {
             mResolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.EXPANSION_VIEW_BATTERY_TEXT_COLOR),
                     false, this);
+            mResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_PANEL_ONE),
+                    false, this);
+            mResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_PANEL_TWO),
+                    false, this);
+            mResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_PANEL_THREE),
+                    false, this);
+            mResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_PANEL_FOUR),
+                    false, this);
             update();
         }
 
@@ -507,9 +511,9 @@ public class ExpansionViewController {
             setExpansionViewWeatherPanelItems();
             setExpansionViewWeatherColors();
             setExpansionViewBg();
-            setExpansionViewLayoutChanger();
             setExpansionViewWeatherTextSize();
             setExpansionViewVibration();
+            setExpansionViewPanelVisibility();
 
         }
 
@@ -561,9 +565,6 @@ public class ExpansionViewController {
                     Settings.System.EXPANSION_VIEW_BACKGROUND_COLOR))) {
                 setExpansionViewBg();
             } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.EXPANSION_VIEW_LAYOUT_CHANGER))) {
-                setExpansionViewLayoutChanger();
-            } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.EXPANSION_VIEW_WEATHER_TEXT_SIZE))) {
                 setExpansionViewWeatherTextSize();
             } else if (uri.equals(Settings.System.getUriFor(
@@ -592,6 +593,15 @@ public class ExpansionViewController {
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.EXPANSION_VIEW_BATTERY_TEXT_COLOR))) {
                 setExpansionViewBatteryTextColor();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_PANEL_ONE))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_PANEL_TWO))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_PANEL_THREE))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_PANEL_FOUR))) {
+                setExpansionViewPanelVisibility();
             }
         }
     }

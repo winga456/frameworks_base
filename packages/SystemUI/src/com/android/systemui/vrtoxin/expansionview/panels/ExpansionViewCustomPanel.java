@@ -74,7 +74,6 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
     protected Vibrator mVibrator;
  
     private boolean mExpansionViewVibrate = false;
-    private boolean mShowChanger = false;
     private boolean mShowShortcutPanel = false;
 
     private int panelOne;
@@ -178,7 +177,7 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
         changeView(false);
     }
 
-    private void updatePanelViews() {
+    public void updatePanelViews() {
         panelOne = Settings.System.getInt(
                 mResolver, Settings.System.EXPANSION_VIEW_PANEL_ONE, 1);
         panelTwo = Settings.System.getInt(
@@ -216,6 +215,10 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
             mPanelThree = mActivityPanel;
         } else if (panelThree == 3) {
             mPanelThree = mLogoPanel;
+        // HACK: Fix animation and NPE if only 2 panels are selected
+        // TO DO: FIX THIS
+        } else if (panelThree == 4) {
+            mPanelThree = mPanelTwo;
         }
  
         if (panelFour == 0) {
@@ -226,6 +229,28 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
             mPanelFour = mActivityPanel;
         } else if (panelFour == 3) {
             mPanelFour = mLogoPanel;
+        }
+
+        if (panelTwo == 4) {
+            if (NEXT_VISIBLE_PANEL == 1) {
+                NEXT_VISIBLE_PANEL = 0;
+            }
+            mLayoutChanger.setVisibility(View.GONE);
+        } else if (panelThree == 4) {
+            if (NEXT_VISIBLE_PANEL == 2) {
+                NEXT_VISIBLE_PANEL = 0;
+            }
+            mLayoutChanger.setVisibility(View.VISIBLE);
+        } else if (panelFour == 4) {
+            if (NEXT_VISIBLE_PANEL == 3) {
+                NEXT_VISIBLE_PANEL = 0;
+            }
+            mLayoutChanger.setVisibility(View.VISIBLE);
+        } else {
+            if (NEXT_VISIBLE_PANEL == 4) {
+                NEXT_VISIBLE_PANEL = 0;
+            }
+            mLayoutChanger.setVisibility(View.VISIBLE);
         }
     }
 
@@ -244,24 +269,45 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
         mWeatherPanel.setVisibility(weatherVisible
                 ? View.VISIBLE : View.GONE);
 
-        if (NEXT_VISIBLE_PANEL == PANEL_ONE && animate) {
-            mPanelOne.startAnimation(getAnimation(true));
-            mPanelFour.startAnimation(getAnimation(false));
-        } else if (NEXT_VISIBLE_PANEL == PANEL_TWO && animate) {
-            mPanelTwo.startAnimation(getAnimation(true));
-            mPanelOne.startAnimation(getAnimation(false));
-        } else if (NEXT_VISIBLE_PANEL == PANEL_THREE && animate) {
-            mPanelThree.startAnimation(getAnimation(true));
-            mPanelTwo.startAnimation(getAnimation(false));
-        } else if (NEXT_VISIBLE_PANEL == PANEL_FOUR && animate) {
-            mPanelFour.startAnimation(getAnimation(true));
-            mPanelThree.startAnimation(getAnimation(false));
+        if (panelFour == 4) {
+            if (NEXT_VISIBLE_PANEL == PANEL_ONE && animate) {
+                mPanelOne.startAnimation(getAnimation(true));
+                mPanelThree.startAnimation(getAnimation(false));
+            } else if (NEXT_VISIBLE_PANEL == PANEL_TWO && animate) {
+                mPanelTwo.startAnimation(getAnimation(true));
+                mPanelOne.startAnimation(getAnimation(false));
+            } else if (NEXT_VISIBLE_PANEL == PANEL_THREE && animate) {
+                mPanelThree.startAnimation(getAnimation(true));
+                mPanelTwo.startAnimation(getAnimation(false));
+            }
+        } else if (panelThree == 4) {
+            if (NEXT_VISIBLE_PANEL == PANEL_ONE && animate) {
+                mPanelOne.startAnimation(getAnimation(true));
+                mPanelTwo.startAnimation(getAnimation(false));
+            } else if (NEXT_VISIBLE_PANEL == PANEL_TWO && animate) {
+                mPanelTwo.startAnimation(getAnimation(true));
+                mPanelOne.startAnimation(getAnimation(false));
+            }
+        } else if (panelTwo == 4) {
+            if (NEXT_VISIBLE_PANEL == PANEL_ONE && animate) {
+                // Do nothing here
+            }
+        } else {
+            if (NEXT_VISIBLE_PANEL == PANEL_ONE && animate) {
+                mPanelOne.startAnimation(getAnimation(true));
+                mPanelFour.startAnimation(getAnimation(false));
+            } else if (NEXT_VISIBLE_PANEL == PANEL_TWO && animate) {
+                mPanelTwo.startAnimation(getAnimation(true));
+                mPanelOne.startAnimation(getAnimation(false));
+            } else if (NEXT_VISIBLE_PANEL == PANEL_THREE && animate) {
+                mPanelThree.startAnimation(getAnimation(true));
+                mPanelTwo.startAnimation(getAnimation(false));
+            } else if (NEXT_VISIBLE_PANEL == PANEL_FOUR && animate) {
+                mPanelFour.startAnimation(getAnimation(true));
+                mPanelThree.startAnimation(getAnimation(false));
+            }
         }
- 
         NEXT_VISIBLE_PANEL += 1;
-        if (NEXT_VISIBLE_PANEL == 4) {
-            NEXT_VISIBLE_PANEL = 0;
-        }
     }
 
     private static Animation getAnimation(boolean isIn) {
@@ -333,15 +379,6 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
     public void updateIconColor(int color) {
         if (mLayoutChanger != null) {
             mLayoutChanger.setColorFilter(color, Mode.MULTIPLY);
-        }
-    }
-
-    public void showLayoutChanger(boolean showChanger) {
-        mShowChanger = showChanger;
-        if (mShowChanger) {
-            mLayoutChanger.setVisibility(View.VISIBLE);
-        } else {
-            mLayoutChanger.setVisibility(View.GONE);
         }
     }
 

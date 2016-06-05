@@ -6863,12 +6863,6 @@ public final class Settings {
         public static final String EXPANSION_VIEW_BACKGROUND_COLOR = "expansion_view_background_color";
 
         /**
-         * Expansion View Layout Changer
-         * @hide
-         */
-        public static final String EXPANSION_VIEW_LAYOUT_CHANGER = "expansion_view_layout_changer";
-
-        /**
          * Expansion View Change Animation
          * @hide
          */
