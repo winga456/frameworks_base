@@ -62,7 +62,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 >
-
+                <com.android.systemui.statusbar.AlphaImageView
+                    android:id="@+id/left_vrtoxin_logo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="4dp"
+                    android:src="@drawable/ic_status_bar_vrtoxin_logo"
+                    android:scaleType="center"
+                    android:visibility="gone"
+                    />
                 <com.android.systemui.statusbar.policy.Clock
                     android:id="@+id/left_clock"
                     android:textAppearance="@style/TextAppearance.StatusBar.Clock"
@@ -73,30 +81,16 @@
                     android:gravity="center"
                     android:visibility="gone"
                     />
-
-                <com.android.systemui.statusbar.AlphaImageView
-                    android:id="@+id/left_vrtoxin_logo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingEnd="4dp"
-                    android:src="@drawable/ic_status_bar_vrtoxin_logo"
-                    android:scaleType="center"
-                    android:visibility="gone"
-                    />
-
                 <com.android.keyguard.CarrierText
                     android:id="@+id/left_status_bar_carrier_text"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:paddingStart="6dp"
-                    android:paddingEnd="8dp"
-                    android:ellipsize="end"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:textAppearance="@style/TextAppearance.StatusBar.CarrierLabel"
-                    android:textColor="#ffffff"
                     android:visibility="gone"
+                    android:singleLine="true"
+                    android:textColor="#ffffff" 
                     />
-
                 <TextView
                     android:id="@+id/left_weather_temp"
                     android:layout_width="wrap_content"
@@ -129,17 +123,7 @@
             android:layout_height="match_parent"
             android:orientation="horizontal"
             >
-
- 	<com.android.systemui.statusbar.policy.NetworkTraffic
-                android:id="@+id/networkTraffic"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:singleLine="false"
-                android:fontFamily="sans-serif-condensed"
-                android:gravity="right|center_vertical"
-                />
-
-            <TextView
+        <TextView
                 android:id="@+id/weather_temp"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -149,23 +133,17 @@
                 android:paddingStart="2dp"
                 android:paddingEnd="4dp"
                 android:visibility="gone" />
-
-            <include layout="@layout/system_icons" />
-
-            <com.android.keyguard.CarrierText
-                android:id="@+id/status_bar_carrier_text"
+ 	<com.android.systemui.statusbar.policy.NetworkTraffic
+                android:id="@+id/networkTraffic"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:paddingStart="6dp"
-                android:paddingEnd="8dp"
-                android:ellipsize="end"
-                android:textAppearance="@style/TextAppearance.StatusBar.CarrierLabel"
-                android:textColor="#ffffff"
-                android:visibility="gone"
+                android:singleLine="false"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="right|center_vertical"
                 />
+            <include layout="@layout/system_icons" />
 
-            <com.android.systemui.statusbar.policy.Clock
+           <com.android.systemui.statusbar.policy.Clock
                 android:id="@+id/clock"
                 android:textAppearance="@style/TextAppearance.StatusBar.Clock"
                 android:layout_width="wrap_content"
@@ -183,6 +161,16 @@
                 android:scaleType="center"
                 android:visibility="gone"
                 />
+            <com.android.keyguard.CarrierText
+                    android:id="@+id/status_bar_carrier_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:textAppearance="@style/TextAppearance.StatusBar.CarrierLabel"
+                    android:visibility="gone"
+                    android:singleLine="true"
+                    android:textColor="#ffffff" 
+                    />
         </com.android.keyguard.AlphaOptimizedLinearLayout>
     </LinearLayout>
 
