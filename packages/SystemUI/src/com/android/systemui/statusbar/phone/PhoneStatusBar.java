@@ -682,6 +682,16 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_CUSTOM_HEADER_SHADOW),
                     false, this, UserHandle.USER_ALL);	
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_NETWORK_ICONS_SIGNAL_COLOR),
+                    false, this, UserHandle.USER_ALL);
+             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_NETWORK_ICONS_NO_SIM_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_NETWORK_ICONS_AIRPLANE_MODE_COLOR),
+                      false, this, UserHandle.USER_ALL);	
+
             update();
         }
 
