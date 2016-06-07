@@ -6083,6 +6083,12 @@ public final class Settings {
         public static final String F_LTE = "f_lte";
 
         /**
+         * Show 3g instead of H+
+         * @hide
+         */
+        public static final String SHOW_THREEG = "show_threeg";
+
+          /**
          * Give SMS notifications a breathing effect
          *
          */

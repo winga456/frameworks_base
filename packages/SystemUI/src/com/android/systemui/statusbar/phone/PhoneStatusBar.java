@@ -379,6 +379,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private QuickAccessBar mQSBar;
     private QSPanel mQSPanel;
 
+    private boolean mShow3G;
+	
     // top bar
     StatusBarHeaderView mHeader;
     KeyguardStatusBarView mKeyguardStatusBar;
@@ -690,7 +692,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_NETWORK_ICONS_AIRPLANE_MODE_COLOR),
-                      false, this, UserHandle.USER_ALL);	
+                      false, this, UserHandle.USER_ALL);
+	    resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SHOW_THREEG),
+                    false, this, UserHandle.USER_ALL);	
 
             update();
         }
@@ -850,6 +855,16 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.NOTIFICATION_CLEAR_ALL_ICON_COLOR))) {
                 UpdateNotifPanelClearAllIconColor();
+	}  else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.SHOW_THREEG))) {
+                    mShow3G = Settings.System.getIntForUser(
+                            mContext.getContentResolver(),
+                            Settings.System.SHOW_THREEG,
+                            0, UserHandle.USER_CURRENT) == 1;
+                            updateRowStates();
+                            updateSpeedbump();
+                            updateClearAll();
+                            updateEmptyShadeView();
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.BATTERY_SAVER_MODE_COLOR))) {
                     mBatterySaverWarningColor = Settings.System.getIntForUser(
@@ -893,6 +908,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 removeSidebarView();
                 addSidebarView();
             }
+
+	  
+	    boolean mShow3G = Settings.System.getIntForUser(resolver,
+                    Settings.System.SHOW_THREEG, 0, UserHandle.USER_CURRENT) == 1;
 
             mVRToxinLogoStyle = Settings.System.getIntForUser(
                     resolver, Settings.System.STATUS_BAR_VRTOXIN_LOGO_STYLE, 0,
