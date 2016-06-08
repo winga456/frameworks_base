@@ -87,7 +87,7 @@ public class FloatingWindowsTile extends QSTile<QSTile.BooleanState> {
 
     private boolean FloatingWindowsEnabled() {
         return Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.FLOATING_WINDOW_MODE, 1) == 1;
+                Settings.System.FLOATING_WINDOW_MODE, 0) == 1;
     }
 
     @Override

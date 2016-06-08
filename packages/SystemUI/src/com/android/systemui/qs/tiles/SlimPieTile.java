@@ -87,7 +87,7 @@ public class SlimPieTile extends QSTile<QSTile.BooleanState> {
 
     private boolean PieEnabled() {
         return Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.PIE_CONTROLS, 1) == 1;
+                Settings.System.PIE_CONTROLS, 0) == 1;
     }
 
     @Override

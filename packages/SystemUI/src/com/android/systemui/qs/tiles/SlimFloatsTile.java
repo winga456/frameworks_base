@@ -87,7 +87,7 @@ public class SlimFloatsTile extends QSTile<QSTile.BooleanState> {
 
     private boolean SlimFloatsEnabled() {
         return Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.SLIM_ACTION_FLOATS, 1) == 1;
+                Settings.System.SLIM_ACTION_FLOATS, 0) == 1;
     }
 
     @Override

@@ -87,7 +87,7 @@ public class GestureAnywhereTile extends QSTile<QSTile.BooleanState> {
 
     private boolean GestureAnywhereEnabled() {
         return Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.GESTURE_ANYWHERE_ENABLED, 1) == 1;
+                Settings.System.GESTURE_ANYWHERE_ENABLED, 0) == 1;
     }
 
     @Override
