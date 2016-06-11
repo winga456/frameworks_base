@@ -20,6 +20,9 @@
          SDK.  Instead, put them here. -->
     <private-symbols package="com.android.internal" />
 
+    <!-- Automatic brightness enhancements -->
+    <java-symbol type="integer" name="config_autoBrightnessBrighteningLightFastDebounce"/>
+
     <!-- Private symbols that we need to reference from framework code.  See
          frameworks/base/core/res/MakeJavaSymbols.sed for how to easily generate
          this.
