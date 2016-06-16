@@ -91,7 +91,7 @@ public class WeatherServiceControllerImpl implements WeatherServiceController {
         mCallbacks = new ArrayList<Callback>();
         mCachedInfo = new WeatherInfo();
 
-        if (ExpansionViewWeatherHelper.isWeatherServiceAvailable(mContext)) {
+        if (WeatherHelper.isWeatherServiceAvailable(mContext)) {
             Intent updateIntent = new Intent(Intent.ACTION_MAIN)
                     .setClassName(PACKAGE_NAME, PACKAGE_NAME + ".WeatherService");
             updateIntent.setAction(PACKAGE_NAME + ".ACTION_UPDATE");
@@ -145,11 +145,11 @@ public class WeatherServiceControllerImpl implements WeatherServiceController {
                             mCachedInfo.wind = c.getString(1);
                             mCachedInfo.conditionCode = c.getInt(3);
                             mCachedInfo.conditionDrawableMonochrome = getIcon(mCachedInfo.conditionCode,
-                                    ExpansionViewWeatherHelper.ICON_MONOCHROME);
+                                    WeatherHelper.ICON_MONOCHROME);
                             mCachedInfo.conditionDrawableColored = getIcon(mCachedInfo.conditionCode,
-                                    ExpansionViewWeatherHelper.ICON_COLORED);
+                                    WeatherHelper.ICON_COLORED);
                             mCachedInfo.conditionDrawableVClouds = getIcon(mCachedInfo.conditionCode,
-                                    ExpansionViewWeatherHelper.ICON_VCLOUDS);
+                                    WeatherHelper.ICON_VCLOUDS);
                             mCachedInfo.temp = c.getString(4);
                             mCachedInfo.humidity = c.getString(5);
                             mCachedInfo.condition = c.getString(6);
@@ -161,11 +161,11 @@ public class WeatherServiceControllerImpl implements WeatherServiceController {
                             day.condition = c.getString(9);
                             day.conditionCode = c.getInt(10);
                             day.conditionDrawableMonochrome = getIcon(day.conditionCode,
-                                    ExpansionViewWeatherHelper.ICON_MONOCHROME);
+                                    WeatherHelper.ICON_MONOCHROME);
                             day.conditionDrawableColored = getIcon(day.conditionCode,
-                                    ExpansionViewWeatherHelper.ICON_COLORED);
+                                    WeatherHelper.ICON_COLORED);
                             day.conditionDrawableVClouds = getIcon(day.conditionCode,
-                                    ExpansionViewWeatherHelper.ICON_VCLOUDS);
+                                    WeatherHelper.ICON_VCLOUDS);
                             forecastList.add(day);
                         }
                     }
@@ -179,7 +179,7 @@ public class WeatherServiceControllerImpl implements WeatherServiceController {
     }
 
     public boolean isServiceEnabled() {
-        if (!ExpansionViewWeatherHelper.isWeatherServiceAvailable(mContext)) {
+        if (!WeatherHelper.isWeatherServiceAvailable(mContext)) {
             return false;
         }
         final Cursor c = mContext.getContentResolver().query(SETTINGS_URI, SETTINGS_PROJECTION,
@@ -198,9 +198,9 @@ public class WeatherServiceControllerImpl implements WeatherServiceController {
     private Drawable getIcon(int conditionCode, int iconNameValue) {
         String iconName;
 
-        if (iconNameValue == ExpansionViewWeatherHelper.ICON_MONOCHROME) {
+        if (iconNameValue == WeatherHelper.ICON_MONOCHROME) {
             iconName = "weather_";
-        } else if (iconNameValue == ExpansionViewWeatherHelper.ICON_COLORED) {
+        } else if (iconNameValue == WeatherHelper.ICON_COLORED) {
             iconName = "weather_color_";
         } else {
             iconName = "weather_vclouds_";

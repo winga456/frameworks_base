@@ -42,7 +42,7 @@ import com.android.internal.util.vrtoxin.WeatherServiceController;
 import com.android.internal.util.vrtoxin.WeatherServiceController.DayForecast;
 import com.android.internal.util.vrtoxin.WeatherServiceControllerImpl;
 import com.android.internal.util.vrtoxin.ExpansionViewColorHelper;
-import com.android.internal.util.vrtoxin.ExpansionViewWeatherHelper;
+import com.android.internal.util.vrtoxin.WeatherHelper;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -159,7 +159,7 @@ public class ExpansionViewWeatherPanel extends FrameLayout implements
         mNoWeather.setTextSize(mExpansionViewWeatherTextSize);
 
         boolean isToday = false;
-        if (ExpansionViewWeatherHelper.showCurrent(mContext)) {
+        if (WeatherHelper.showCurrent(mContext)) {
             View currentItem = inflater.inflate(R.layout.expansion_view_weather_current_item, null);
 
             TextView updateTime = (TextView) currentItem.findViewById(R.id.weather_update_time);
@@ -169,10 +169,10 @@ public class ExpansionViewWeatherPanel extends FrameLayout implements
             calendar.roll(Calendar.DAY_OF_WEEK, true);
 
             ImageView currentImage = (ImageView) currentItem.findViewById(R.id.weather_image);
-            Drawable icon = ExpansionViewWeatherHelper.getCurrentConditionDrawable(mContext, info)
+            Drawable icon = WeatherHelper.getCurrentConditionDrawable(mContext, info)
                     .getConstantState().newDrawable();
             currentImage.setImageDrawable(icon);
-            if (ExpansionViewWeatherHelper.getIconType(mContext) == 0) {
+            if (WeatherHelper.getIconType(mContext) == 0) {
                 currentImage.setColorFilter(iconColor, Mode.MULTIPLY);
             }
             TextView temp = (TextView) currentItem.findViewById(R.id.weather_temp);
@@ -199,10 +199,10 @@ public class ExpansionViewWeatherPanel extends FrameLayout implements
                 calendar.roll(Calendar.DAY_OF_WEEK, true);
 
                 ImageView image = (ImageView) forecastItem.findViewById(R.id.weather_image);
-                Drawable icon = ExpansionViewWeatherHelper.getForcastConditionDrawable(mContext, d)
+                Drawable icon = WeatherHelper.getForcastConditionDrawable(mContext, d)
                         .getConstantState().newDrawable();
                 image.setImageDrawable(icon);
-                if (ExpansionViewWeatherHelper.getIconType(mContext) == 0) {
+                if (WeatherHelper.getIconType(mContext) == 0) {
                     image.setColorFilter(iconColor, Mode.MULTIPLY);
                 }
                 TextView temps = (TextView) forecastItem.findViewById(R.id.forecast_temps);

@@ -26,7 +26,7 @@ import android.provider.Settings;
 import com.android.internal.util.vrtoxin.WeatherServiceController.DayForecast;
 import com.android.internal.util.vrtoxin.WeatherServiceController.WeatherInfo;
 
-public class ExpansionViewWeatherHelper {
+public class WeatherHelper {
     public static final int ICON_MONOCHROME = 0;
     public static final int ICON_COLORED    = 1;
     public static final int ICON_VCLOUDS    = 2;
