@@ -140,6 +140,7 @@ public class VolumeDialog {
     private int mVolumeDialogStroke;
     private int mCustomStrokeColor;
     private int mCustomStrokeThickness;
+    private int mCustomCornerRadius;
 
     public VolumeDialog(Context context, int windowType, VolumeDialogController controller,
             ZenModeController zenModeController, Callback callback) {
@@ -1183,13 +1184,15 @@ public class VolumeDialog {
                     Settings.System.VOLUME_DIALOG_STROKE_COLOR, mContext.getResources().getColor(R.color.system_accent_color));
         mCustomStrokeThickness = Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.VOLUME_DIALOG_STROKE_THICKNESS, 4);
+        mCustomCornerRadius = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.VOLUME_DIALOG_CORNER_RADIUS, 2);
 
         final GradientDrawable volumeDialogGd = new GradientDrawable();
 
         if (mVolumeDialogStroke == 0) { // Disable by setting border thickness to 0
             volumeDialogGd.setColor(mContext.getResources().getColor(R.color.system_primary_color));
             volumeDialogGd.setStroke(0, mContext.getResources().getColor(R.color.system_accent_color));
-            volumeDialogGd.setCornerRadius(2);
+            volumeDialogGd.setCornerRadius(mCustomCornerRadius);
             mDialogView.setBackground(volumeDialogGd);
         } else if (mVolumeDialogStroke == 1) { // use accent color for border
             volumeDialogGd.setColor(mContext.getResources().getColor(R.color.system_primary_color));
@@ -1200,7 +1203,7 @@ public class VolumeDialog {
         }
 
         if (mVolumeDialogStroke != 0) {
-            volumeDialogGd.setCornerRadius(2);
+            volumeDialogGd.setCornerRadius(mCustomCornerRadius);
             mDialogView.setBackground(volumeDialogGd);
         }
     }
