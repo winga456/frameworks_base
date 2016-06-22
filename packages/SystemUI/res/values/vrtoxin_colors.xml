@@ -118,4 +118,7 @@
     <color name="ripple_material_dark">#40ffffff</color>
     <color name="crop_action_overlay">#263238</color>
 
+    <!-- Volume panel border coler -->
+    <color name="volume_panel_border_color">#ff1976D2</color><!-- Cyanide Blue -->
+
 </resources>
