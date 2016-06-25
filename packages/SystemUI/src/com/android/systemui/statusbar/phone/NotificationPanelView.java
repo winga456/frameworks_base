@@ -310,7 +310,6 @@ public class NotificationPanelView extends PanelView implements
                 }
             }
         });
-        setQSBackgroundColor();
         setQSStroke();
     }
 
@@ -2645,7 +2644,7 @@ public class NotificationPanelView extends PanelView implements
             ContentResolver resolver = mContext.getContentResolver();
             if (uri.equals(Settings.System.getUriFor(
                     Settings.System.QS_BACKGROUND_COLOR))) {
-                setQSBackgroundColor();
+                setQSStroke();
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.QS_TYPE))) {
                 setQSType();
@@ -2662,15 +2661,6 @@ public class NotificationPanelView extends PanelView implements
                 || uri.equals(Settings.System.getUriFor(
                     Settings.System.QS_TEXT_COLOR))) {
                 setQSColors();
-            } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.QS_STROKE))
-                || uri.equals(Settings.System.getUriFor(
-                    Settings.System.QS_STROKE_COLOR))
-                || uri.equals(Settings.System.getUriFor(
-                    Settings.System.QS_STROKE_THICKNESS))
-                || uri.equals(Settings.System.getUriFor(
-                    Settings.System.QS_CORNER_RADIUS))) {
-                setQSStroke();
             }
             update();
         }
@@ -2700,7 +2690,6 @@ public class NotificationPanelView extends PanelView implements
 
             setQSStroke();
             setQSType();
-            setQSBackgroundColor();
             setQSColors();
         }
     }
@@ -2723,19 +2712,6 @@ public class NotificationPanelView extends PanelView implements
          }
      }
 
-    private void setQSBackgroundColor() {
-        ContentResolver resolver = mContext.getContentResolver();
-        final int bgColor = Settings.System.getInt(resolver,
-                Settings.System.QS_BACKGROUND_COLOR, 0xff263238);
-        if (mQsContainer != null) {
-            mQsContainer.getBackground().setColorFilter(
-                    bgColor, Mode.MULTIPLY);
-        }
-        if (mQsPanel != null) {
-            mQsPanel.setDetailBackgroundColor(bgColor);
-        }
-    }
-
     private void setQSColors() {
         if (mQSBar != null) {
             mQSBar.setColors();
@@ -2746,24 +2722,28 @@ public class NotificationPanelView extends PanelView implements
     }
 
     private void setQSStroke() {
+        ContentResolver resolver = mContext.getContentResolver();
+        final int bgColor = Settings.System.getInt(resolver,
+                Settings.System.QS_BACKGROUND_COLOR, 0xff263238);
         final GradientDrawable qSGd = new GradientDrawable();
         if (mQsContainer != null) {
             if (mQSStroke == 0) { // Disable by setting border thickness to 0
-                qSGd.setColor(mContext.getResources().getColor(R.color.system_primary_color));
+                qSGd.setColor(bgColor);
                 qSGd.setStroke(0, mContext.getResources().getColor(R.color.system_accent_color));
                 qSGd.setCornerRadius(mCustomCornerRadius);
                 mQsContainer.setBackground(qSGd);
             } else if (mQSStroke == 1) { // use accent color for border
-                qSGd.setColor(mContext.getResources().getColor(R.color.system_primary_color));
+                qSGd.setColor(bgColor);
                 qSGd.setStroke(mCustomStrokeThickness, mContext.getResources().getColor(R.color.system_accent_color));
             } else if (mQSStroke == 2) { // use custom border color
-                qSGd.setColor(mContext.getResources().getColor(R.color.system_primary_color));
+                qSGd.setColor(bgColor);
                 qSGd.setStroke(mCustomStrokeThickness, mCustomStrokeColor);
             }
 
             if (mQSStroke != 0) {
                 qSGd.setCornerRadius(mCustomCornerRadius);
                 mQsContainer.setBackground(qSGd);
+                mQsPanel.setDetailBackgroundColor(bgColor);
             }
         }
     }
