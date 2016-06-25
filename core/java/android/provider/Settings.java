@@ -5535,6 +5535,36 @@ public final class Settings {
          */
         public static final String STATUS_BAR_NOTIFICATION_ICONS_COLOR_DARK_MODE = "status_bar_notification_icons_color_dark_mode";
 
+        /**
+         * Expanded header stroke
+         * 0 = disabled
+         * 1 = use accent color (default)
+         * 2 = use custom color
+         * @hide
+         */
+        public static final String STATUS_BAR_EXPANDED_HEADER_STROKE = "status_bar_expanded_header_stroke";
+
+        /**
+         * Expanded header stroke custom color
+         * Accent color is used as default
+         * @hide
+         */
+        public static final String STATUS_BAR_EXPANDED_HEADER_STROKE_COLOR = "status_bar_expanded_header_stroke_color";
+
+        /**
+         * Expanded header stroke custom thickness
+         * 4dp is default for Cyanide
+         * @hide
+         */
+        public static final String STATUS_BAR_EXPANDED_HEADER_STROKE_THICKNESS = "status_bar_expanded_header_stroke_thickness";
+
+        /**
+         * Expanded header custom corner radius
+         * 0dp is default
+         * @hide
+         */
+        public static final String STATUS_BAR_EXPANDED_HEADER_CORNER_RADIUS = "status_bar_expanded_header_corner_radius";
+
          /**
          * Color of the expanded status bar header background
          * @hide

@@ -2680,7 +2680,7 @@ public class NotificationPanelView extends PanelView implements
                     resolver, Settings.Secure.STATUS_BAR_LOCKED_ON_SECURE_KEYGUARD, 1,
                     UserHandle.USER_CURRENT) == 1;
             mQSStroke = Settings.System.getInt(mContext.getContentResolver(),
-                        Settings.System.QS_STROKE, 1);
+                        Settings.System.QS_STROKE, 0);
             mCustomStrokeColor = Settings.System.getInt(mContext.getContentResolver(),
                         Settings.System.QS_STROKE_COLOR, mContext.getResources().getColor(R.color.system_accent_color));
             mCustomStrokeThickness = Settings.System.getInt(mContext.getContentResolver(),
@@ -2727,9 +2727,9 @@ public class NotificationPanelView extends PanelView implements
                 Settings.System.QS_BACKGROUND_COLOR, 0xff263238);
         final GradientDrawable qSGd = new GradientDrawable();
         if (mQsContainer != null) {
-            if (mQSStroke == 0) { // Disable by setting border thickness to 0
+            if (mQSStroke == 0) { // Disable by setting border color to match bg color
                 qSGd.setColor(bgColor);
-                qSGd.setStroke(0, mContext.getResources().getColor(R.color.system_accent_color));
+                qSGd.setStroke(0, bgColor);
                 qSGd.setCornerRadius(mCustomCornerRadius);
                 mQsContainer.setBackground(qSGd);
             } else if (mQSStroke == 1) { // use accent color for border
