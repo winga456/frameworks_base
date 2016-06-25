@@ -101,6 +101,7 @@ public class VolumeDialog {
     private final Context mContext;
     private final H mHandler = new H();
     private final VolumeDialogController mController;
+    private Context vContext;
 
     private final CustomDialog mDialog;
     private final ViewGroup mDialogView;
@@ -123,6 +124,7 @@ public class VolumeDialog {
 
     private boolean mShowing;
     private boolean mExpanded;
+    private boolean mForceExpanded;
     private int mActiveStream;
     private boolean mShowHeaders = VolumePrefs.DEFAULT_SHOW_HEADERS;
     private boolean mAutomute = VolumePrefs.DEFAULT_ENABLE_AUTOMUTE;
@@ -148,6 +150,7 @@ public class VolumeDialog {
     public VolumeDialog(Context context, int windowType, VolumeDialogController controller,
             ZenModeController zenModeController, Callback callback) {
         mContext = context;
+        vContext = context;
         mController = controller;
         mCallback = callback;
         mSpTexts = new SpTexts(mContext);
@@ -229,6 +232,7 @@ public class VolumeDialog {
         controller.addCallback(mControllerCallbackH, mHandler);
         controller.getState();
         updateExpandButtonColor();
+        updateForceExpanded();
     }
 
     private void updateWindowWidthH() {
@@ -346,6 +350,7 @@ public class VolumeDialog {
         writer.println(VolumeDialog.class.getSimpleName() + " state:");
         writer.print("  mShowing: "); writer.println(mShowing);
         writer.print("  mExpanded: "); writer.println(mExpanded);
+        writer.print("  mForceExpanded: "); writer.println(mForceExpanded);
         writer.print("  mExpandButtonAnimationRunning: ");
         writer.println(mExpandButtonAnimationRunning);
         writer.print("  mActiveStream: "); writer.println(mActiveStream);
@@ -480,7 +485,7 @@ public class VolumeDialog {
     private int computeTimeoutH() {
         if (mAccessibility.mFeedbackEnabled) return 20000;
         if (mSafetyWarning != null) return 5000;
-        if (mExpanded || mExpandButtonAnimationRunning) return 5000;
+        if (mExpanded || mForceExpanded || mExpandButtonAnimationRunning) return 5000;
         if (mActiveStream == AudioManager.STREAM_MUSIC) return 1500;
         return 5000;
     }
@@ -565,6 +570,7 @@ public class VolumeDialog {
 
     private void updateExpandButtonH() {
         if (D.BUG) Log.d(TAG, "updateExpandButtonH");
+        // TO DO: Make button unclickable when force expanded view, need to update "off" state for this to be done without causing ui issues
         mExpandButton.setClickable(!mExpandButtonAnimationRunning);
         if (mExpandButtonAnimationRunning && isAttached()) return;
         final int res = mExpanded ? R.drawable.ic_volume_collapse_animation
@@ -577,8 +583,8 @@ public class VolumeDialog {
     }
 
     private boolean isVisibleH(VolumeRow row, boolean isActive) {
-        return mExpanded && row.view.getVisibility() == View.VISIBLE
-                || (mExpanded && (row.important || isActive))
+        return mExpanded || mForceExpanded && row.view.getVisibility() == View.VISIBLE
+                || (mExpanded  && (row.important || isActive))
                 || !mExpanded && isActive;
     }
 
@@ -589,6 +595,7 @@ public class VolumeDialog {
         updateExpandButtonH();
         setBackgroundColor();
         updateExpandButtonColor();
+        updateForceExpanded();
         setVolumeStroke();
         if (!mShowing) {
             trimObsoleteH();
@@ -779,7 +786,7 @@ public class VolumeDialog {
         final ColorStateList sliderIconColor = VolumeDialogColorHelper.getSliderIconColorList(mContext);
         final ColorStateList sliderColor = VolumeDialogColorHelper.getSliderColorList(mContext);
         final ColorStateList sliderInactiveColor = VolumeDialogColorHelper.getSliderInactiveColorList(mContext);
-        if (isActive && mExpanded) {
+        if (isActive && mForceExpanded) {
             row.slider.requestFocus();
         }
         row.cachedSliderTint = sliderColor;
@@ -1215,5 +1222,10 @@ public class VolumeDialog {
             volumeDialogGd.setCornerRadius(mCustomCornerRadius);
             mDialogView.setBackground(volumeDialogGd);
         }
+    }
+
+    private void updateForceExpanded() {
+        mForceExpanded = Settings.System.getInt(vContext.getContentResolver(),
+                Settings.System.VOLUME_DIALOG_FORCE_EXPANDED, 1) == 1;
     }
 }
