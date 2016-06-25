@@ -6861,13 +6861,6 @@ public final class Settings {
         public static final String EXPANSION_VIEW_WEATHER_TEXT_SIZE = "expansion_view_weather_text_size";
 
         /**
-         * Icon color for the expansion view weather panel
-         *
-         * @hide
-         */
-        public static final String EXPANSION_VIEW_BACKGROUND = "expansion_view_background";
-
-        /**
          * Text color for the expansion view weather panel
          *
          * @hide
@@ -6885,6 +6878,36 @@ public final class Settings {
          * @hide
          */
         public static final String EXPANSION_VIEW_VIBRATION = "expansion_view_vibration";
+
+        /**
+         * Expansion View stroke
+         * 0 = disabled
+         * 1 = use accent color (default)
+         * 2 = use custom color
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_STROKE = "expansion_view_stroke";
+
+        /**
+         * Expansion View stroke custom color
+         * Accent color is used as default
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_STROKE_COLOR = "expansion_view_stroke_color";
+
+        /**
+         * Expansion View stroke custom thickness
+         * 4dp is default for Cyanide
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_STROKE_THICKNESS = "expansion_view_stroke_thickness";
+
+        /**
+         * Quick settings custom corner radius
+         * 0dp is default
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_CORNER_RADIUS = "expansion_view_corner_radius";
 
         /**
          * Expansion View Shortcut Bar Visibility

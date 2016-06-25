@@ -174,13 +174,6 @@ public class ExpansionViewController {
         }
     }
 
-    private void setExpansionViewBg() {
-        if (mExpansionViewCustomPanel != null) {
-            mExpansionViewCustomPanel.setBackgroundColor();
-        }
-    }
-
-
     private void setExpansionViewIconColor() {
         int color = ExpansionViewColorHelper.getExpansionViewIconColor(mContext);
         if (mExpansionViewCustomPanel != null) {
@@ -381,6 +374,12 @@ public class ExpansionViewController {
         }
     }
 
+    private void setExpansionViewStroke() {
+        if (mExpansionViewCustomPanel != null) {
+            mExpansionViewCustomPanel.setStroke();
+        }
+    }
+
     public void setObserving(boolean observe) {
         if (observe) {
             mSettingsObserver.observe();
@@ -443,9 +442,6 @@ public class ExpansionViewController {
                     Settings.System.EXPANSION_VIEW_WEATHER_TEXT_COLOR),
                     false, this);
             mResolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.EXPANSION_VIEW_BACKGROUND),
-                    false, this);
-            mResolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.EXPANSION_VIEW_BACKGROUND_COLOR),
                     false, this);
             mResolver.registerContentObserver(Settings.System.getUriFor(
@@ -490,6 +486,18 @@ public class ExpansionViewController {
             mResolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.EXPANSION_VIEW_PANEL_FOUR),
                     false, this);
+            mResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_STROKE),
+                    false, this);
+            mResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_STROKE_COLOR),
+                    false, this);
+            mResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_STROKE_THICKNESS),
+                    false, this);
+            mResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_CORNER_RADIUS),
+                    false, this);
             update();
         }
 
@@ -510,7 +518,7 @@ public class ExpansionViewController {
             setExpansionViewRipple();
             setExpansionViewWeatherPanelItems();
             setExpansionViewWeatherColors();
-            setExpansionViewBg();
+            setExpansionViewStroke();
             setExpansionViewWeatherTextSize();
             setExpansionViewVibration();
             setExpansionViewPanelVisibility();
@@ -560,11 +568,6 @@ public class ExpansionViewController {
                     Settings.System.EXPANSION_VIEW_WEATHER_TEXT_COLOR))) {
                 setExpansionViewWeatherColors();
             } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.EXPANSION_VIEW_BACKGROUND))
-                || uri.equals(Settings.System.getUriFor(
-                    Settings.System.EXPANSION_VIEW_BACKGROUND_COLOR))) {
-                setExpansionViewBg();
-            } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.EXPANSION_VIEW_WEATHER_TEXT_SIZE))) {
                 setExpansionViewWeatherTextSize();
             } else if (uri.equals(Settings.System.getUriFor(
@@ -602,6 +605,17 @@ public class ExpansionViewController {
                 || uri.equals(Settings.System.getUriFor(
                     Settings.System.EXPANSION_VIEW_PANEL_FOUR))) {
                 setExpansionViewPanelVisibility();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_BACKGROUND_COLOR))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_STROKE))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_STROKE_COLOR))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_STROKE_THICKNESS))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_CORNER_RADIUS))) {
+                setExpansionViewStroke();
             }
         }
     }

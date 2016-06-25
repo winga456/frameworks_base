@@ -23,6 +23,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Typeface;
@@ -70,6 +71,12 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
     private ImageView mLayoutChanger;
     private ImageView mShadeRomLogo;
     private TextView mCustomText;
+
+    // Stroke
+    private int mStroke;
+    private int mStrokeColor;
+    private int mStrokeThickness;
+    private int mCornerRadius;
 
     protected Vibrator mVibrator;
  
@@ -333,12 +340,34 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
         return AnimationUtils.loadAnimation(mContext, animationResId);
     }
 
-    public void setBackgroundColor() {
+    public void setStroke() {
+        mStroke = Settings.System.getInt(
+                mResolver, Settings.System.EXPANSION_VIEW_STROKE, 1);
+        mStrokeColor = Settings.System.getInt(
+                mResolver, Settings.System.EXPANSION_VIEW_STROKE_COLOR, 0xffffffff);
+        mStrokeThickness = Settings.System.getInt(
+                mResolver, Settings.System.EXPANSION_VIEW_STROKE_THICKNESS, 0);
+        mCornerRadius = Settings.System.getInt(
+                mResolver, Settings.System.EXPANSION_VIEW_CORNER_RADIUS, 2);
         final int backgroundColor = ExpansionViewColorHelper.getBackgroundColor(mContext);
-        final boolean showBackground = Settings.System.getInt(mResolver,
-                Settings.System.EXPANSION_VIEW_BACKGROUND, 0) == 1;
-        ((Drawable) getBackground()).setTint(backgroundColor);
-        ((Drawable) getBackground()).setAlpha(showBackground ? 255 : 0);
+        final GradientDrawable gradientDrawable = new GradientDrawable();
+        if (mStroke == 0) { // Disable by setting border thickness to 0
+            gradientDrawable.setColor(backgroundColor);
+            gradientDrawable.setStroke(0, mStrokeColor);
+            gradientDrawable.setCornerRadius(mCornerRadius);
+            setBackground(gradientDrawable);
+        } else if (mStroke == 1) { // use accent color for border
+            gradientDrawable.setColor(backgroundColor);
+            gradientDrawable.setStroke(mStrokeThickness, mContext.getResources().getColor(R.color.system_accent_color));
+        } else if (mStroke == 2) { // use custom border color
+            gradientDrawable.setColor(backgroundColor);
+            gradientDrawable.setStroke(mStrokeThickness, mStrokeColor);
+        }
+
+        if (mStroke != 0) {
+            gradientDrawable.setCornerRadius(mCornerRadius);
+            setBackground(gradientDrawable);
+        }
     }
 
     public void updateBackgroundImage() {
