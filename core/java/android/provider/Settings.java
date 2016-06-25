@@ -5565,6 +5565,20 @@ public final class Settings {
          */
         public static final String STATUS_BAR_EXPANDED_HEADER_CORNER_RADIUS = "status_bar_expanded_header_corner_radius";
 
+        /**
+         * Expanded header custom stroke dash width
+         * Set 0 to disable (default)
+         * @hide
+         */
+        public static final String STATUS_BAR_EXPANDED_HEADER_STROKE_DASH_WIDTH = "status_bar_expanded_header_stroke_dash_width";
+
+        /**
+         * Expanded header custom stroke dash gap
+         * 10 is default for cyanide
+         * @hide
+         */
+        public static final String STATUS_BAR_EXPANDED_HEADER_STROKE_DASH_GAP = "status_bar_expanded_header_stroke_dash_gap";
+
          /**
          * Color of the expanded status bar header background
          * @hide
@@ -6938,6 +6952,20 @@ public final class Settings {
          * @hide
          */
         public static final String EXPANSION_VIEW_CORNER_RADIUS = "expansion_view_corner_radius";
+
+        /**
+         * Expansion view custom stroke dash width
+         * Set 0 to disable (default)
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_STROKE_DASH_WIDTH = "expansion_view_stroke_dash_width";
+
+        /**
+         * Expansion view custom stroke dash gap
+         * 10 is default for cyanide
+         * @hide
+         */
+        public static final String EXPANSION_VIEW_STROKE_DASH_GAP = "expansion_view_stroke_dash_gap";
 
         /**
          * Expansion View Shortcut Bar Visibility

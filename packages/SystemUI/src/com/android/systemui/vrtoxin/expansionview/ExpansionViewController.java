@@ -498,6 +498,12 @@ public class ExpansionViewController {
             mResolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.EXPANSION_VIEW_CORNER_RADIUS),
                     false, this);
+            mResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_STROKE_DASH_GAP),
+                    false, this);
+            mResolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_STROKE_DASH_WIDTH),
+                    false, this);
             update();
         }
 
@@ -614,7 +620,11 @@ public class ExpansionViewController {
                 || uri.equals(Settings.System.getUriFor(
                     Settings.System.EXPANSION_VIEW_STROKE_THICKNESS))
                 || uri.equals(Settings.System.getUriFor(
-                    Settings.System.EXPANSION_VIEW_CORNER_RADIUS))) {
+                    Settings.System.EXPANSION_VIEW_CORNER_RADIUS))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_STROKE_DASH_GAP))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.EXPANSION_VIEW_STROKE_DASH_WIDTH))) {
                 setExpansionViewStroke();
             }
         }

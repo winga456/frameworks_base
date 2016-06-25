@@ -72,12 +72,6 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
     private ImageView mShadeRomLogo;
     private TextView mCustomText;
 
-    // Stroke
-    private int mStroke;
-    private int mStrokeColor;
-    private int mStrokeThickness;
-    private int mCornerRadius;
-
     protected Vibrator mVibrator;
  
     private boolean mExpansionViewVibrate = false;
@@ -341,14 +335,18 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
     }
 
     public void setStroke() {
-        mStroke = Settings.System.getInt(
+        final int mStroke = Settings.System.getInt(
                 mResolver, Settings.System.EXPANSION_VIEW_STROKE, 1);
-        mStrokeColor = Settings.System.getInt(
+        final int mStrokeColor = Settings.System.getInt(
                 mResolver, Settings.System.EXPANSION_VIEW_STROKE_COLOR, 0xffffffff);
-        mStrokeThickness = Settings.System.getInt(
+        final int mStrokeThickness = Settings.System.getInt(
                 mResolver, Settings.System.EXPANSION_VIEW_STROKE_THICKNESS, 0);
-        mCornerRadius = Settings.System.getInt(
+        final int mCornerRadius = Settings.System.getInt(
                 mResolver, Settings.System.EXPANSION_VIEW_CORNER_RADIUS, 2);
+        final int mCustomDashWidth = Settings.System.getInt(
+                mResolver, Settings.System.EXPANSION_VIEW_STROKE_DASH_GAP, 0);
+        final int mCustomDashGap = Settings.System.getInt(
+                mResolver, Settings.System.EXPANSION_VIEW_STROKE_DASH_WIDTH, 10);
         final int backgroundColor = ExpansionViewColorHelper.getBackgroundColor(mContext);
         final GradientDrawable gradientDrawable = new GradientDrawable();
         if (mStroke == 0) { // Disable by setting border thickness to 0
@@ -358,10 +356,11 @@ public class ExpansionViewCustomPanel extends RelativeLayout {
             setBackground(gradientDrawable);
         } else if (mStroke == 1) { // use accent color for border
             gradientDrawable.setColor(backgroundColor);
-            gradientDrawable.setStroke(mStrokeThickness, mContext.getResources().getColor(R.color.system_accent_color));
+            gradientDrawable.setStroke(mStrokeThickness, mContext.getResources().getColor(R.color.system_accent_color),
+                    mCustomDashWidth, mCustomDashGap);
         } else if (mStroke == 2) { // use custom border color
             gradientDrawable.setColor(backgroundColor);
-            gradientDrawable.setStroke(mStrokeThickness, mStrokeColor);
+            gradientDrawable.setStroke(mStrokeThickness, mStrokeColor, mCustomDashWidth, mCustomDashGap);
         }
 
         if (mStroke != 0) {

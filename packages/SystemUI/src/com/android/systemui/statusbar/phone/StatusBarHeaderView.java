@@ -175,12 +175,6 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     private boolean mShowWeather;
     private boolean mShowWeatherLocation;
 
-    // Stroke
-    private int mSBEHStroke;
-    private int mSBEHStrokeColor;
-    private int mSBEHStrokeThickness;
-    private int mSBEHCornerRadius;
-
     private ContentObserver mContentObserver = new ContentObserver(new Handler()) {
    	 @Override
     	 public void onChange(boolean selfChange, Uri uri) {
@@ -1322,6 +1316,12 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_EXPANDED_HEADER_CORNER_RADIUS),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EXPANDED_HEADER_STROKE_DASH_WIDTH),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EXPANDED_HEADER_STROKE_DASH_GAP),
+                    false, this, UserHandle.USER_ALL);
             updateSettings();
         }
 
@@ -1400,7 +1400,11 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 || uri.equals(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_EXPANDED_HEADER_STROKE_THICKNESS))
                 || uri.equals(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_EXPANDED_HEADER_CORNER_RADIUS))) {
+                    Settings.System.STATUS_BAR_EXPANDED_HEADER_CORNER_RADIUS))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EXPANDED_HEADER_STROKE_DASH_WIDTH))
+                || uri.equals(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_EXPANDED_HEADER_STROKE_DASH_GAP))) {
                 setSBEHStroke();
             }
 
@@ -1446,14 +1450,18 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
 
     private void setSBEHStroke() {
         ContentResolver resolver = mContext.getContentResolver();
-        mSBEHStroke = Settings.System.getInt(
+        final int mSBEHStroke = Settings.System.getInt(
                 resolver, Settings.System.STATUS_BAR_EXPANDED_HEADER_STROKE, 1);
-        mSBEHStrokeColor = Settings.System.getInt(
+        final int mSBEHStrokeColor = Settings.System.getInt(
                 resolver, Settings.System.STATUS_BAR_EXPANDED_HEADER_STROKE_COLOR, mContext.getResources().getColor(R.color.system_accent_color));
-        mSBEHStrokeThickness = Settings.System.getInt(
+        final int mSBEHStrokeThickness = Settings.System.getInt(
                 resolver, Settings.System.STATUS_BAR_EXPANDED_HEADER_STROKE_THICKNESS, 4);
-        mSBEHCornerRadius = Settings.System.getInt(
+        final int mSBEHCornerRadius = Settings.System.getInt(
                 resolver, Settings.System.STATUS_BAR_EXPANDED_HEADER_CORNER_RADIUS, 0);
+        final int mSBEHCustomDashWidth = Settings.System.getInt(
+                resolver, Settings.System.STATUS_BAR_EXPANDED_HEADER_STROKE_DASH_GAP, 0);
+        final int mSBEHCustomDashGap = Settings.System.getInt(
+                resolver, Settings.System.STATUS_BAR_EXPANDED_HEADER_STROKE_DASH_WIDTH, 10);
         final int backgroundColor = SBEHeaderColorHelper.getBackgroundColor(mContext);
         final GradientDrawable gradientDrawable = new GradientDrawable();
         if (mSBEHStroke == 0) { // Disable by setting border color to match bg color
@@ -1463,10 +1471,11 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             setBackground(gradientDrawable);
         } else if (mSBEHStroke == 1) { // use accent color for border
             gradientDrawable.setColor(backgroundColor);
-            gradientDrawable.setStroke(mSBEHStrokeThickness, mContext.getResources().getColor(R.color.system_accent_color));
+            gradientDrawable.setStroke(mSBEHStrokeThickness, mContext.getResources().getColor(R.color.system_accent_color),
+                    mSBEHCustomDashWidth, mSBEHCustomDashGap);
         } else if (mSBEHStroke == 2) { // use custom border color
             gradientDrawable.setColor(backgroundColor);
-            gradientDrawable.setStroke(mSBEHStrokeThickness, mSBEHStrokeColor);
+            gradientDrawable.setStroke(mSBEHStrokeThickness, mSBEHStrokeColor, mSBEHCustomDashWidth, mSBEHCustomDashGap);
         }
 
         if (mSBEHStroke != 0) {
