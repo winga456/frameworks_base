@@ -483,11 +483,13 @@ public class VolumeDialog {
     }
 
     private int computeTimeoutH() {
+        final int volumePanelTimeout = Settings.System.getInt(vContext.getContentResolver(),
+                Settings.System.VOLUME_DIALOG_TIMEOUT, 10000);
         if (mAccessibility.mFeedbackEnabled) return 20000;
         if (mSafetyWarning != null) return 5000;
-        if (mExpanded || mForceExpanded || mExpandButtonAnimationRunning) return 5000;
-        if (mActiveStream == AudioManager.STREAM_MUSIC) return 1500;
-        return 5000;
+        //if (mExpanded || mForceExpanded || mExpandButtonAnimationRunning) return 5000;
+        //if (mActiveStream == AudioManager.STREAM_MUSIC) return 1500;
+        return volumePanelTimeout;
     }
 
     protected void dismissH(int reason) {

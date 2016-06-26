@@ -6642,6 +6642,12 @@ public final class Settings {
         public static final String VOLUME_DIALOG_EXPAND_BUTTON_COLOR = "volume_dialog_expand_button_color";
 
         /**
+         * timeout for the volume dialog
+         * @hide
+         */
+        public static final String VOLUME_DIALOG_TIMEOUT = "volume_dialog_timeout";
+
+        /**
          * Dim amount around power/reboot menu dialogs
          * @hide
          */
