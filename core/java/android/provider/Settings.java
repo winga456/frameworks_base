@@ -10364,6 +10364,14 @@ public final class Settings {
          public static final String QUICK_SETTINGS_TILES_VIBRATE = "quick_settings_vibrate";
 
         /**
+         * Whether user has enabled floating mode for headsup.
+         * <p>
+         * Type: int (0 for false, 1 for true)
+         * @hide
+         */
+        public static final String FLOATING_HEADSUP = "floating_headsup";
+
+        /**
          * The TCP/IP port to run ADB on, or -1 for USB
          * @hide
          */
