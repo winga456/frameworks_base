@@ -1478,6 +1478,8 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
                 mContext.getDrawable(R.drawable.ripple_drawable), false));
         mAlarmStatus.setBackground(getColoredBackgroundDrawable(
                 mContext.getDrawable(R.drawable.ripple_drawable), false));
+        mTaskManagerButton.setBackground(getColoredBackgroundDrawable(
+                mContext.getDrawable(R.drawable.ripple_drawable), false));
     }
 
     private void setSBEHStroke() {
@@ -1593,6 +1595,9 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         }
         if (mPowerMenuButton != null) {
             ((ImageView)mPowerMenuButton).setImageTintList(ColorStateList.valueOf(powerMenuColor));
+        }
+        if (mTaskManagerButton != null) {
+            ((ImageView)mTaskManagerButton).setImageTintList(ColorStateList.valueOf(powerMenuColor));
         }
     }
 

@@ -24,6 +24,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
 
 import com.android.systemui.vrtoxin.QuickAccess.QuickAccessBar;
 import com.android.systemui.R;
@@ -40,6 +41,9 @@ public class QSContainer extends FrameLayout {
     private HorizontalScrollView mQSBarContainer;
     private QuickAccessBar mQSBar;
     private QSPanel mQSPanel;
+
+    private boolean mTaskManagerShowing;
+    private LinearLayout mTaskManagerPanel;
 
     private int mHeightOverride = -1;
     private final int mPadding;
@@ -62,10 +66,11 @@ public class QSContainer extends FrameLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        mQSPanel = (QSPanel) findViewById(R.id.quick_settings_panel);
         mQSBarContainer =
                 (HorizontalScrollView) findViewById(R.id.quick_access_bar_container);
         mQSBar = (QuickAccessBar) findViewById(R.id.quick_access_bar);
-        mQSPanel = (QSPanel) findViewById(R.id.quick_settings_panel);
+        mTaskManagerPanel = (LinearLayout) findViewById(R.id.task_manager_panel);
     }
 
     @Override
@@ -73,6 +78,7 @@ public class QSContainer extends FrameLayout {
         final int width = MeasureSpec.getSize(widthMeasureSpec);
         mQSPanel.measure(exactly(width), MeasureSpec.UNSPECIFIED);
         mQSBarContainer.measure(exactly(width), MeasureSpec.UNSPECIFIED);
+        mTaskManagerPanel.measure(exactly(width), MeasureSpec.UNSPECIFIED);
         int height = 0;
         if (mShowBrightnessSlider || mQSType == QS_TYPE_PANEL) {
             height += mQSPanel.getMeasuredHeight();
@@ -82,6 +88,9 @@ public class QSContainer extends FrameLayout {
         }
         if (mShowBrightnessSlider || mQSType != QS_TYPE_HIDDEN) {
             height += mPadding * 2;
+        }
+        if (mTaskManagerShowing) {
+            height += mTaskManagerPanel.getMeasuredHeight();
         }
         setMeasuredDimension(width, height);
     }
@@ -98,6 +107,8 @@ public class QSContainer extends FrameLayout {
                 mPadding + mQSPanel.getMeasuredHeight());
         mQSBarContainer.layout(0, qsBarTop, mQSBarContainer.getMeasuredWidth(),
                 qsBarTop + mQSBarContainer.getMeasuredHeight());
+        mTaskManagerPanel.layout(0, mPadding, mTaskManagerPanel.getMeasuredWidth(),
+                mPadding + mTaskManagerPanel.getMeasuredHeight());
         updateBottom();
     }
 
@@ -109,14 +120,14 @@ public class QSContainer extends FrameLayout {
             mQSPanel.setVisibility(View.INVISIBLE);
             setVisibility(View.INVISIBLE);
         } else if (mQSType == QS_TYPE_BAR) {
-            mQSPanel.setVisibility(mShowBrightnessSlider ? View.INVISIBLE : View.GONE);
+            mQSPanel.setVisibility(mShowBrightnessSlider || mTaskManagerShowing ? View.INVISIBLE : View.GONE);
             mQSBarContainer.setVisibility(View.INVISIBLE);
             mQSBar.setVisibility(View.INVISIBLE);
             setVisibility(View.INVISIBLE);
         } else {
             mQSBarContainer.setVisibility(View.GONE);
             mQSBar.setVisibility(View.GONE);
-            mQSPanel.setVisibility(mShowBrightnessSlider ? View.INVISIBLE : View.GONE);
+            mQSPanel.setVisibility(mShowBrightnessSlider && mTaskManagerShowing ? View.INVISIBLE : View.GONE);
             setVisibility(mShowBrightnessSlider ? View.INVISIBLE : View.GONE);
         }
         requestLayout();
@@ -129,20 +140,25 @@ public class QSContainer extends FrameLayout {
         requestLayout();
     }
 
-    public void updateVisibility(boolean keyguardShowing, boolean visible) {
-        if (mQSType == QS_TYPE_HIDDEN && !mShowBrightnessSlider) {
+    public void updateVisibility(boolean keyguardShowing, boolean visible, boolean taskManagerShowing) {
+        if (mQSType == QS_TYPE_HIDDEN && !mShowBrightnessSlider && !mTaskManagerShowing) {
             return;
         }
+        mTaskManagerShowing = taskManagerShowing;
         setVisibility(keyguardShowing && !visible ? View.INVISIBLE : View.VISIBLE);
         if (mQSType == QS_TYPE_PANEL) {
-            mQSPanel.setVisibility(visible ?  View.VISIBLE : View.INVISIBLE);
+            mQSPanel.setVisibility(visible && !mTaskManagerShowing ?  View.VISIBLE : View.GONE);
+            mTaskManagerPanel.setVisibility(visible && mTaskManagerShowing ?  View.VISIBLE : View.GONE);
         } else if (mQSType == QS_TYPE_BAR) {
-            mQSBarContainer.setVisibility(visible ?  View.VISIBLE : View.INVISIBLE);
-            mQSBar.setVisibility(visible ?  View.VISIBLE : View.INVISIBLE);
-            mQSPanel.setVisibility(visible && mShowBrightnessSlider ? View.VISIBLE : View.INVISIBLE);
+            mQSBarContainer.setVisibility(visible && !mTaskManagerShowing ?  View.VISIBLE : View.GONE);
+            mQSBar.setVisibility(visible && !mTaskManagerShowing ?  View.VISIBLE : View.GONE);
+            mQSPanel.setVisibility(visible && !mTaskManagerShowing && mShowBrightnessSlider ? View.VISIBLE : View.INVISIBLE);
+            mTaskManagerPanel.setVisibility(visible && mTaskManagerShowing ?  View.VISIBLE : View.GONE);
         } else {
-            mQSPanel.setVisibility(mShowBrightnessSlider ? View.VISIBLE : View.INVISIBLE);
+            mQSPanel.setVisibility(mShowBrightnessSlider || mTaskManagerShowing ? View.VISIBLE : View.INVISIBLE);
+            mTaskManagerPanel.setVisibility(mTaskManagerShowing ?  View.VISIBLE : View.GONE);
         }
+        requestLayout();
     }
 
     public void setListening(boolean listening) {
@@ -168,7 +184,7 @@ public class QSContainer extends FrameLayout {
     public int getDesiredHeight() {
         if (mQSPanel.isClosingDetail()) {
             return mQSPanel.getGridHeight() + getPaddingTop() + getPaddingBottom();
-        } else if (mQSType == QS_TYPE_HIDDEN && !mShowBrightnessSlider) {
+        } else if (mQSType == QS_TYPE_HIDDEN && !mShowBrightnessSlider && !mTaskManagerShowing) {
             return 0;
         } else {
             return getMeasuredHeight();
