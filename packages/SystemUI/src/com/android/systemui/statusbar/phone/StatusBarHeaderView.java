@@ -228,6 +228,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mPowerMenuButton.setOnClickListener(this);
         mPowerMenuButton.setOnLongClickListener(this);
         mTaskManagerButton = findViewById(R.id.task_manager_button);
+        mTaskManagerButton.setOnLongClickListener(this);
         mQsDetailHeader = findViewById(R.id.qs_detail_header);
         mQsDetailHeader.setAlpha(0);
         mQsDetailHeaderTitle = (TextView) mQsDetailHeader.findViewById(android.R.id.title);
@@ -692,14 +693,21 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             startUserLongClickActivity();
         } else if (v == mVRToxinButton) {
             startVRToxinLongClickActivity();
-        } else if (mPowerMenuButtonStyle == STATUS_BAR_POWER_MENU_DEFAULT) {
-            triggerPowerMenuDialog();
-        } else if (mPowerMenuButtonStyle == STATUS_BAR_POWER_MENU_INVERTED) {
-            goToSleep();
+        } else if (v == mPowerMenuButton) {
+            startPowerMenuLongAction();
         } else if (v == this) {
             startExpandedActivity();
+        } else if (v == mTaskManagerButton) {
+            startTaskLongClickActivity();
         }
         return false;
+    }
+
+    private void startTaskLongClickActivity() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setClassName("com.android.settings",
+            "com.android.settings.Settings$TaskManagerSettingsActivity");
+        mActivityStarter.startActivity(intent, true /* dismissShade */);
     }
 
     private void startExpandedActivity() {
@@ -908,6 +916,14 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         if (mPowerMenuButtonStyle == STATUS_BAR_POWER_MENU_DEFAULT) {
             goToSleep();
         } else if (mPowerMenuButtonStyle == STATUS_BAR_POWER_MENU_INVERTED) {
+            triggerPowerMenuDialog();
+        }
+    }
+
+    private void startPowerMenuLongAction() {
+        if (mPowerMenuButtonStyle == STATUS_BAR_POWER_MENU_INVERTED) {
+            goToSleep();
+        } else if (mPowerMenuButtonStyle == STATUS_BAR_POWER_MENU_DEFAULT) {
             triggerPowerMenuDialog();
         }
     }
