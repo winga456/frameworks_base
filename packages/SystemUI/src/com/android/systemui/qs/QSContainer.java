@@ -86,7 +86,7 @@ public class QSContainer extends FrameLayout {
         if (mQSType == QS_TYPE_BAR) {
             height += mQSBarContainer.getMeasuredHeight();
         }
-        if (mShowBrightnessSlider || mQSType != QS_TYPE_HIDDEN) {
+        if (mShowBrightnessSlider || mQSType != QS_TYPE_HIDDEN && !mTaskManagerShowing) {
             height += mPadding * 2;
         }
         if (mTaskManagerShowing) {
@@ -120,15 +120,15 @@ public class QSContainer extends FrameLayout {
             mQSPanel.setVisibility(View.INVISIBLE);
             setVisibility(View.INVISIBLE);
         } else if (mQSType == QS_TYPE_BAR) {
-            mQSPanel.setVisibility(mShowBrightnessSlider || mTaskManagerShowing ? View.INVISIBLE : View.GONE);
+            mQSPanel.setVisibility(mShowBrightnessSlider ? View.INVISIBLE : View.GONE);
             mQSBarContainer.setVisibility(View.INVISIBLE);
             mQSBar.setVisibility(View.INVISIBLE);
             setVisibility(View.INVISIBLE);
         } else {
             mQSBarContainer.setVisibility(View.GONE);
             mQSBar.setVisibility(View.GONE);
-            mQSPanel.setVisibility(mShowBrightnessSlider && mTaskManagerShowing ? View.INVISIBLE : View.GONE);
-            setVisibility(mShowBrightnessSlider ? View.INVISIBLE : View.GONE);
+            mQSPanel.setVisibility(mShowBrightnessSlider ? View.INVISIBLE : View.GONE);
+            setVisibility(mShowBrightnessSlider ? View.INVISIBLE : View.INVISIBLE);
         }
         requestLayout();
     }
@@ -152,10 +152,10 @@ public class QSContainer extends FrameLayout {
         } else if (mQSType == QS_TYPE_BAR) {
             mQSBarContainer.setVisibility(visible && !mTaskManagerShowing ?  View.VISIBLE : View.GONE);
             mQSBar.setVisibility(visible && !mTaskManagerShowing ?  View.VISIBLE : View.GONE);
-            mQSPanel.setVisibility(visible && !mTaskManagerShowing && mShowBrightnessSlider ? View.VISIBLE : View.INVISIBLE);
+            mQSPanel.setVisibility(visible && !mTaskManagerShowing && mShowBrightnessSlider ? View.VISIBLE : View.GONE);
             mTaskManagerPanel.setVisibility(visible && mTaskManagerShowing ?  View.VISIBLE : View.GONE);
         } else {
-            mQSPanel.setVisibility(mShowBrightnessSlider || mTaskManagerShowing ? View.VISIBLE : View.INVISIBLE);
+            mQSPanel.setVisibility(mShowBrightnessSlider || !mTaskManagerShowing ? View.VISIBLE : View.GONE);
             mTaskManagerPanel.setVisibility(mTaskManagerShowing ?  View.VISIBLE : View.GONE);
         }
         requestLayout();
@@ -184,8 +184,10 @@ public class QSContainer extends FrameLayout {
     public int getDesiredHeight() {
         if (mQSPanel.isClosingDetail()) {
             return mQSPanel.getGridHeight() + getPaddingTop() + getPaddingBottom();
-        } else if (mQSType == QS_TYPE_HIDDEN && !mShowBrightnessSlider && !mTaskManagerShowing) {
+        } else if (mQSType == QS_TYPE_HIDDEN && !mShowBrightnessSlider) {
             return 0;
+        } else if (mTaskManagerShowing) {
+            return mTaskManagerPanel.getMeasuredHeight() + mPadding;
         } else {
             return getMeasuredHeight();
         }
@@ -193,6 +195,11 @@ public class QSContainer extends FrameLayout {
 
     private void updateBottom() {
         int height = mHeightOverride != -1 ? mHeightOverride : getMeasuredHeight();
-        setBottom(getTop() + height);
+        int taskHeight = mTaskManagerPanel.getMeasuredHeight() + mPadding;
+        if (mTaskManagerShowing) {
+            setBottom(getTop() + taskHeight);
+        } else {
+            setBottom(getTop() + height);
+        }
     }
 }
