@@ -1600,6 +1600,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         final int settingsIconColor = SBEHeaderColorHelper.getSettingsColor(mContext);
         final int vrtoxinButtonColor = SBEHeaderColorHelper.getVRToxinColor(mContext);
         final int powerMenuColor = SBEHeaderColorHelper.getPowerMenuColor(mContext);
+        final int taskManagerColor = SBEHeaderColorHelper.getTaskManagerColor(mContext);
         final int noSimIconColor = SBEHeaderColorHelper.getNoSimIconColor(mContext);
         final int airplaneModeIconColor = SBEHeaderColorHelper.getAirplaneModeIconColor(mContext);
 
@@ -1613,7 +1614,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             ((ImageView)mPowerMenuButton).setImageTintList(ColorStateList.valueOf(powerMenuColor));
         }
         if (mTaskManagerButton != null) {
-            ((ImageView)mTaskManagerButton).setImageTintList(ColorStateList.valueOf(powerMenuColor));
+            ((ImageView)mTaskManagerButton).setImageTintList(ColorStateList.valueOf(taskManagerColor));
         }
     }
 

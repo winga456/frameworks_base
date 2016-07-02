@@ -5652,6 +5652,12 @@ public final class Settings {
         public static final String STATUS_BAR_EXPANDED_HEADER_VRTOXIN_COLOR = "status_bar_expanded_header_vrtoxin_color";
 
         /**
+         * Color of the task manager button on the header of the expanded status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_EXPANDED_HEADER_TASK_MANAGER_COLOR = "status_bar_expanded_header_task_manager_color";
+
+        /**
          * Icon of the battery on the expanded status bar
          * 0 - Battery portrait
          * 1 - Battery landscape

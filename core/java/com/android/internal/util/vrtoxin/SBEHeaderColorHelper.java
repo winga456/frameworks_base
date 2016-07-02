@@ -46,6 +46,12 @@ public class SBEHeaderColorHelper {
                 WHITE);
     }
 
+    public static int getTaskManagerColor(Context context) {
+        return Settings.System.getInt(context.getContentResolver(),
+                Settings.System.STATUS_BAR_EXPANDED_HEADER_TASK_MANAGER_COLOR,
+                WHITE);
+    }
+
     public static int getAlarmColor(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
                 Settings.System.STATUS_BAR_EXPANDED_HEADER_ALARM_COLOR,
