@@ -705,6 +705,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 		resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.ENABLE_TASK_MANAGER),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_ALPHA), false, this,
+					UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+		            Settings.System.LOCKSCREEN_SECURITY_ALPHA), false, this,
+					UserHandle.USER_ALL);
             update();
         }
 
@@ -924,6 +930,18 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mVRToxinLogoStyle = Settings.System.getIntForUser(
                     resolver, Settings.System.STATUS_BAR_VRTOXIN_LOGO_STYLE, 0,
                     UserHandle.USER_CURRENT);
+
+            float overlayalpha = Settings.System.getFloatForUser(mContext.getContentResolver(),
+                Settings.System.LOCKSCREEN_ALPHA, 0.45f, UserHandle.USER_CURRENT);
+            if (mScrimController != null) {
+                mScrimController.setOverlayAlpha(overlayalpha);
+            }
+
+            float securityoverlayalpha = Settings.System.getFloatForUser(mContext.getContentResolver(),
+                Settings.System.LOCKSCREEN_SECURITY_ALPHA, 0.75f, UserHandle.USER_CURRENT);
+            if (mScrimController != null) {
+                mScrimController.setSecurityOverlayAlpha(securityoverlayalpha);
+            }
 
             mVRToxinLogoColor = Settings.System.getIntForUser(resolver,
                     Settings.System.STATUS_BAR_VRTOXIN_LOGO_COLOR, 0xFFFFFFFF, mCurrentUserId);
