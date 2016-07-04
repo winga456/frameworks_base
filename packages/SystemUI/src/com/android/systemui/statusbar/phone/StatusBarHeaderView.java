@@ -1493,9 +1493,19 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mSystemIconsSuperContainer.setBackground(getColoredBackgroundDrawable(
                 mContext.getDrawable(R.drawable.ripple_drawable), false));
         mAlarmStatus.setBackground(getColoredBackgroundDrawable(
-                mContext.getDrawable(R.drawable.ripple_drawable), false));
+                mContext.getDrawable(R.drawable.ripple_drawable_rectangle), false));
+        mDateCollapsed.setBackground(getColoredBackgroundDrawable(
+                mContext.getDrawable(R.drawable.ripple_drawable_rectangle), false));
+        mDateExpanded.setBackground(getColoredBackgroundDrawable(
+                mContext.getDrawable(R.drawable.ripple_drawable_rectangle), false));
+        mTime.setBackground(getColoredBackgroundDrawable(
+                mContext.getDrawable(R.drawable.ripple_drawable_rectangle), false));
         mTaskManagerButton.setBackground(getColoredBackgroundDrawable(
                 mContext.getDrawable(R.drawable.ripple_drawable), false));
+        mAmPm.setBackground(getColoredBackgroundDrawable(
+                mContext.getDrawable(R.drawable.ripple_drawable_rectangle), false));
+        mWeatherContainer.setBackground(getColoredBackgroundDrawable(
+                mContext.getDrawable(R.drawable.ripple_drawable_rectangle), false));
     }
 
     private void setSBEHStroke() {
@@ -1607,6 +1617,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mSignalCluster.setIconTint(
                 iconColor, noSimIconColor, airplaneModeIconColor);
         ((ImageView) mSettingsButton).setImageTintList(ColorStateList.valueOf(settingsIconColor));
+        ((ImageView) mMultiUserAvatar).setImageTintList(ColorStateList.valueOf(settingsIconColor));
         if (mVRToxinButton != null) {
             ((ImageView) mVRToxinButton).setImageTintList(ColorStateList.valueOf(vrtoxinButtonColor));
         }
