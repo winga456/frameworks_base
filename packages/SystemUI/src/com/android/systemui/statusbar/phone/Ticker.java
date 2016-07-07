@@ -18,11 +18,9 @@ package com.android.systemui.statusbar.phone;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.DrawableContainer;
-import android.graphics.drawable.VectorDrawable;
 import android.graphics.Typeface;
 import android.graphics.PorterDuff.Mode;
 import android.os.Handler;
@@ -41,7 +39,7 @@ import android.widget.TextView;
 
 import com.android.internal.statusbar.StatusBarIcon;
 import com.android.internal.util.vrtoxin.FontHelper;
-import com.android.internal.util.vrtoxin.ImageHelper;
+import com.android.internal.util.vrtoxin.StatusBarColorHelper;
 import com.android.internal.util.NotificationColorUtil;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.StatusBarIconView;
@@ -221,9 +219,7 @@ public abstract class Ticker {
                         n.getNotification().tickerText));
         final CharSequence text = n.getNotification().tickerText;
         final Segment newSegment = new Segment(n, icon, text);
-        int iconColor = Settings.System.getInt(resolver,
-                Settings.System.STATUS_BAR_TICKER_ICON_COLOR,
-                0xffffffff);
+        final ColorStateList tickerIconColor = StatusBarColorHelper.getTickerIconColorList(mContext);
 
         // If there's already a notification schedule for this package and id, remove it.
         for (int i=0; i<mSegments.size(); i++) {
@@ -242,22 +238,7 @@ public abstract class Ticker {
 
             mIconSwitcher.setAnimateFirstView(false);
             mIconSwitcher.reset();
-            if (seg.icon != null) {
-                if (seg.icon instanceof AnimationDrawable) {
-                    ((DrawableContainer)seg.icon).setColorFilter(iconColor,
-                           Mode.MULTIPLY);
-                    mIconSwitcher.setImageDrawable(seg.icon);
-                } else if (seg.icon instanceof VectorDrawable) {
-                    seg.icon.setColorFilter(iconColor,
-                       Mode.MULTIPLY);
-                    mIconSwitcher.setImageDrawable(seg.icon);
-                } else {
-                    mIconSwitcher.setImageBitmap(ImageHelper
-                            .getColoredBitmap(seg.icon, iconColor));
-                    }
-            } else {
-                    mIconSwitcher.setImageDrawable(seg.icon);
-            }
+            mIconSwitcher.setColoredImageDrawable(seg.icon, tickerIconColor);
 
             mTextSwitcher.setAnimateFirstView(false);
             mTextSwitcher.reset();
@@ -319,11 +300,12 @@ public abstract class Ticker {
             while (mSegments.size() > 0) {
                 Segment seg = mSegments.get(0);
 
+                final ColorStateList tickerIconColor = StatusBarColorHelper.getTickerIconColorList(mContext);
                 if (seg.first) {
                     // this makes the icon slide in for the first one for a given
                     // notification even if there are two notifications with the
                     // same icon in a row
-                    mIconSwitcher.setImageDrawable(seg.icon);
+                    mIconSwitcher.setColoredImageDrawable(seg.icon, tickerIconColor);
                 }
                 CharSequence text = seg.advance();
                 if (text == null) {

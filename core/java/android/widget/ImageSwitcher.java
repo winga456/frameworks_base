@@ -18,7 +18,7 @@ package android.widget;
 
 import android.annotation.DrawableRes;
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.AttributeSet;
@@ -48,17 +48,19 @@ public class ImageSwitcher extends ViewSwitcher
         showNext();
     }
 
-    public void setImageBitmap(Bitmap bm)
-    {
-        ImageView image = (ImageView)this.getNextView();
-        image.setImageBitmap(bm);
-        showNext();
-    }
-
     public void setImageDrawable(Drawable drawable)
     {
         ImageView image = (ImageView)this.getNextView();
+        image.setImageTintList(null);
         image.setImageDrawable(drawable);
+        showNext();
+    }
+
+    public void setColoredImageDrawable(Drawable drawable, ColorStateList tint)
+    {
+        ImageView image = (ImageView)this.getNextView();
+        image.setImageDrawable(drawable);
+        image.setImageTintList(tint);
         showNext();
     }
 
