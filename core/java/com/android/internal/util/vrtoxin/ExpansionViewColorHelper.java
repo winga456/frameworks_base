@@ -141,7 +141,7 @@ public class ExpansionViewColorHelper {
 
     public static int getBackgroundColor(Context context) {
         return Settings.System.getInt(context.getContentResolver(),
-                Settings.System.EXPANSION_VIEW_BACKGROUND_COLOR, WHITE);
+                Settings.System.EXPANSION_VIEW_BACKGROUND_COLOR, 0x00000000);
     }
 
     public static int getNormalRippleColor(Context context) {
