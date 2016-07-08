@@ -101,6 +101,9 @@ public class SystemConfig {
     // URL-handling state upon factory reset.
     final ArraySet<String> mLinkedApps = new ArraySet<>();
 
+    final ArrayMap<Signature, ArraySet<String>> mSignatureAllowances
+	= new ArrayMap<Signature, ArraySet<String>>();
+
     // These are the permitted backup transport service components
     final ArraySet<ComponentName> mBackupTransportWhitelist = new ArraySet<>();
 
@@ -149,6 +152,10 @@ public class SystemConfig {
         return mLinkedApps;
     }
 
+    public ArrayMap<Signature, ArraySet<String>> getSignatureAllowances() {
+        return mSignatureAllowances;
+    }
+
     public ArraySet<ComponentName> getBackupTransportWhitelist() {
         return mBackupTransportWhitelist;
     }
@@ -156,15 +163,15 @@ public class SystemConfig {
     SystemConfig() {
         // Read configuration from system
         readPermissions(Environment.buildPath(
-                Environment.getRootDirectory(), "etc", "sysconfig"), false);
+							Environment.getRootDirectory(), "etc", "sysconfig"), false);
         // Read configuration from the old permissions dir
         readPermissions(Environment.buildPath(
-                Environment.getRootDirectory(), "etc", "permissions"), false);
+							Environment.getRootDirectory(), "etc", "permissions"), false);
         // Only read features from OEM config
         readPermissions(Environment.buildPath(
-                Environment.getOemDirectory(), "etc", "sysconfig"), true);
+							Environment.getOemDirectory(), "etc", "sysconfig"), true);
         readPermissions(Environment.buildPath(
-                Environment.getOemDirectory(), "etc", "permissions"), true);
+							Environment.getOemDirectory(), "etc", "permissions"), true);
     }
 
     void readPermissions(File libraryDir, boolean onlyFeatures) {
@@ -224,7 +231,7 @@ public class SystemConfig {
 
             int type;
             while ((type=parser.next()) != parser.START_TAG
-                       && type != parser.END_DOCUMENT) {
+				   && type != parser.END_DOCUMENT) {
                 ;
             }
 
@@ -234,7 +241,7 @@ public class SystemConfig {
 
             if (!parser.getName().equals("permissions") && !parser.getName().equals("config")) {
                 throw new XmlPullParserException("Unexpected start tag in " + permFile
-                        + ": found " + parser.getName() + ", expected 'permissions' or 'config'");
+												 + ": found " + parser.getName() + ", expected 'permissions' or 'config'");
             }
 
             while (true) {
@@ -251,7 +258,7 @@ public class SystemConfig {
                         mGlobalGids = appendInt(mGlobalGids, gid);
                     } else {
                         Slog.w(TAG, "<group> without gid in " + permFile + " at "
-                                + parser.getPositionDescription());
+							   + parser.getPositionDescription());
                     }
 
                     XmlUtils.skipCurrentTag(parser);
@@ -260,7 +267,7 @@ public class SystemConfig {
                     String perm = parser.getAttributeValue(null, "name");
                     if (perm == null) {
                         Slog.w(TAG, "<permission> without name in " + permFile + " at "
-                                + parser.getPositionDescription());
+							   + parser.getPositionDescription());
                         XmlUtils.skipCurrentTag(parser);
                         continue;
                     }
@@ -271,22 +278,22 @@ public class SystemConfig {
                     String perm = parser.getAttributeValue(null, "name");
                     if (perm == null) {
                         Slog.w(TAG, "<assign-permission> without name in " + permFile + " at "
-                                + parser.getPositionDescription());
+							   + parser.getPositionDescription());
                         XmlUtils.skipCurrentTag(parser);
                         continue;
                     }
                     String uidStr = parser.getAttributeValue(null, "uid");
                     if (uidStr == null) {
                         Slog.w(TAG, "<assign-permission> without uid in " + permFile + " at "
-                                + parser.getPositionDescription());
+							   + parser.getPositionDescription());
                         XmlUtils.skipCurrentTag(parser);
                         continue;
                     }
                     int uid = Process.getUidForName(uidStr);
                     if (uid < 0) {
                         Slog.w(TAG, "<assign-permission> with unknown uid \""
-                                + uidStr + "  in " + permFile + " at "
-                                + parser.getPositionDescription());
+							   + uidStr + "  in " + permFile + " at "
+							   + parser.getPositionDescription());
                         XmlUtils.skipCurrentTag(parser);
                         continue;
                     }
@@ -303,16 +310,16 @@ public class SystemConfig {
                     String perm = parser.getAttributeValue(null, "name");
                     if (perm == null) {
                         Slog.w(TAG,
-                                "<allow-permission> without name at "
-                                        + parser.getPositionDescription());
+							   "<allow-permission> without name at "
+							   + parser.getPositionDescription());
                         XmlUtils.skipCurrentTag(parser);
                         continue;
                     }
                     String signature = parser.getAttributeValue(null, "signature");
                     if (signature == null) {
                         Slog.w(TAG,
-                                "<allow-permission> without signature at "
-                                        + parser.getPositionDescription());
+							   "<allow-permission> without signature at "
+							   + parser.getPositionDescription());
                         XmlUtils.skipCurrentTag(parser);
                         continue;
                     }
@@ -331,8 +338,8 @@ public class SystemConfig {
                         perms.add(perm);
                     } else {
                         Slog.w(TAG,
-                                "<allow-permission> with bad signature at "
-                                        + parser.getPositionDescription());
+							   "<allow-permission> with bad signature at "
+							   + parser.getPositionDescription());
                     }
                     XmlUtils.skipCurrentTag(parser);
 
@@ -341,10 +348,10 @@ public class SystemConfig {
                     String lfile = parser.getAttributeValue(null, "file");
                     if (lname == null) {
                         Slog.w(TAG, "<library> without name in " + permFile + " at "
-                                + parser.getPositionDescription());
+							   + parser.getPositionDescription());
                     } else if (lfile == null) {
                         Slog.w(TAG, "<library> without file in " + permFile + " at "
-                                + parser.getPositionDescription());
+							   + parser.getPositionDescription());
                     } else {
                         //Log.i(TAG, "Got library " + lname + " in " + lfile);
                         mSharedLibraries.put(lname, lfile);
@@ -363,7 +370,7 @@ public class SystemConfig {
                     }
                     if (fname == null) {
                         Slog.w(TAG, "<feature> without name in " + permFile + " at "
-                                + parser.getPositionDescription());
+							   + parser.getPositionDescription());
                     } else if (allowed) {
                         //Log.i(TAG, "Got feature " + fname);
                         FeatureInfo fi = new FeatureInfo();
@@ -377,7 +384,7 @@ public class SystemConfig {
                     String fname = parser.getAttributeValue(null, "name");
                     if (fname == null) {
                         Slog.w(TAG, "<unavailable-feature> without name in " + permFile + " at "
-                                + parser.getPositionDescription());
+							   + parser.getPositionDescription());
                     } else {
                         mUnavailableFeatures.add(fname);
                     }
@@ -388,7 +395,7 @@ public class SystemConfig {
                     String pkgname = parser.getAttributeValue(null, "package");
                     if (pkgname == null) {
                         Slog.w(TAG, "<allow-in-power-save-except-idle> without package in "
-                                + permFile + " at " + parser.getPositionDescription());
+							   + permFile + " at " + parser.getPositionDescription());
                     } else {
                         mAllowInPowerSaveExceptIdle.add(pkgname);
                     }
@@ -399,7 +406,7 @@ public class SystemConfig {
                     String pkgname = parser.getAttributeValue(null, "package");
                     if (pkgname == null) {
                         Slog.w(TAG, "<allow-in-power-save> without package in " + permFile + " at "
-                                + parser.getPositionDescription());
+							   + parser.getPositionDescription());
                     } else {
                         mAllowInPowerSave.add(pkgname);
                     }
@@ -410,7 +417,7 @@ public class SystemConfig {
                     String pkgname = parser.getAttributeValue(null, "package");
                     if (pkgname == null) {
                         Slog.w(TAG, "<fixed-ime-app> without package in " + permFile + " at "
-                                + parser.getPositionDescription());
+							   + parser.getPositionDescription());
                     } else {
                         mFixedImeApps.add(pkgname);
                     }
@@ -421,7 +428,7 @@ public class SystemConfig {
                     String pkgname = parser.getAttributeValue(null, "package");
                     if (pkgname == null) {
                         Slog.w(TAG, "<app-link> without package in " + permFile + " at "
-                                + parser.getPositionDescription());
+							   + parser.getPositionDescription());
                     } else {
                         mLinkedApps.add(pkgname);
                     }
@@ -430,14 +437,14 @@ public class SystemConfig {
                     String serviceName = parser.getAttributeValue(null, "service");
                     if (serviceName == null) {
                         Slog.w(TAG, "<backup-transport-whitelisted-service> without service in "
-                                + permFile + " at " + parser.getPositionDescription());
+							   + permFile + " at " + parser.getPositionDescription());
                     } else {
                         ComponentName cn = ComponentName.unflattenFromString(serviceName);
                         if (cn == null) {
                             Slog.w(TAG,
-                                    "<backup-transport-whitelisted-service> with invalid service name "
-                                    + serviceName + " in "+ permFile
-                                    + " at " + parser.getPositionDescription());
+								   "<backup-transport-whitelisted-service> with invalid service name "
+								   + serviceName + " in "+ permFile
+								   + " at " + parser.getPositionDescription());
                         } else {
                             mBackupTransportWhitelist.add(cn);
                         }
@@ -465,7 +472,7 @@ public class SystemConfig {
     }
 
     void readPermission(XmlPullParser parser, String name)
-            throws IOException, XmlPullParserException {
+	throws IOException, XmlPullParserException {
         if (mPermissions.containsKey(name)) {
             throw new IllegalStateException("Duplicate permission definition for " + name);
         }
@@ -478,9 +485,9 @@ public class SystemConfig {
         int type;
         while ((type=parser.next()) != XmlPullParser.END_DOCUMENT
                && (type != XmlPullParser.END_TAG
-                       || parser.getDepth() > outerDepth)) {
+			   || parser.getDepth() > outerDepth)) {
             if (type == XmlPullParser.END_TAG
-                    || type == XmlPullParser.TEXT) {
+				|| type == XmlPullParser.TEXT) {
                 continue;
             }
 
@@ -492,7 +499,7 @@ public class SystemConfig {
                     perm.gids = appendInt(perm.gids, gid);
                 } else {
                     Slog.w(TAG, "<group> without gid at "
-                            + parser.getPositionDescription());
+						   + parser.getPositionDescription());
                 }
             }
             XmlUtils.skipCurrentTag(parser);
