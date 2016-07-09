@@ -1482,8 +1482,6 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     }
 
     private void updateBackgroundColor() {
-        mMultiUserSwitch.setBackground(getColoredBackgroundDrawable(
-                mContext.getDrawable(R.drawable.ripple_drawable), false));
         mSettingsButton.setBackground(getColoredBackgroundDrawable(
                 mContext.getDrawable(R.drawable.ripple_drawable), false));
         mVRToxinButton.setBackground(getColoredBackgroundDrawable(
@@ -1617,7 +1615,6 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
         mSignalCluster.setIconTint(
                 iconColor, noSimIconColor, airplaneModeIconColor);
         ((ImageView) mSettingsButton).setImageTintList(ColorStateList.valueOf(settingsIconColor));
-        ((ImageView) mMultiUserAvatar).setImageTintList(ColorStateList.valueOf(settingsIconColor));
         if (mVRToxinButton != null) {
             ((ImageView) mVRToxinButton).setImageTintList(ColorStateList.valueOf(vrtoxinButtonColor));
         }
