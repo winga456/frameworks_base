@@ -7709,6 +7709,12 @@ public final class Settings {
         public static final String QS_TASK_ANIMATION = "qs_task_animation";
 
         /**
+         * Font style for task manager
+         * @hide
+         */
+        public static final String TASK_MANAGER_FONT_STYLE = "task_manager_font_style";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *

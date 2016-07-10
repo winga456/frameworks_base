@@ -44,9 +44,11 @@ import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff.Mode;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -62,6 +64,7 @@ import android.widget.Toast;
 
 import com.android.systemui.R;
 
+import com.android.internal.util.vrtoxin.FontHelper;
 import com.android.internal.util.vrtoxin.RandomColorHelper;
 import com.android.internal.util.vrtoxin.TMColorHelper;
 
@@ -93,6 +96,8 @@ public class TaskManager {
     private LinearLayout mTaskManagerList;
     private Button killAllButton;
     private TextView taskManagerTitle;
+    private TextView memoryUsageText;
+    private TextView taskNameTextView;
 
     private static final Object sLock = new Object();
     private ArrayList<DetailProcess> showTaskList = new ArrayList<DetailProcess>();
@@ -162,7 +167,7 @@ public class TaskManager {
         final ColorStateList memoryTextColor = TMColorHelper.getTaskMemoryTextColorList(mContext);
         final ColorStateList sliderColor = TMColorHelper.getSliderColorList(mContext);
         final ColorStateList sliderInactiveColor = TMColorHelper.getSliderInactiveColorList(mContext);
-        final TextView memoryUsageText =
+        memoryUsageText =
                 (TextView) mTaskManagerPanel.findViewById(R.id.memory_usage_text);
         final ProgressBar memoryUsageBar =
                 (ProgressBar)mTaskManagerPanel.findViewById(R.id.memory_usage_Bar);
@@ -172,6 +177,7 @@ public class TaskManager {
         memoryUsageText.setTextColor(memoryTextColor);
         refreshMemoryUsageBar(memoryUsageBar);
         refreshTitleBox();
+        getTaskFontStyle();
     }
 
     private void inflateTaskListView() {
@@ -214,7 +220,7 @@ public class TaskManager {
             }
         });
         final ColorStateList taskTextColor = TMColorHelper.getTaskTextColorList(mContext);
-        TextView taskNameTextView = (TextView) itemView.findViewById(R.id.task_name);
+        taskNameTextView = (TextView) itemView.findViewById(R.id.task_name);
         taskNameTextView.setText(taskName);
         taskNameTextView.setTextColor(taskTextColor);
         taskNameTextView.setOnClickListener(new OnClickListener() {
@@ -246,6 +252,7 @@ public class TaskManager {
 
         childs.put(packageName, itemView);
         mTaskManagerList.addView(itemView);
+        getTaskFontStyle();
     }
 
     private void refreshTitleBox() {
@@ -550,6 +557,172 @@ public class TaskManager {
                 }
             }
             return false;
+        }
+    }
+
+    private void getTaskFontStyle() {
+        final int mTaskFontStyle = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.TASK_MANAGER_FONT_STYLE, FontHelper.FONT_NORMAL);
+
+        getFontStyle(mTaskFontStyle);
+    }
+
+    public void getFontStyle(int font) {
+        if (taskManagerTitle == null || memoryUsageText == null || taskNameTextView == null || killAllButton == null) {
+            return;
+        }
+        switch (font) {
+            case FontHelper.FONT_NORMAL:
+            default:
+                taskManagerTitle.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+                memoryUsageText.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+                taskNameTextView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+                killAllButton.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_ITALIC:
+                taskManagerTitle.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
+                memoryUsageText.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
+                taskNameTextView.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
+                killAllButton.setTypeface(Typeface.create("sans-serif", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_BOLD:
+                taskManagerTitle.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+                memoryUsageText.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+                taskNameTextView.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+                killAllButton.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_BOLD_ITALIC:
+                taskManagerTitle.setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
+                memoryUsageText.setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
+                taskNameTextView.setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
+                killAllButton.setTypeface(Typeface.create("sans-serif", Typeface.BOLD_ITALIC));
+                break;
+            case FontHelper.FONT_LIGHT:
+                taskManagerTitle.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
+                memoryUsageText.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
+                taskNameTextView.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
+                killAllButton.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_LIGHT_ITALIC:
+                taskManagerTitle.setTypeface(Typeface.create("sans-serif-light", Typeface.ITALIC));
+                memoryUsageText.setTypeface(Typeface.create("sans-serif-light", Typeface.ITALIC));
+                taskNameTextView.setTypeface(Typeface.create("sans-serif-light", Typeface.ITALIC));
+                killAllButton.setTypeface(Typeface.create("sans-serif-light", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_THIN:
+                taskManagerTitle.setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
+                memoryUsageText.setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
+                taskNameTextView.setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
+                killAllButton.setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_THIN_ITALIC:
+                taskManagerTitle.setTypeface(Typeface.create("sans-serif-thin", Typeface.ITALIC));
+                memoryUsageText.setTypeface(Typeface.create("sans-serif-thin", Typeface.ITALIC));
+                taskNameTextView.setTypeface(Typeface.create("sans-serif-thin", Typeface.ITALIC));
+                killAllButton.setTypeface(Typeface.create("sans-serif-thin", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_CONDENSED:
+                taskManagerTitle.setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
+                memoryUsageText.setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
+                taskNameTextView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
+                killAllButton.setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_CONDENSED_ITALIC:
+                taskManagerTitle.setTypeface(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
+                memoryUsageText.setTypeface(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
+                taskNameTextView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
+                killAllButton.setTypeface(Typeface.create("sans-serif-condensed", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_CONDENSED_LIGHT:
+                taskManagerTitle.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
+                memoryUsageText.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
+                taskNameTextView.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
+                killAllButton.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_CONDENSED_LIGHT_ITALIC:
+                taskManagerTitle.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
+                memoryUsageText.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
+                taskNameTextView.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
+                killAllButton.setTypeface(Typeface.create("sans-serif-condensed-light", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_CONDENSED_BOLD:
+                taskManagerTitle.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
+                memoryUsageText.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
+                taskNameTextView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
+                killAllButton.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_CONDENSED_BOLD_ITALIC:
+                taskManagerTitle.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
+                memoryUsageText.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
+                taskNameTextView.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
+                killAllButton.setTypeface(Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC));
+                break;
+            case FontHelper.FONT_MEDIUM:
+                taskManagerTitle.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+                memoryUsageText.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+                taskNameTextView.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+                killAllButton.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_MEDIUM_ITALIC:
+                taskManagerTitle.setTypeface(Typeface.create("sans-serif-medium", Typeface.ITALIC));
+                memoryUsageText.setTypeface(Typeface.create("sans-serif-medium", Typeface.ITALIC));
+                taskNameTextView.setTypeface(Typeface.create("sans-serif-medium", Typeface.ITALIC));
+                killAllButton.setTypeface(Typeface.create("sans-serif-medium", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_BLACK:
+                taskManagerTitle.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
+                memoryUsageText.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
+                taskNameTextView.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
+                killAllButton.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_BLACK_ITALIC:
+                taskManagerTitle.setTypeface(Typeface.create("sans-serif-black", Typeface.ITALIC));
+                memoryUsageText.setTypeface(Typeface.create("sans-serif-black", Typeface.ITALIC));
+                taskNameTextView.setTypeface(Typeface.create("sans-serif-black", Typeface.ITALIC));
+                killAllButton.setTypeface(Typeface.create("sans-serif-black", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT:
+                taskManagerTitle.setTypeface(Typeface.create("cursive", Typeface.NORMAL));
+                memoryUsageText.setTypeface(Typeface.create("cursive", Typeface.NORMAL));
+                taskNameTextView.setTypeface(Typeface.create("cursive", Typeface.NORMAL));
+                killAllButton.setTypeface(Typeface.create("cursive", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_DANCINGSCRIPT_BOLD:
+                taskManagerTitle.setTypeface(Typeface.create("cursive", Typeface.BOLD));
+                memoryUsageText.setTypeface(Typeface.create("cursive", Typeface.BOLD));
+                taskNameTextView.setTypeface(Typeface.create("cursive", Typeface.BOLD));
+                killAllButton.setTypeface(Typeface.create("cursive", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_COMINGSOON:
+                taskManagerTitle.setTypeface(Typeface.create("casual", Typeface.NORMAL));
+                memoryUsageText.setTypeface(Typeface.create("casual", Typeface.NORMAL));
+                taskNameTextView.setTypeface(Typeface.create("casual", Typeface.NORMAL));
+                killAllButton.setTypeface(Typeface.create("casual", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_NOTOSERIF:
+                taskManagerTitle.setTypeface(Typeface.create("serif", Typeface.NORMAL));
+                memoryUsageText.setTypeface(Typeface.create("serif", Typeface.NORMAL));
+                taskNameTextView.setTypeface(Typeface.create("serif", Typeface.NORMAL));
+                killAllButton.setTypeface(Typeface.create("serif", Typeface.NORMAL));
+                break;
+            case FontHelper.FONT_NOTOSERIF_ITALIC:
+                taskManagerTitle.setTypeface(Typeface.create("serif", Typeface.ITALIC));
+                memoryUsageText.setTypeface(Typeface.create("serif", Typeface.ITALIC));
+                taskNameTextView.setTypeface(Typeface.create("serif", Typeface.ITALIC));
+                killAllButton.setTypeface(Typeface.create("serif", Typeface.ITALIC));
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD:
+                taskManagerTitle.setTypeface(Typeface.create("serif", Typeface.BOLD));
+                memoryUsageText.setTypeface(Typeface.create("serif", Typeface.BOLD));
+                taskNameTextView.setTypeface(Typeface.create("serif", Typeface.BOLD));
+                killAllButton.setTypeface(Typeface.create("serif", Typeface.BOLD));
+                break;
+            case FontHelper.FONT_NOTOSERIF_BOLD_ITALIC:
+                taskManagerTitle.setTypeface(Typeface.create("serif", Typeface.BOLD_ITALIC));
+                memoryUsageText.setTypeface(Typeface.create("serif", Typeface.BOLD_ITALIC));
+                taskNameTextView.setTypeface(Typeface.create("serif", Typeface.BOLD_ITALIC));
+                killAllButton.setTypeface(Typeface.create("serif", Typeface.BOLD_ITALIC));
+                break;
         }
     }
 
