@@ -534,6 +534,15 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
                 case Constants.DebugFlags.App.RECENTS_CLEAR_ALL_BOTTOM_CENTER:
                     params.gravity = Gravity.BOTTOM | Gravity.CENTER;
                     break;
+                case Constants.DebugFlags.App.RECENTS_CLEAR_ALL_CENTER_LEFT:
+                    params.gravity = Gravity.CENTER | Gravity.LEFT;
+                    break;
+                case Constants.DebugFlags.App.RECENTS_CLEAR_ALL_CENTER_RIGHT:
+                    params.gravity = Gravity.CENTER | Gravity.RIGHT;
+                    break;
+                case Constants.DebugFlags.App.RECENTS_CLEAR_ALL_CENTER_CENTER:
+                    params.gravity = Gravity.CENTER | Gravity.CENTER;
+                    break;
             }
             mFloatingButton.setLayoutParams(params);
         } else {
