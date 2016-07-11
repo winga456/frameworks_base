@@ -900,7 +900,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
             } else {
                 Intent intent = new Intent(Intent.ACTION_MAIN);
                 intent.setClassName("com.android.settings",
-                    "com.android.settings.Settings$ChangelogSettingsActivity");
+                    "com.android.settings.Settings$QuickSettingsSettingsActivity");
                 mActivityStarter.startActivity(intent, true /* dismissShade */);
             }
     }
