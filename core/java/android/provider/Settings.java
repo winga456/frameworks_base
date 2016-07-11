@@ -7703,6 +7703,12 @@ public final class Settings {
         public static final String TASK_MANAGER_SLIDER_INACTIVE_COLOR = "task_manager_slider_inactive_color";
 
         /**
+         * Thickness of the Task Manager Progressbar
+         * @hide
+         */
+        public static final String TASK_MANAGER_BAR_THICKNESS = "task_manager_bar_thickness";
+
+        /**
          * Change lock screen alpha color
          * @hide
          */

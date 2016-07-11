@@ -167,12 +167,15 @@ public class TaskManager {
         final ColorStateList memoryTextColor = TMColorHelper.getTaskMemoryTextColorList(mContext);
         final ColorStateList sliderColor = TMColorHelper.getSliderColorList(mContext);
         final ColorStateList sliderInactiveColor = TMColorHelper.getSliderInactiveColorList(mContext);
+        final int mBarThickness = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.TASK_MANAGER_BAR_THICKNESS, 1);
         memoryUsageText =
                 (TextView) mTaskManagerPanel.findViewById(R.id.memory_usage_text);
         final ProgressBar memoryUsageBar =
                 (ProgressBar)mTaskManagerPanel.findViewById(R.id.memory_usage_Bar);
         memoryUsageBar.setProgressTintList(sliderColor);
         memoryUsageBar.setProgressBackgroundTintList(sliderInactiveColor);
+        memoryUsageBar.setScaleY(mBarThickness);
         refreshMemoryusageText(memoryUsageText);
         memoryUsageText.setTextColor(memoryTextColor);
         refreshMemoryUsageBar(memoryUsageBar);
