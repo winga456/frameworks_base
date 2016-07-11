@@ -7715,6 +7715,13 @@ public final class Settings {
         public static final String TASK_MANAGER_FONT_STYLE = "task_manager_font_style";
 
         /**
+         * Transition effect in CyanideMods tabs
+         *
+         * @hide
+         */
+        public static final String MODS_TABS_EFFECT = "mods_tabs_effect";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
