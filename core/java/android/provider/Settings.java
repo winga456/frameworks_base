@@ -6801,6 +6801,18 @@ public final class Settings {
         public static final String SETTINGS_TOOLBAR_TEXT_COLOR = "settings_toolbar_text_color";
 
         /**
+         * Color of the space between categories on Dashboard
+         * @hide
+         */
+        public static final String SETTINGS_CAT_SPACE_COLOR = "settings_cat_space_color";
+
+        /**
+         * Settings toolbar (header) background color
+         * @hide
+         */
+        public static final String SETTINGS_TOOLBAR_BG_COLOR = "settings_toolbar_bg_color";
+
+        /**
          * Dash Switches
          * @hide
          */

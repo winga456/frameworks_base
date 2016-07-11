@@ -616,6 +616,10 @@ final class UiModeManagerService extends SystemService
                         Settings.System.MODS_UNDERLINE_COLOR, 0xff009688);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.MODS_TAB_TEXT_COLOR, 0xff009688);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.SETTINGS_CAT_SPACE_COLOR, 0xffffffff);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.SETTINGS_TOOLBAR_BG_COLOR, 0xff263238);
             } else if (mNightMode == UiModeManager.MODE_NIGHT_YES) {
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.NOTIFICATION_BG_COLOR, 0xff1b1f23);
@@ -661,6 +665,10 @@ final class UiModeManagerService extends SystemService
                         Settings.System.MODS_UNDERLINE_COLOR, 0xff009688);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.MODS_TAB_TEXT_COLOR, 0xff009688);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.SETTINGS_CAT_SPACE_COLOR, 0xff000000);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.SETTINGS_TOOLBAR_BG_COLOR, 0xff263238);
             } else if (mNightMode == UiModeManager.MODE_NIGHT_BLACKOUT) {
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.NOTIFICATION_BG_COLOR, 0xff000000);
@@ -706,6 +714,10 @@ final class UiModeManagerService extends SystemService
                         Settings.System.MODS_UNDERLINE_COLOR, 0xff1976D2);
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.MODS_TAB_TEXT_COLOR, 0xff1976D2);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.SETTINGS_CAT_SPACE_COLOR, 0xff000000);
+                Settings.System.putInt(mContext.getContentResolver(),
+                        Settings.System.SETTINGS_TOOLBAR_BG_COLOR, 0xff000000);
             } else if (mNightMode == UiModeManager.MODE_NIGHT_RANDOM) {
                 Settings.System.putInt(mContext.getContentResolver(),
                         Settings.System.NOTIFICATION_BG_COLOR, 0xff0f2e4c);
