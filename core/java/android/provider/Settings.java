@@ -7740,6 +7740,36 @@ public final class Settings {
         public static final String MODS_TABS_EFFECT = "mods_tabs_effect";
 
         /**
+         * Background color of Mods NavDrawer
+         * @hide
+         */
+        public static final String DRAWER_BG_COLOR = "drawer_bg_color";
+
+        /**
+         * Icon color of Mods NavDrawer
+         * @hide
+         */
+        public static final String DRAWER_ICON_COLOR = "drawer_icon_color";
+
+        /**
+         * Text color of Mods NavDrawer
+         * @hide
+         */
+        public static final String DRAWER_TEXT_COLOR = "drawer_text_color";
+
+        /**
+         * Text font of Mods NavDrawer
+         * @hide
+         */
+        public static final String DRAWER_FONT_STYLE = "drawer_font_style";
+
+        /**
+         * Mods NavDrawer Scrim Alpha
+         * @hide
+         */
+        public static final String DRAWER_SCRIM_COLOR = "drawer_scrollbar_start_color";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
